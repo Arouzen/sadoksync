@@ -23,19 +23,23 @@ public class RegistryConnecter {
 
     RegistryRemoteInterface rri;
     String name;
+    String host;
     int port;
 
-    public RegistryConnecter() {
+    public RegistryConnecter(String host) {
+        this.host = "rmi://" + host;
         this.name = "Sadoksync";
         this.port = 1099;
     }
 
-    public RegistryConnecter(String name) {
+    public RegistryConnecter(String host, String name) {
+        this.host = "rmi://" + host;
         this.name = name;
         this.port = 1099;
     }
 
-    public RegistryConnecter(String name, int port) {
+    public RegistryConnecter(String host, String name, int port) {
+        this.host = "rmi://" + host;
         this.name = name;
         this.port = port;
     }
@@ -44,7 +48,7 @@ public class RegistryConnecter {
         System.out.println("RegistryConnecter: Connect");
         //Locate or Create a rmi registry. Default on port 1099
         try {
-            LocateRegistry.getRegistry(this.port).list();
+            LocateRegistry.getRegistry(this.host, this.port).list();
         } catch (RemoteException e) {
             //LocateRegistry.createRegistry(1099);
         }

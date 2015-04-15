@@ -36,70 +36,54 @@ public class Peer {
         this.nick = me;
     }
 
-    void createComunity(String name, String topic) {
-        System.out.println("Peer: createComunity:" + name + ", " + topic);
-        com.create(name, cri, topic);
+    void createComunity(String cname, String topic) {
+        System.out.println("Peer: createComunity:" + cname + ", " + topic);
+        com.create(cname, cri, topic, nick);
     }
 
-    void registerComunity(String registry, int port) {
+    void registerComunity(String rhost, String registry, int port) {
         System.out.println("Peer: registerComunity: " + registry + ", " + port);
         //registry = Sadocsynk
         //port = 1099
-        com.Register();
+        com.Register(rhost, registry, port);
     }
-    void registerComunity(String registry) {
+
+    void registerComunity(String rhost, String registry) {
         //registry = Sadocsynk
         //port = 1099
-        this.registerComunity(registry, 1099);
+        this.registerComunity(rhost, registry, 1099);
     }
-        void registerComunity() {
+
+    void registerComunity() {
         //registry = Sadocsynk
         //port = 1099
-        this.registerComunity("Sadocsynk", 1099);
+        this.registerComunity("localhost", "Sadocsynk", 1099);
     }
-    
-    
+
     void setComunityTopic(String topic) {
         System.out.println("Peer: setComunityTopic:" + topic);
         com.setTopic(topic);
     }
 
-    void findAllComunity(String registry, int port) {
-        System.out.println("Peer: findAllComunity:" + registry);
+    void findAllComunity(String rhost, String service, int port) {
+        System.out.println("Peer: findAllComunity:" + service);
         //port is the port where the rmi registry should be located.
         //registry is the addres to the registry where you whant to look for the service.
 
         //name is the name of the comunity we are looking for.
         //registry = Sadocsynk
         //port = 1099
-        com.findAll(cri);
+        com.findAll(rhost, service, port, cri);
     }
 
-    void findAllComunity(String host) {
-        this.findAllComunity(host, 1099);
-    }
-
-    void findAllComunity() {
-        this.findAllComunity("Sadoksync", 1099);
-    }
-
-    void findComunity(String name, String registry, int port) {
-        System.out.println("Peer: findComunity:" + name);
-        //port is the port where the rmi registry should be located.
-        //registry is the addres to the registry where you whant to look for the service.
+    void findComunity(String sname, String rhost, String service, int port) {
+        System.out.println("Peer: findComunity:" + sname);
 
         //name is the name of the comunity we are looking for.
-        //registry = Sadocsynk
+        //rhost = localhost
+        //service = Sadocsynk
         //port = 1099
-        com.find(name, cri);
-    }
-
-    void findComunity(String name, String host) {
-        findComunity(name, host, 1099);
-    }
-
-    void findComunity(String name) {
-        findComunity(name, "Sadoksync", 1099);
+        com.find(rhost, service, port, sname, cri);
     }
 
     String getNick() {

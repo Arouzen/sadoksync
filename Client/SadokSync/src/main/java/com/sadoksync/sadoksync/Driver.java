@@ -25,14 +25,12 @@ public class Driver {
     }
 
     public Driver() {
-        String name = "ME";
+        String nick = "ME";
         pr = new Peer();
-        pr.setNick(name);
+        pr.setNick(nick);
         pr.createComunity("ComunityName", "Stuff");
-        pr.registerComunity();
-        
-        pr.findAllComunity();
-
+        pr.registerComunity("localhost","Sadoksync",1099);
+        pr.findAllComunity("localhost","Sadoksync",1099);
 
 /*
         ClientRemoteInterface cri;
