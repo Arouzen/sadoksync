@@ -5,22 +5,46 @@
  */
 package com.sadoksync.sadoksync;
 
+import com.sun.jna.NativeLibrary;
+import java.awt.Canvas;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import javax.swing.JFileChooser;
+import uk.co.caprica.vlcj.player.MediaPlayerFactory;
+import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
+import uk.co.caprica.vlcj.player.embedded.videosurface.CanvasVideoSurface;
 
 /**
  *
  * @author Arouz
  */
 public class Client extends javax.swing.JFrame {
+    // Create a media player factory
+    private MediaPlayerFactory mediaPlayerFactory;
+
+    // Create a new media player instance for the run-time platform
+    private EmbeddedMediaPlayer mediaPlayer;
+
+    private Canvas canvas;
 
     /**
      * Creates new form Client
      */
     public Client() {
         initComponents();
+        
+        canvas = new Canvas();
+        canvas.setSize(590, 482);
+        panelVideo.add(canvas);
+        panelVideo.revalidate();
+        panelVideo.repaint();
+
+        //Creation a media player :
+        mediaPlayerFactory = new MediaPlayerFactory();
+        mediaPlayer = mediaPlayerFactory.newEmbeddedMediaPlayer();
+        CanvasVideoSurface videoSurface = mediaPlayerFactory.newVideoSurface(canvas);
+        mediaPlayer.setVideoSurface(videoSurface);
     }
 
     /**
@@ -245,7 +269,7 @@ public class Client extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void buttonPlayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonPlayActionPerformed
-        // MEDIA PLAY!
+        mediaPlayer.playMedia(textFileLocation.getText());
     }//GEN-LAST:event_buttonPlayActionPerformed
 
     /**
@@ -275,6 +299,8 @@ public class Client extends javax.swing.JFrame {
         }
         //</editor-fold>
 
+        NativeLibrary.addSearchPath("libvlc", "C:/Program Files/VideoLAN/VLC");
+        
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
