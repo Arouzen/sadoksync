@@ -13,6 +13,7 @@ import java.rmi.RemoteException;
  * @author Pontus
  */
 public interface RegistryRemoteInterface extends Remote {
-    void register(String name, ClientRemoteInterface rri) throws RemoteException;
+    void register(String name, ClientRemoteInterface rri, String topic) throws RemoteException;
     void getComunity(String name, ClientRemoteInterface cri) throws RemoteException;
+    void getAllComunitys(ClientRemoteInterface cri) throws RemoteException;
 }

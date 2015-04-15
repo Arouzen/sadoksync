@@ -18,7 +18,7 @@ import java.util.logging.Logger;
  */
 public class Driver {
 
-    RegistryConnecter rmic;
+ 
     Peer pr;
     public static void main(String[] args) {
         new Driver();
@@ -27,10 +27,13 @@ public class Driver {
     public Driver() {
         String name = "ME";
         pr = new Peer();
-        pr.setName(name);
+        pr.setNick(name);
+        pr.createComunity("ComunityName", "Stuff");
+        pr.registerComunity();
         
-        
-        rmic = new RegistryConnecter();
+        pr.findAllComunity();
+
+
 /*
         ClientRemoteInterface cri;
         try {

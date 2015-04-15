@@ -19,31 +19,75 @@ public class Peer {
 
     Comunity com;
     ClientRemoteInterface cri;
-    String name;
+    String nick;
 
     public Peer() {
 
         com = new Comunity();
 
         try {
-            cri = new ClientInterface(name, com);
+            cri = new ClientInterface(nick, com);
         } catch (RemoteException | MalformedURLException ex) {
             Logger.getLogger(Peer.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
-    void setName(String me) {
-        this.name = me;
+    void setNick(String me) {
+        this.nick = me;
     }
 
-    void createComunity() {
-        com.create(name, cri);
+    void createComunity(String name, String topic) {
+        System.out.println("Peer: createComunity:" + name + ", " + topic);
+        com.create(name, cri, topic);
+    }
+
+    void registerComunity(String registry, int port) {
+        System.out.println("Peer: registerComunity: " + registry + ", " + port);
+        //registry = Sadocsynk
+        //port = 1099
+        com.Register();
+    }
+    void registerComunity(String registry) {
+        //registry = Sadocsynk
+        //port = 1099
+        this.registerComunity(registry, 1099);
+    }
+        void registerComunity() {
+        //registry = Sadocsynk
+        //port = 1099
+        this.registerComunity("Sadocsynk", 1099);
+    }
+    
+    
+    void setComunityTopic(String topic) {
+        System.out.println("Peer: setComunityTopic:" + topic);
+        com.setTopic(topic);
+    }
+
+    void findAllComunity(String registry, int port) {
+        System.out.println("Peer: findAllComunity:" + registry);
+        //port is the port where the rmi registry should be located.
+        //registry is the addres to the registry where you whant to look for the service.
+
+        //name is the name of the comunity we are looking for.
+        //registry = Sadocsynk
+        //port = 1099
+        com.findAll(cri);
+    }
+
+    void findAllComunity(String host) {
+        this.findAllComunity(host, 1099);
+    }
+
+    void findAllComunity() {
+        this.findAllComunity("Sadoksync", 1099);
     }
 
     void findComunity(String name, String registry, int port) {
+        System.out.println("Peer: findComunity:" + name);
         //port is the port where the rmi registry should be located.
         //registry is the addres to the registry where you whant to look for the service.
-       
+
         //name is the name of the comunity we are looking for.
         //registry = Sadocsynk
         //port = 1099
@@ -55,10 +99,11 @@ public class Peer {
     }
 
     void findComunity(String name) {
-        findComunity(name,"Sadoksync", 1099);
+        findComunity(name, "Sadoksync", 1099);
     }
 
-    String getName() {
-        return name;
+    String getNick() {
+        return nick;
     }
+
 }
