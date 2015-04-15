@@ -6,10 +6,15 @@
 package com.sadoksync.sadoksync;
 
 import com.sadoksync.msg.ClientRemoteInterface;
+
 import com.sadoksync.msg.RegistryRemoteInterface;
+
 import java.net.MalformedURLException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  *
@@ -25,7 +30,7 @@ public class ClientInterface  extends UnicastRemoteObject implements ClientRemot
 
     @Override
     public void register(String name, ClientRemoteInterface rri) throws RemoteException {
-        com.RegPeer(name, rri);
+        com.RegPeer(name, new PeerReg(name, rri));
     }
 
     @Override
@@ -38,6 +43,13 @@ public class ClientInterface  extends UnicastRemoteObject implements ClientRemot
         com.setHost(rri);
     }
 
+    @Override
+    public void setComunityList(List nameli) throws RemoteException {
+        //Display nameli in list of comunitys
+        for (Object s : nameli) {
+            System.out.println((String)s);
+        }
+    }
 
-    
+
 }

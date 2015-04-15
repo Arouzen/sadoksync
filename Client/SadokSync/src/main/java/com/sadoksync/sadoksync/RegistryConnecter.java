@@ -41,7 +41,7 @@ public class RegistryConnecter {
     }
 
     public boolean Connect() {
-
+        System.out.println("RegistryConnecter: Connect");
         //Locate or Create a rmi registry. Default on port 1099
         try {
             LocateRegistry.getRegistry(this.port).list();
@@ -59,17 +59,28 @@ public class RegistryConnecter {
         return true;
     }
 
-    void register(String name, ClientRemoteInterface cri) {
+    void register(String name, ClientRemoteInterface cri, String topic) {
+        System.out.println("RegistryConnecter: register");
         try {
-            rri.register(name, cri);
+            rri.register(name, cri, topic);
         } catch (java.rmi.RemoteException re) {
             re.printStackTrace();
         }
     }
 
     void getComunity(String name, ClientRemoteInterface cri) {
+        System.out.println("RegistryConnecter: getComunity");
         try {
             rri.getComunity(name, cri);
+        } catch (java.rmi.RemoteException re) {
+            re.printStackTrace();
+        }
+    }
+
+    void getAll(ClientRemoteInterface cri) {
+        System.out.println("RegistryConnecter: getAll");
+          try {
+            rri.getAllComunitys(cri);
         } catch (java.rmi.RemoteException re) {
             re.printStackTrace();
         }

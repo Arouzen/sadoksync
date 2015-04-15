@@ -13,36 +13,50 @@ import com.sadoksync.msg.ClientRemoteInterface;
  */
 public class Comunity {
 
+    String topic;
     RegistryConnecter rc;
 
     ClientRemoteInterface host;
 
-    //Datastructur som håller ClientRemoteInterface
-    SynchReg cliMap;
-   
+    PeerMap pMap;
+    
+    public Comunity(){
+        this.topic = "";
+        this.pMap = new PeerMap();
+    }
+    
     public void Register(String name, int port) {
-        rc = new RegistryConnecter(name, port);
-
+        System.out.println("Comunity: Register: " + name + ", " + port);
+        //rc = new RegistryConnecter(name, port);
+        rc = new RegistryConnecter();
+        
         if (rc.Connect()) {
-            rc.register(name, host);
+            rc.register(name, host, topic);
         };
     }
 
     public void Register(String name) {
-        rc = new RegistryConnecter(name);
+        //registry = Sadocsynk
+        //port = 1099
+        this.Register(name, 1099);
     }
 
     public void Register() {
-        rc = new RegistryConnecter();
+        //registry = Sadocsynk
+        //port = 1099
+        this.Register("Sadocsynk", 1099);
     }
 
-    public void RegPeer(String namn, ClientRemoteInterface nick) {
-        cliMap.put(namn, nick);
+    public void RegPeer(String namn, PeerReg peer) {
+        System.out.println("Comunity: RegPeer: " + namn);
+        pMap.put(namn, peer);
     }
 
-    void create(String namn, ClientRemoteInterface host) {
+    void create(String namn, ClientRemoteInterface host, String topic) {
+        System.out.println("Comunity: create: " + namn + ", " + topic);
         this.host = host;
-        RegPeer(namn, host);
+        this.topic = topic;
+        RegPeer(namn, new PeerReg(namn, host));
     }
     
     void setHost(ClientRemoteInterface host){
@@ -54,6 +68,18 @@ public class Comunity {
 
         if (rc.Connect()) {
             rc.getComunity(name, cri);
+        };
+    }
+
+    void setTopic(String topic) {
+        this.topic = topic;
+    }
+
+    void findAll(ClientRemoteInterface cri) {
+        RegistryConnecter rc = new RegistryConnecter();
+
+        if (rc.Connect()) {
+            rc.getAll(cri);
         };
     }
 }

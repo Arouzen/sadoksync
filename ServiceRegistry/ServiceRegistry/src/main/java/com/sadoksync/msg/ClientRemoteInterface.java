@@ -5,8 +5,10 @@
  */
 package com.sadoksync.msg;
 
+import com.sadoksync.serviceregistry.SynchReg;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.util.List;
 
 /**
  *
@@ -17,5 +19,5 @@ public interface ClientRemoteInterface extends Remote {
     void register(String nick, ClientRemoteInterface rri) throws RemoteException;
     void ping(ClientRemoteInterface rri) throws RemoteException;
     void setComunity(ClientRemoteInterface rri) throws RemoteException;
-    
+    void setComunityList(List nameli)throws RemoteException;
 }
