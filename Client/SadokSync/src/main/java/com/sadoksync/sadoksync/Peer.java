@@ -18,9 +18,10 @@ import java.util.logging.Logger;
 public class Peer {
 
     Comunity com;
-    ClientRemoteInterface cri;
+    ClientInterface cri;
     String nick;
-
+    Lobby lb;
+    
     public Peer() {
 
         com = new Comunity();
@@ -76,18 +77,23 @@ public class Peer {
         com.findAll(rhost, service, port, cri);
     }
 
-    void findComunity(String sname, String rhost, String service, int port) {
-        System.out.println("Peer: findComunity:" + sname);
+    void joinComunity(String cname, String rhost, String service, int port) {
+        System.out.println("Peer: findComunity:" + cname);
 
-        //name is the name of the comunity we are looking for.
+        //cname is the name of the comunity we are looking for.
         //rhost = localhost
         //service = Sadocsynk
         //port = 1099
-        com.find(rhost, service, port, sname, cri);
+        com.find(cname, cri, rhost, service, port);
     }
 
     String getNick() {
         return nick;
+    }
+
+    void setLobby(Lobby lb) {
+        this.lb = lb;
+        cri.setLobby(lb);
     }
 
 }

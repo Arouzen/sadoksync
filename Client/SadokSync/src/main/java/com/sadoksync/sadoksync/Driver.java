@@ -20,18 +20,38 @@ public class Driver {
 
  
     Peer pr;
+    Lobby lb;
     public static void main(String[] args) {
         new Driver();
     }
 
     public Driver() {
+        new ServiceRegistry("Sadoksync");
         String nick = "ME";
+        
         pr = new Peer();
         pr.setNick(nick);
-        pr.createComunity("ComunityName", "Stuff");
-        pr.registerComunity("localhost","Sadoksync",1099);
+        
+        //pr.createComunity("ComunityName", "Stuff");
+        //pr.registerComunity("localhost","Sadoksync",1099);
+        
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                lb = new Lobby(pr);
+                pr.setLobby(lb);
+                lb.setVisible(true);
+            }
+        });
+        
+        
+        /*
+        
+        
+        pr = new Peer();
+        
+        
         pr.findAllComunity("localhost","Sadoksync",1099);
-
+*/
 /*
         ClientRemoteInterface cri;
         try {

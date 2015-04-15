@@ -55,7 +55,7 @@ public class Comunity {
         this.host = host;
     }
 
-    void find(String rhost, String sname, int port, String cname, ClientRemoteInterface cri) {
+    void find(String cname, ClientRemoteInterface cri, String rhost, String sname, int port) {
         RegistryConnecter rc = new RegistryConnecter(rhost, sname, port);
 
         if (rc.Connect()) {
