@@ -32,8 +32,7 @@ public class Client extends javax.swing.JFrame {
         initComponents();
 
         //Creation a media player :
-        String[] libvlcArgs = {"% vlc -vvv rtsp://130.229.149.43:5555/stream"};
-        mediaPlayerFactory = new MediaPlayerFactory(libvlcArgs);
+        mediaPlayerFactory = new MediaPlayerFactory();
         mediaPlayer = mediaPlayerFactory.newEmbeddedMediaPlayer();
         CanvasVideoSurface videoSurface = mediaPlayerFactory.newVideoSurface(canvas);
         mediaPlayer.setVideoSurface(videoSurface);
