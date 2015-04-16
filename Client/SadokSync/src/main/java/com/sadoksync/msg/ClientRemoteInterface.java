@@ -5,6 +5,7 @@
  */
 package com.sadoksync.msg;
 
+import com.sadoksync.sadoksync.Lobby;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.List;
@@ -19,4 +20,6 @@ public interface ClientRemoteInterface extends Remote {
     void ping(ClientRemoteInterface rri) throws RemoteException;
     void setComunity(ClientRemoteInterface rri) throws RemoteException;
     void setComunityList(List nameli)throws RemoteException;
+
+
 }

@@ -21,6 +21,7 @@ public class PeerMap {
     
     public synchronized void put(String name, PeerReg pr){
         pMap.put(name, pr);
+        System.out.println(name + " joined a comunity");
     }
     public synchronized PeerReg get(String name){
         return pMap.get(name);

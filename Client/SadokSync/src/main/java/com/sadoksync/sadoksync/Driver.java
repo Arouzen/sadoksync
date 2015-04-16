@@ -20,27 +20,28 @@ public class Driver {
 
  
     Peer pr;
+    Lobby lb;
+    Client cli;
     public static void main(String[] args) {
         new Driver();
     }
 
     public Driver() {
-        String name = "ME";
+        new ServiceRegistry("Sadoksync");     
         pr = new Peer();
-        pr.setNick(name);
-        pr.createComunity("ComunityName", "Stuff");
-        pr.registerComunity();
-        
-        pr.findAllComunity();
-
-
-/*
-        ClientRemoteInterface cri;
-        try {
-            cri = new ClientInterface(name);
-        } catch (RemoteException | MalformedURLException ex) {
-            Logger.getLogger(Driver.class.getName()).log(Level.SEVERE, null, ex);
-        }
-*/
+       
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                /*
+                cli = new Client();
+                cli.setVisible(false);
+                pr.setClient(cli);
+                */
+                
+                lb = new Lobby(pr/*, cli*/);
+                lb.setVisible(true);
+                pr.setLobby(lb);    
+            }
+        });
     }
 }

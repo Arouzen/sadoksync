@@ -29,6 +29,8 @@ public class Client extends javax.swing.JFrame {
 
     // Create a new media player instance for the run-time platform
     private EmbeddedMediaPlayer mediaPlayer;
+<<<<<<< HEAD
+=======
 
     private Canvas canvas;
 
@@ -56,17 +58,12 @@ public class Client extends javax.swing.JFrame {
     }
 
 }
+>>>>>>> Stylized buttons, some GUI changes
     /**
      * Creates new form Client
      */
     public Client() {
         initComponents();
-        
-        canvas = new Canvas();
-        canvas.setSize(590, 482);
-        panelVideo.add(canvas);
-        panelVideo.revalidate();
-        panelVideo.repaint();
 
         //Creation a media player :
         mediaPlayerFactory = new MediaPlayerFactory();
@@ -90,13 +87,17 @@ public class Client extends javax.swing.JFrame {
         panelChatt = new javax.swing.JPanel();
         jButton2 = new javax.swing.JButton();
         jTextField1 = new javax.swing.JTextField();
-        panelVideo = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
         buttonPlay = new javax.swing.JButton();
         textFileLocation = new javax.swing.JTextField();
+<<<<<<< HEAD
+        canvas = new java.awt.Canvas();
+        jButton3 = new javax.swing.JButton();
+=======
         ButtonPause = new javax.swing.JButton();
         ButtonStop = new javax.swing.JButton();
+>>>>>>> Stylized buttons, some GUI changes
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         Open = new javax.swing.JMenuItem();
@@ -139,19 +140,6 @@ public class Client extends javax.swing.JFrame {
                 .addGap(0, 2, Short.MAX_VALUE))
         );
 
-        panelVideo.setPreferredSize(new java.awt.Dimension(200, 200));
-
-        javax.swing.GroupLayout panelVideoLayout = new javax.swing.GroupLayout(panelVideo);
-        panelVideo.setLayout(panelVideoLayout);
-        panelVideoLayout.setHorizontalGroup(
-            panelVideoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-        panelVideoLayout.setVerticalGroup(
-            panelVideoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-
         jLabel1.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("S A D O K S Y N C !");
@@ -170,6 +158,12 @@ public class Client extends javax.swing.JFrame {
             }
         });
 
+<<<<<<< HEAD
+        canvas.setMinimumSize(new java.awt.Dimension(590, 484));
+        canvas.setPreferredSize(new java.awt.Dimension(590, 484));
+
+        jButton3.setText("fullscreen");
+=======
         ButtonPause.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Button_Default.png"))); // NOI18N
         ButtonPause.setActionCommand("");
         ButtonPause.setMaximumSize(new java.awt.Dimension(85, 40));
@@ -189,6 +183,7 @@ public class Client extends javax.swing.JFrame {
                 ButtonStopActionPerformed(evt);
             }
         });
+>>>>>>> Stylized buttons, some GUI changes
 
         jMenu1.setText("File");
         jMenu1.addActionListener(new java.awt.event.ActionListener() {
@@ -245,12 +240,27 @@ public class Client extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+<<<<<<< HEAD
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 404, javax.swing.GroupLayout.PREFERRED_SIZE)
+=======
                     .addComponent(panelVideo, javax.swing.GroupLayout.DEFAULT_SIZE, 670, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 601, Short.MAX_VALUE)
+>>>>>>> Stylized buttons, some GUI changes
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton1))
+                        .addComponent(jButton3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
+<<<<<<< HEAD
+                        .addComponent(textFileLocation, javax.swing.GroupLayout.PREFERRED_SIZE, 512, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(buttonPlay))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(canvas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(1, 1, 1)))
+=======
                         .addComponent(textFileLocation)
                         .addGap(55, 55, 55)
                         .addComponent(ButtonStop)
@@ -258,6 +268,7 @@ public class Client extends javax.swing.JFrame {
                         .addComponent(ButtonPause, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(buttonPlay)))
+>>>>>>> Stylized buttons, some GUI changes
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(scrollPaneChatt, javax.swing.GroupLayout.DEFAULT_SIZE, 281, Short.MAX_VALUE)
@@ -272,10 +283,17 @@ public class Client extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jButton1))
+                            .addComponent(jButton1)
+                            .addComponent(jButton3))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+<<<<<<< HEAD
+                        .addComponent(canvas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGap(1, 1, 1))
+                    .addComponent(scrollPaneChatt))
+=======
                         .addComponent(panelVideo, javax.swing.GroupLayout.DEFAULT_SIZE, 470, Short.MAX_VALUE))
                     .addComponent(scrollPaneChatt, javax.swing.GroupLayout.DEFAULT_SIZE, 524, Short.MAX_VALUE))
+>>>>>>> Stylized buttons, some GUI changes
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(panelChatt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -382,9 +400,11 @@ public class Client extends javax.swing.JFrame {
     private javax.swing.JMenuItem Exit;
     private javax.swing.JMenuItem Open;
     private javax.swing.JButton buttonPlay;
+    private java.awt.Canvas canvas;
     private javax.swing.JFileChooser fileChooser;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
@@ -395,7 +415,6 @@ public class Client extends javax.swing.JFrame {
     private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JPanel panelChatt;
-    private javax.swing.JPanel panelVideo;
     private javax.swing.JScrollPane scrollPaneChatt;
     private javax.swing.JTextField textFileLocation;
     private javax.swing.JTextArea textarea;

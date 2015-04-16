@@ -15,14 +15,20 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import javax.swing.DefaultListModel;
+import javax.swing.ListModel;
 
 /**
  *
  * @author Pontus
  */
-public class ClientInterface  extends UnicastRemoteObject implements ClientRemoteInterface{
+public class ClientInterface extends UnicastRemoteObject implements ClientRemoteInterface {
+
     String nick;
     Comunity com;
+    Lobby lb;
+    Client cli;
+
     public ClientInterface(String nick, Comunity com) throws RemoteException, MalformedURLException {
         this.com = com;
         this.nick = nick;
@@ -41,15 +47,42 @@ public class ClientInterface  extends UnicastRemoteObject implements ClientRemot
     @Override
     public void setComunity(ClientRemoteInterface rri) throws RemoteException {
         com.setHost(rri);
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                /* Enable when client is working
+                 cli.setVisible(true);
+                 lb.setVisible(false); //???
+                 */
+            }
+        });
+
     }
 
     @Override
     public void setComunityList(List nameli) throws RemoteException {
         //Display nameli in list of comunitys
+        DefaultListModel lm = new DefaultListModel();
+
         for (Object s : nameli) {
-            System.out.println((String)s);
+            lm.addElement((String) s);
         }
+
+        final DefaultListModel flm = lm;
+
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                lb.jList1.setModel(flm);
+            }
+        });
+
     }
 
+    public void setLobby(Lobby lb) {
+        this.lb = lb;
+    }
+
+    void setClient(Client cli) {
+        this.cli = cli;
+    }
 
 }
