@@ -27,7 +27,7 @@ public class RegistryImplementation extends UnicastRemoteObject implements Regis
 
     @Override
     public void register(String name, ClientRemoteInterface cri, String topic) throws RemoteException {
-        System.out.println("register: " + name + ", " + topic);
+        //System.out.println("register: " + name + ", " + topic);
         //name är något som en användare kan använda för att identifiera ett comunity.
         //rri är en contakt information till den nuvarande hosten. 
         
@@ -37,7 +37,7 @@ public class RegistryImplementation extends UnicastRemoteObject implements Regis
 
     @Override
     public void getComunity(String name, ClientRemoteInterface cri) throws RemoteException {
-        System.out.println("getComunity: " + name);
+        //ystem.out.println("getComunity: " + name);
         //Responds with a connection to the host of a community with the name name.
         try {
             cri.setComunity(criMap.get(name).getHost()); // Tells the consumer we are done.
@@ -49,7 +49,7 @@ public class RegistryImplementation extends UnicastRemoteObject implements Regis
 
     @Override
     public void getAllComunitys(ClientRemoteInterface cri) throws RemoteException {
-        System.out.println("getAllComunity");
+        //System.out.println("getAllComunity");
         
         List nameli;
         nameli = criMap.getKeyList();

@@ -26,6 +26,7 @@ public class ActionCreateComunity implements Runnable {
     public void run() {
         pr.createComunity(cname, topic);
         pr.registerComunity(addr,"Sadoksync",1099);
+        pr.joinComunity(cname, addr, "Sadoksync", 1099);
     }
 }
     

@@ -21,7 +21,7 @@ public class Peer {
     ClientInterface cri;
     String nick;
     Lobby lb;
-    
+    Client cli;
     public Peer() {
 
         com = new Comunity();
@@ -35,15 +35,17 @@ public class Peer {
 
     void setNick(String me) {
         this.nick = me;
+        com.setNick(this.nick);
+        com.setCri(this.cri);
     }
 
     void createComunity(String cname, String topic) {
-        System.out.println("Peer: createComunity:" + cname + ", " + topic);
+        //System.out.println("Peer: createComunity:" + cname + ", " + topic);
         com.create(cname, cri, topic, nick);
     }
 
     void registerComunity(String rhost, String registry, int port) {
-        System.out.println("Peer: registerComunity: " + registry + ", " + port);
+        //System.out.println("Peer: registerComunity: " + registry + ", " + port);
         //registry = Sadocsynk
         //port = 1099
         com.Register(rhost, registry, port);
@@ -62,12 +64,12 @@ public class Peer {
     }
 
     void setComunityTopic(String topic) {
-        System.out.println("Peer: setComunityTopic:" + topic);
+        //System.out.println("Peer: setComunityTopic:" + topic);
         com.setTopic(topic);
     }
 
     void findAllComunity(String rhost, String service, int port) {
-        System.out.println("Peer: findAllComunity:" + service);
+        //System.out.println("Peer: findAllComunity:" + service);
         //port is the port where the rmi registry should be located.
         //registry is the addres to the registry where you whant to look for the service.
 
@@ -78,12 +80,7 @@ public class Peer {
     }
 
     void joinComunity(String cname, String rhost, String service, int port) {
-        System.out.println("Peer: findComunity:" + cname);
-
-        //cname is the name of the comunity we are looking for.
-        //rhost = localhost
-        //service = Sadocsynk
-        //port = 1099
+        //System.out.println("Peer: findComunity:" + cname);
         com.find(cname, cri, rhost, service, port);
     }
 
@@ -94,6 +91,11 @@ public class Peer {
     void setLobby(Lobby lb) {
         this.lb = lb;
         cri.setLobby(lb);
+    }
+
+    void setClient(Client cli) {
+        this.cli = cli;
+        cri.setClient(cli);
     }
 
 }
