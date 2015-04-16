@@ -24,44 +24,38 @@ import uk.co.caprica.vlcj.player.embedded.videosurface.CanvasVideoSurface;
  * @author Arouz
  */
 public class Client extends javax.swing.JFrame {
+
     // Create a media player factory
+
     private MediaPlayerFactory mediaPlayerFactory;
 
     // Create a new media player instance for the run-time platform
     private EmbeddedMediaPlayer mediaPlayer;
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
 
-    private Canvas canvas;
+    public class ImagePanel extends JPanel {
 
-    public class ImagePanel extends JPanel{
-
-    private BufferedImage image;
+        private BufferedImage image;
 
         public ImagePanel() {
-       try { 
-        image = ImageIO.read(new File("C:\\Users\\ibo\\Pictures\\wallpaper-2774743"));
-     } catch (IOException ex) {
-            // handle exception...
-       }
-    
-       }  
+            try {
+                image = ImageIO.read(new File("C:\\Users\\ibo\\Pictures\\wallpaper-2774743"));
+            } catch (IOException ex) {
+                // handle exception...
+            }
+        }
 
         /**
          *
          * @param g
          */
         @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        g.drawImage(image, 0, 0, null); // see javadoc for more info on the parameters            
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            g.drawImage(image, 0, 0, null); // see javadoc for more info on the parameters            
+        }
+
     }
 
-}
->>>>>>> Stylized buttons, some GUI changes
-=======
->>>>>>> origin/master
     /**
      * Creates new form Client
      */
@@ -69,7 +63,7 @@ public class Client extends javax.swing.JFrame {
         initComponents();
 
         StringBuilder location = new StringBuilder(Client.class.getProtectionDomain().getCodeSource().getLocation().toString());
-        location.delete(0,6);
+        location.delete(0, 6);
         NativeLibrary.addSearchPath("libvlc", location.toString());
         //Creation a media player :
         mediaPlayerFactory = new MediaPlayerFactory();
@@ -97,18 +91,10 @@ public class Client extends javax.swing.JFrame {
         jButton1 = new javax.swing.JButton();
         buttonPlay = new javax.swing.JButton();
         textFileLocation = new javax.swing.JTextField();
-<<<<<<< HEAD
-<<<<<<< HEAD
         canvas = new java.awt.Canvas();
         jButton3 = new javax.swing.JButton();
-=======
         ButtonPause = new javax.swing.JButton();
         ButtonStop = new javax.swing.JButton();
->>>>>>> Stylized buttons, some GUI changes
-=======
-        canvas = new java.awt.Canvas();
-        jButton3 = new javax.swing.JButton();
->>>>>>> origin/master
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         Open = new javax.swing.JMenuItem();
@@ -169,18 +155,11 @@ public class Client extends javax.swing.JFrame {
             }
         });
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> origin/master
         canvas.setMinimumSize(new java.awt.Dimension(590, 484));
-        canvas.setPreferredSize(new java.awt.Dimension(590, 484));
 
         jButton3.setText("fullscreen");
-<<<<<<< HEAD
-=======
+
         ButtonPause.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Button_Default.png"))); // NOI18N
-        ButtonPause.setActionCommand("");
         ButtonPause.setMaximumSize(new java.awt.Dimension(85, 40));
         ButtonPause.setMinimumSize(new java.awt.Dimension(85, 40));
         ButtonPause.setPreferredSize(new java.awt.Dimension(85, 40));
@@ -198,9 +177,6 @@ public class Client extends javax.swing.JFrame {
                 ButtonStopActionPerformed(evt);
             }
         });
->>>>>>> Stylized buttons, some GUI changes
-=======
->>>>>>> origin/master
 
         jMenu1.setText("File");
         jMenu1.addActionListener(new java.awt.event.ActionListener() {
@@ -257,43 +233,21 @@ public class Client extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-<<<<<<< HEAD
-<<<<<<< HEAD
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 404, javax.swing.GroupLayout.PREFERRED_SIZE)
-=======
-                    .addComponent(panelVideo, javax.swing.GroupLayout.DEFAULT_SIZE, 670, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 601, Short.MAX_VALUE)
->>>>>>> Stylized buttons, some GUI changes
-=======
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 404, javax.swing.GroupLayout.PREFERRED_SIZE)
->>>>>>> origin/master
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-<<<<<<< HEAD
-                        .addComponent(textFileLocation, javax.swing.GroupLayout.PREFERRED_SIZE, 512, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(buttonPlay))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(canvas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(1, 1, 1)))
-<<<<<<< HEAD
-=======
                         .addComponent(textFileLocation)
                         .addGap(55, 55, 55)
                         .addComponent(ButtonStop)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(ButtonPause, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(buttonPlay)))
->>>>>>> Stylized buttons, some GUI changes
-=======
->>>>>>> origin/master
+                        .addComponent(buttonPlay))
+                    .addComponent(canvas, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(scrollPaneChatt, javax.swing.GroupLayout.DEFAULT_SIZE, 281, Short.MAX_VALUE)
@@ -310,21 +264,9 @@ public class Client extends javax.swing.JFrame {
                             .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jButton1)
                             .addComponent(jButton3))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-<<<<<<< HEAD
-<<<<<<< HEAD
-                        .addComponent(canvas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(1, 1, 1))
+                        .addGap(11, 11, 11)
+                        .addComponent(canvas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addComponent(scrollPaneChatt))
-=======
-                        .addComponent(panelVideo, javax.swing.GroupLayout.DEFAULT_SIZE, 470, Short.MAX_VALUE))
-                    .addComponent(scrollPaneChatt, javax.swing.GroupLayout.DEFAULT_SIZE, 524, Short.MAX_VALUE))
->>>>>>> Stylized buttons, some GUI changes
-=======
-                        .addComponent(canvas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(1, 1, 1))
-                    .addComponent(scrollPaneChatt))
->>>>>>> origin/master
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(panelChatt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -416,7 +358,7 @@ public class Client extends javax.swing.JFrame {
         //</editor-fold>
 
         NativeLibrary.addSearchPath("libvlc", "C:/Program Files/VideoLAN/VLC");
-        
+
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
