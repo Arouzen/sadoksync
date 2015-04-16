@@ -31,6 +31,9 @@ public class Client extends javax.swing.JFrame {
     public Client() {
         initComponents();
 
+        StringBuilder location = new StringBuilder(Client.class.getProtectionDomain().getCodeSource().getLocation().toString());
+        location.delete(0,6);
+        NativeLibrary.addSearchPath("libvlc", location.toString());
         //Creation a media player :
         mediaPlayerFactory = new MediaPlayerFactory();
         mediaPlayer = mediaPlayerFactory.newEmbeddedMediaPlayer();
