@@ -8,6 +8,12 @@ package com.sadoksync.sadoksync;
 import com.sun.jna.NativeLibrary;
 import java.awt.Canvas;
 import java.awt.Graphics;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
+import java.awt.Window;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileReader;
@@ -15,11 +21,17 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.JComponent;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.KeyStroke;
 import uk.co.caprica.vlcj.player.MediaPlayerFactory;
 import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
 import uk.co.caprica.vlcj.player.embedded.videosurface.CanvasVideoSurface;
+import uk.co.caprica.vlcj.player.embedded.windows.Win32FullScreenStrategy;
 
 /**
  *
@@ -28,11 +40,16 @@ import uk.co.caprica.vlcj.player.embedded.videosurface.CanvasVideoSurface;
 public class Client extends javax.swing.JFrame {
 
     // Create a media player factory
-
     private MediaPlayerFactory mediaPlayerFactory;
 
     // Create a new media player instance for the run-time platform
-    private EmbeddedMediaPlayer mediaPlayer;
+    public EmbeddedMediaPlayer mediaPlayer;
+
+    // Create video surface
+    public CanvasVideoSurface videoSurface;
+
+    // Create fullscreen player
+    public FullScreenPlayer fullscreenplayer;
 
     public class ImagePanel extends JPanel {
 
@@ -64,15 +81,21 @@ public class Client extends javax.swing.JFrame {
     public Client() {
         initComponents();
 
+        //VLCLibrary init
         StringBuilder location = new StringBuilder(Client.class.getProtectionDomain().getCodeSource().getLocation().toString());
         location.delete(0, 6);
         location.append("VLC/");
         System.out.println(location);
         NativeLibrary.addSearchPath("libvlc", location.toString());
-        //Creation a media player :
+
+        //Fullscreenplayer init
+        fullscreenplayer = new FullScreenPlayer();
+
+        //Media player init
         mediaPlayerFactory = new MediaPlayerFactory();
-        mediaPlayer = mediaPlayerFactory.newEmbeddedMediaPlayer();
-        CanvasVideoSurface videoSurface = mediaPlayerFactory.newVideoSurface(canvas);
+        mediaPlayer = mediaPlayerFactory.newEmbeddedMediaPlayer(new Win32FullScreenStrategy(fullscreenplayer.frame));
+
+        videoSurface = mediaPlayerFactory.newVideoSurface(canvas);
         mediaPlayer.setVideoSurface(videoSurface);
     }
 
@@ -168,6 +191,11 @@ public class Client extends javax.swing.JFrame {
         canvas.setMinimumSize(new java.awt.Dimension(590, 484));
 
         jButton3.setText("fullscreen");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
 
         ButtonPause.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Button_Default.png"))); // NOI18N
         ButtonPause.setMaximumSize(new java.awt.Dimension(85, 40));
@@ -365,6 +393,11 @@ public class Client extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jButton4ActionPerformed
 
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        fullscreenplayer.fullscreen();
+        mediaPlayer.setFullScreen(true);
+    }//GEN-LAST:event_jButton3ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -400,6 +433,67 @@ public class Client extends javax.swing.JFrame {
                 new Client().setVisible(true);
             }
         });
+    }
+
+    class FullScreenPlayer {
+
+        public Canvas canvas;
+        public JFrame frame;
+        public CanvasVideoSurface videoSurface;
+
+        private KeyStroke escapeKeyStroke;
+        private Action escapeAction;
+
+        private FullScreenPlayer() {
+            frame = new JFrame();
+            canvas = new Canvas();
+            frame.setLocation(100, 100);
+
+            GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
+            int width = gd.getDisplayMode().getWidth();
+            int height = gd.getDisplayMode().getHeight();
+            frame.setSize(width, height);
+            canvas.setSize(width, height);
+            frame.add(canvas);
+            escapeKeyStroke = KeyStroke.getKeyStroke("ESCAPE");
+            escapeAction = new AbstractAction() {
+                public void actionPerformed(ActionEvent e) {
+                    stopFullscreen();
+                }
+            };
+            frame.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(escapeKeyStroke, "ESCAPE");
+            frame.getRootPane().getActionMap().put("ESCAPE", escapeAction);
+        }
+
+        private void fullscreen() {
+            this.videoSurface = mediaPlayerFactory.newVideoSurface(this.canvas);
+            frame.setVisible(true);
+            canvas.setVisible(true);
+
+            // Workaround, disable videotrack while swapping surface
+            int vid = mediaPlayer.getVideoTrack();
+            mediaPlayer.setVideoTrack(-1);
+
+            mediaPlayer.setVideoSurface(this.videoSurface);
+            mediaPlayer.attachVideoSurface();
+
+            mediaPlayer.setVideoTrack(vid);
+
+        }
+
+        private void stopFullscreen() {
+            // Workaround, disable videotrack while swapping surface
+            int vid = mediaPlayer.getVideoTrack();
+            mediaPlayer.setVideoTrack(-1);
+
+            mediaPlayer.setVideoSurface(Client.this.videoSurface);
+            mediaPlayer.attachVideoSurface();
+
+            mediaPlayer.setVideoTrack(vid);
+
+            frame.setVisible(false);
+            canvas.setVisible(false);
+        }
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
