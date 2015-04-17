@@ -6,11 +6,16 @@
 package com.sadoksync.sadoksync;
 
 import com.sadoksync.msg.ClientRemoteInterface;
+import java.net.InetAddress;
 import java.net.MalformedURLException;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
+import java.util.Enumeration;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JFrame;
 
 /**
  *
@@ -18,30 +23,21 @@ import java.util.logging.Logger;
  */
 public class Driver {
 
- 
     Peer pr;
     Lobby lb;
     Client cli;
+    Properties gui;
+    ServiceRegistry sr;
     public static void main(String[] args) {
         new Driver();
     }
 
     public Driver() {
-        new ServiceRegistry("Sadoksync");     
+        sr = new ServiceRegistry("Sadoksync");
+        
         pr = new Peer();
-       
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                /*
-                cli = new Client();
-                cli.setVisible(false);
-                pr.setClient(cli);
-                */
-                
-                lb = new Lobby(pr/*, cli*/);
-                lb.setVisible(true);
-                pr.setLobby(lb);    
-            }
-        });
+        pr.run();
+        
+
     }
 }
