@@ -29,15 +29,9 @@ public class Peer {
 
     public Peer() {
 
-        com = new Comunity();
 
-        try {
-            cri = new ClientInterface(nick, com);
-        } catch (RemoteException | MalformedURLException ex) {
-            Logger.getLogger(Peer.class.getName()).log(Level.SEVERE, null, ex);
-        }
     }
-    
+
     void setNick(String me) {
         this.nick = me;
         com.setNick(this.nick);
@@ -45,26 +39,24 @@ public class Peer {
     }
 
     void createComunity(String cname, String topic) {
-        //System.out.println("Peer: createComunity:" + cname + ", " + topic);
         com.create(cname, cri, topic, nick);
     }
 
     void registerComunity(String rhost, String registry, int port) {
-        //System.out.println("Peer: registerComunity: " + registry + ", " + port);
-        //registry = Sadocsynk
-        //port = 1099
-        com.Register(rhost, registry, port);
+        //com.Register(rhost, registry, port);
+
+        RegistryConnecter rc = new RegistryConnecter(rhost, registry, port);
+
+        if (rc.Connect()) {
+            rc.register(com);
+        };
     }
 
     void registerComunity(String rhost, String registry) {
-        //registry = Sadocsynk
-        //port = 1099
         this.registerComunity(rhost, registry, 1099);
     }
 
     void registerComunity() {
-        //registry = Sadocsynk
-        //port = 1099
         this.registerComunity("localhost", "Sadocsynk", 1099);
     }
 
@@ -73,20 +65,25 @@ public class Peer {
         com.setTopic(topic);
     }
 
-    void findAllComunity(String rhost, String service, int port) {
-        //System.out.println("Peer: findAllComunity:" + service);
-        //port is the port where the rmi registry should be located.
-        //registry is the addres to the registry where you whant to look for the service.
+    void findAllComunity(String rhost, String registry, int port) {
+        //com.findAll(rhost, service, port, cri);
 
-        //name is the name of the comunity we are looking for.
-        //registry = Sadocsynk
-        //port = 1099
-        com.findAll(rhost, service, port, cri);
+        RegistryConnecter rc = new RegistryConnecter(rhost, registry, port);
+
+        if (rc.Connect()) {
+            rc.getAll(cri);
+        };
     }
 
-    void joinComunity(String cname, String rhost, String service, int port) {
+    void joinComunity(String cname, String rhost, String registry, int port) {
         //System.out.println("Peer: findComunity:" + cname);
-        com.find(cname, cri, rhost, service, port);
+        //com.find(cname, cri, rhost, service, port);
+
+        RegistryConnecter rc = new RegistryConnecter(rhost, registry, port);
+
+        if (rc.Connect()) {
+            rc.getComunity(cname, cri);
+        };
     }
 
     String getNick() {
@@ -143,13 +140,45 @@ public class Peer {
         return this.myIP;
     }
 
+    String getMyVlc() {
+        return myVlcPath;
+    }
+
     void run() {
+        com = new Comunity();
+
+        try {
+            cri = new ClientInterface(this);
+        } catch (RemoteException | MalformedURLException ex) {
+            Logger.getLogger(Peer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        
         prop = new Properties(this);
         lb = new Lobby(this);
 
         this.setProp(prop);
         this.setLobby(lb);
         this.openProperties();
+    }
+
+    void RegPeer(PeerReg peerReg) {
+        System.out.println("Peer: RegPeer: Registering " + peerReg.getName() + " with comunity");
+        com.RegPeer(peerReg);
+    }
+
+    void setComunityHost(ClientRemoteInterface rri) {
+        System.out.println("Peer: setComunityHost");
+        com.setHost(rri);
+        try {
+            rri.register(this.getNick(), this.getMyCri(), this.getMyIp());
+        } catch (RemoteException ex) {
+            Logger.getLogger(Peer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private ClientRemoteInterface getMyCri() {
+        return cri;
     }
 
 }
