@@ -24,10 +24,14 @@ public class ServiceRegistry {
         try {
             try {
                 LocateRegistry.getRegistry(REGISTRY_PORT_NUMBER).list();
+                System.out.println("Found Registry");
+                
             } catch (RemoteException e) {
                 LocateRegistry.createRegistry(REGISTRY_PORT_NUMBER);
+                System.out.println("Did not find a Registry. Starting one.");
+                Naming.rebind("rmi://localhost/" + sname, new RegistryImplementation(criMap));
             }
-            Naming.rebind("rmi://localhost/" + sname, new RegistryImplementation(criMap));
+            
         } catch (RemoteException | MalformedURLException re) {
             System.out.println(re);
             System.exit(1);

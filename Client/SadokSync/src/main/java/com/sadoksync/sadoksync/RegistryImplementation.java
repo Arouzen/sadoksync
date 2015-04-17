@@ -49,7 +49,7 @@ public class RegistryImplementation extends UnicastRemoteObject implements Regis
 
     @Override
     public void getAllComunitys(ClientRemoteInterface cri) throws RemoteException {
-        //System.out.println("getAllComunity");
+        System.out.println("getAllComunity");
         
         List nameli;
         nameli = criMap.getKeyList();
