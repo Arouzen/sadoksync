@@ -8,28 +8,18 @@ package com.sadoksync.sadoksync;
 import com.sun.jna.NativeLibrary;
 import java.awt.Canvas;
 import java.awt.Graphics;
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
-import java.awt.Window;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.imageio.ImageIO;
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.JComponent;
 import javax.swing.JFileChooser;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.KeyStroke;
 import uk.co.caprica.vlcj.player.MediaPlayerFactory;
 import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
 import uk.co.caprica.vlcj.player.embedded.videosurface.CanvasVideoSurface;
-import uk.co.caprica.vlcj.player.embedded.windows.Win32FullScreenStrategy;
 
 /**
  *
@@ -38,16 +28,11 @@ import uk.co.caprica.vlcj.player.embedded.windows.Win32FullScreenStrategy;
 public class Client extends javax.swing.JFrame {
 
     // Create a media player factory
+
     private MediaPlayerFactory mediaPlayerFactory;
 
     // Create a new media player instance for the run-time platform
-    public EmbeddedMediaPlayer mediaPlayer;
-
-    // Create video surface
-    public CanvasVideoSurface videoSurface;
-
-    // Create fullscreen player
-    public FullScreenPlayer fullscreenplayer;
+    private EmbeddedMediaPlayer mediaPlayer;
 
     public class ImagePanel extends JPanel {
 
@@ -79,19 +64,15 @@ public class Client extends javax.swing.JFrame {
     public Client() {
         initComponents();
 
-        //VLCLibrary init
         StringBuilder location = new StringBuilder(Client.class.getProtectionDomain().getCodeSource().getLocation().toString());
         location.delete(0, 6);
+        location.append("VLC/");
+        System.out.println(location);
         NativeLibrary.addSearchPath("libvlc", location.toString());
-
-        //Fullscreenplayer init
-        fullscreenplayer = new FullScreenPlayer();
-
-        //Media player init
+        //Creation a media player :
         mediaPlayerFactory = new MediaPlayerFactory();
-        mediaPlayer = mediaPlayerFactory.newEmbeddedMediaPlayer(new Win32FullScreenStrategy(fullscreenplayer.frame));
-
-        videoSurface = mediaPlayerFactory.newVideoSurface(canvas);
+        mediaPlayer = mediaPlayerFactory.newEmbeddedMediaPlayer();
+        CanvasVideoSurface videoSurface = mediaPlayerFactory.newVideoSurface(canvas);
         mediaPlayer.setVideoSurface(videoSurface);
     }
 
@@ -118,6 +99,7 @@ public class Client extends javax.swing.JFrame {
         jButton3 = new javax.swing.JButton();
         ButtonPause = new javax.swing.JButton();
         ButtonStop = new javax.swing.JButton();
+        jButton4 = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         Open = new javax.swing.JMenuItem();
@@ -171,7 +153,12 @@ public class Client extends javax.swing.JFrame {
             }
         });
 
-        buttonPlay.setText("play");
+        buttonPlay.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Button_play_Default.png"))); // NOI18N
+        buttonPlay.setMaximumSize(new java.awt.Dimension(85, 40));
+        buttonPlay.setMinimumSize(new java.awt.Dimension(85, 40));
+        buttonPlay.setPreferredSize(new java.awt.Dimension(85, 40));
+        buttonPlay.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/Button_play_Clicked.png"))); // NOI18N
+        buttonPlay.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/Button_play_Default1.png"))); // NOI18N
         buttonPlay.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 buttonPlayActionPerformed(evt);
@@ -181,11 +168,6 @@ public class Client extends javax.swing.JFrame {
         canvas.setMinimumSize(new java.awt.Dimension(590, 484));
 
         jButton3.setText("fullscreen");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
-            }
-        });
 
         ButtonPause.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Button_Default.png"))); // NOI18N
         ButtonPause.setMaximumSize(new java.awt.Dimension(85, 40));
@@ -199,10 +181,22 @@ public class Client extends javax.swing.JFrame {
             }
         });
 
-        ButtonStop.setText("Stop");
+        ButtonStop.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Button_Stop_default.png"))); // NOI18N
+        ButtonStop.setMaximumSize(new java.awt.Dimension(85, 40));
+        ButtonStop.setMinimumSize(new java.awt.Dimension(85, 40));
+        ButtonStop.setPreferredSize(new java.awt.Dimension(85, 40));
+        ButtonStop.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/Button_Stop_Hover.png"))); // NOI18N
+        ButtonStop.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/Button_Stop_Click.png"))); // NOI18N
         ButtonStop.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 ButtonStopActionPerformed(evt);
+            }
+        });
+
+        jButton4.setText("jButton4");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
             }
         });
 
@@ -269,12 +263,14 @@ public class Client extends javax.swing.JFrame {
                         .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(textFileLocation)
-                        .addGap(55, 55, 55)
-                        .addComponent(ButtonStop)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(ButtonStop, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(ButtonPause, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(buttonPlay))
+                        .addComponent(buttonPlay, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(canvas, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -292,7 +288,7 @@ public class Client extends javax.swing.JFrame {
                             .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jButton1)
                             .addComponent(jButton3))
-                        .addGap(11, 11, 11)
+                        .addGap(19, 19, 19)
                         .addComponent(canvas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addComponent(scrollPaneChatt))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -300,9 +296,10 @@ public class Client extends javax.swing.JFrame {
                     .addComponent(panelChatt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(textFileLocation, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(buttonPlay)
+                        .addComponent(buttonPlay, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(ButtonPause, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(ButtonStop)))
+                        .addComponent(ButtonStop, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jButton4)))
                 .addContainerGap())
         );
 
@@ -358,10 +355,15 @@ public class Client extends javax.swing.JFrame {
         mediaPlayer.stop();
     }//GEN-LAST:event_ButtonStopActionPerformed
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        fullscreenplayer.fullscreen();
-        mediaPlayer.setFullScreen(true);
-    }//GEN-LAST:event_jButton3ActionPerformed
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        String[] arbeit = new String[1];
+        arbeit[0] = textFileLocation.getText();
+        try {
+            StreamRtsp.main(arbeit);
+        } catch (Exception ex) {
+            System.out.println("No please");
+        }
+    }//GEN-LAST:event_jButton4ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -400,67 +402,6 @@ public class Client extends javax.swing.JFrame {
         });
     }
 
-    class FullScreenPlayer {
-
-        public Canvas canvas;
-        public JFrame frame;
-        public CanvasVideoSurface videoSurface;
-
-        private KeyStroke escapeKeyStroke;
-        private Action escapeAction;
-
-        private FullScreenPlayer() {
-            frame = new JFrame();
-            canvas = new Canvas();
-            frame.setLocation(100, 100);
-
-            GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
-            int width = gd.getDisplayMode().getWidth();
-            int height = gd.getDisplayMode().getHeight();
-            frame.setSize(width, height);
-            canvas.setSize(width, height);
-            frame.add(canvas);
-            escapeKeyStroke = KeyStroke.getKeyStroke("ESCAPE");
-            escapeAction = new AbstractAction() {
-                public void actionPerformed(ActionEvent e) {
-                    stopFullscreen();
-                }
-            };
-            frame.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(escapeKeyStroke, "ESCAPE");
-            frame.getRootPane().getActionMap().put("ESCAPE", escapeAction);
-        }
-
-        private void fullscreen() {
-            this.videoSurface = mediaPlayerFactory.newVideoSurface(this.canvas);
-            frame.setVisible(true);
-            canvas.setVisible(true);
-
-            // Workaround, disable videotrack while swapping surface
-            int vid = mediaPlayer.getVideoTrack();
-            mediaPlayer.setVideoTrack(-1);
-
-            mediaPlayer.setVideoSurface(this.videoSurface);
-            mediaPlayer.attachVideoSurface();
-
-            mediaPlayer.setVideoTrack(vid);
-
-        }
-
-        private void stopFullscreen() {
-            // Workaround, disable videotrack while swapping surface
-            int vid = mediaPlayer.getVideoTrack();
-            mediaPlayer.setVideoTrack(-1);
-
-            mediaPlayer.setVideoSurface(Client.this.videoSurface);
-            mediaPlayer.attachVideoSurface();
-
-            mediaPlayer.setVideoTrack(vid);
-
-            frame.setVisible(false);
-            canvas.setVisible(false);
-        }
-    }
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton ButtonPause;
     private javax.swing.JButton ButtonStop;
@@ -472,6 +413,7 @@ public class Client extends javax.swing.JFrame {
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
