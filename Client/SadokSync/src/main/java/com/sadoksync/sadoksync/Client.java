@@ -64,6 +64,8 @@ public class Client extends javax.swing.JFrame {
 
         StringBuilder location = new StringBuilder(Client.class.getProtectionDomain().getCodeSource().getLocation().toString());
         location.delete(0, 6);
+        location.append("VLC/");
+        System.out.println(location);
         NativeLibrary.addSearchPath("libvlc", location.toString());
         //Creation a media player :
         mediaPlayerFactory = new MediaPlayerFactory();
