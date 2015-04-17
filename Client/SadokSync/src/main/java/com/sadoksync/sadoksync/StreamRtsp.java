@@ -39,8 +39,9 @@ public class StreamRtsp {
         NativeLibrary.addSearchPath("libvlc", filePath.toString());
         
         
-        String media = "C:\\Users\\Skogsfaktor\\Downloads\\Video\\Risitas.mp4";
-        String options = formatRtspStream("127.0.0.1", 5555, "demo");
+        String media = args[0];
+        //No ip address here, only an @. 
+        String options = formatRtspStream("@", 5555, "demo");
         System.out.println("Streaming '" + media + "' to '" + options + "'");
         MediaPlayerFactory mediaPlayerFactory = new MediaPlayerFactory(args);
         HeadlessMediaPlayer mediaPlayer = mediaPlayerFactory.newHeadlessMediaPlayer();
