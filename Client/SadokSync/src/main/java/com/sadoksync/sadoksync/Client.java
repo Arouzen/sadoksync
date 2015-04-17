@@ -7,6 +7,8 @@ import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.event.ActionEvent;
 import java.io.File;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JComponent;
@@ -357,13 +359,7 @@ public class Client extends javax.swing.JFrame {
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         if (!textFileLocation.getText().isEmpty()) {
-            String[] arbeit = new String[1];
-            arbeit[0] = textFileLocation.getText();
-            try {
-                StreamRtsp.main(arbeit);
-            } catch (Exception ex) {
-                System.out.println("No please");
-            }
+            startStreamingServer(textFileLocation.getText());
         }
     }//GEN-LAST:event_jButton4ActionPerformed
 
@@ -377,6 +373,26 @@ public class Client extends javax.swing.JFrame {
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton2ActionPerformed
+    public void startStreamingServer(String url) {
+        final String[] arbeit = new String[1];
+        arbeit[0] = url;
+        try {
+            Thread streamingServer = new Thread() {
+                public void run() {
+                    try {
+                        StreamRtsp.main(arbeit);
+                    } catch (InterruptedException v) {
+                        v.printStackTrace();
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            };
+            streamingServer.start();
+        } catch (Exception ex) {
+            System.out.println("No please");
+        }
+    }
 
     /**
      * @param args the command line arguments
