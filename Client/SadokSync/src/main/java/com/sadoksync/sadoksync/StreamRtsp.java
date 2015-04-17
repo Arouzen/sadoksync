@@ -31,7 +31,7 @@ import uk.co.caprica.vlcj.player.headless.HeadlessMediaPlayer;
 public class StreamRtsp {
 
     public static void main(String[] args) throws Exception {
-        
+        //Help VLCJ find VLC. Please use 32bit VLC. 
         StringBuilder filePath = new StringBuilder();
         filePath.append(new File("").getAbsolutePath());
         filePath.append("\\target\\VLC");
