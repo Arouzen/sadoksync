@@ -29,7 +29,6 @@ public class Peer {
 
     public Peer() {
 
-
     }
 
     void setNick(String me) {
@@ -43,6 +42,9 @@ public class Peer {
     }
 
     void registerComunity(String rhost, String registry, int port) {
+        
+        //call client to start streaming
+         cli.startStreamingServer("C:\\pontus\\studier\\ID1003ProjIT\\sample\\small.mp4");
         //com.Register(rhost, registry, port);
 
         RegistryConnecter rc = new RegistryConnecter(rhost, registry, port);
@@ -53,7 +55,11 @@ public class Peer {
     }
 
     void registerComunity(String rhost, String registry) {
+
+        System.out.println("Peer: Registreara Comunity");
         this.registerComunity(rhost, registry, 1099);
+        //Starta Stream i tråd
+
     }
 
     void registerComunity() {
@@ -115,10 +121,11 @@ public class Peer {
     void openLobby() {
         final Lobby flb = lb;
         final Properties fprop = prop;
+        final Client fcli = cli;
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 flb.setVisible(true);
-                //cli.setVisible(false);
+                fcli.setVisible(false);
                 fprop.setVisible(false);
             }
         });
@@ -127,11 +134,25 @@ public class Peer {
     void openProperties() {
         final Lobby flb = lb;
         final Properties fprop = prop;
+        final Client fcli = cli;
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 flb.setVisible(false);
-                //cli.setVisible(false);
+                fcli.setVisible(false);
                 fprop.setVisible(true);
+            }
+        });
+    }
+
+    void openClient() {
+        final Lobby flb = lb;
+        final Properties fprop = prop;
+        final Client fcli = cli;
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                flb.setVisible(false);
+                fcli.setVisible(true);
+                fprop.setVisible(false);
             }
         });
     }
@@ -152,8 +173,8 @@ public class Peer {
         } catch (RemoteException | MalformedURLException ex) {
             Logger.getLogger(Peer.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
-        
+
+        cli = new Client(this);
         prop = new Properties(this);
         lb = new Lobby(this);
 
@@ -169,16 +190,27 @@ public class Peer {
 
     void setComunityHost(ClientRemoteInterface rri) {
         System.out.println("Peer: setComunityHost");
+        this.openClient();
         com.setHost(rri);
         try {
             rri.register(this.getNick(), this.getMyCri(), this.getMyIp());
         } catch (RemoteException ex) {
             Logger.getLogger(Peer.class.getName()).log(Level.SEVERE, null, ex);
         }
+
     }
 
     private ClientRemoteInterface getMyCri() {
         return cri;
+    }
+
+    void setMedia(String myIp) {
+        if (myIp.equals(this.getMyIp())) {
+            cli.setMedia("127.0.0.1");
+        } else {
+            cli.setMedia(myIp);
+        }
+
     }
 
 }

@@ -24,8 +24,13 @@ public class ActionCreateComunity implements Runnable {
     
     @Override
     public void run() {
+        System.out.println("ActionCreateComunity: Creating Comunity " + cname);
         pr.createComunity(cname, topic);
+        
+        System.out.println("ActionCreateComunity: Registring Comunity " + cname);
         pr.registerComunity(addr,"Sadoksync",1099);
+        
+        System.out.println("ActionCreateComunity: Joining Comunity " + cname);
         pr.joinComunity(cname, addr, "Sadoksync", 1099);
     }
 }
