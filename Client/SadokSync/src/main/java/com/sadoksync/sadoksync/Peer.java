@@ -44,7 +44,7 @@ public class Peer {
     void registerComunity(String rhost, String registry, int port) {
         
         //call client to start streaming
-         cli.startStreamingServer("C:\\pontus\\studier\\ID1003ProjIT\\sample\\small.mp4");
+         cli.startStreamingServer("C:\\pontus\\studier\\ID1003ProjIT\\sample\\test.mp4");
         //com.Register(rhost, registry, port);
 
         RegistryConnecter rc = new RegistryConnecter(rhost, registry, port);
