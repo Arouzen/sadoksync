@@ -38,7 +38,7 @@ public class Client extends javax.swing.JFrame {
     /**
      * Creates new form Client
      */
-    public Client(String VLCPath) {
+    public Client() {
         initComponents();
 
         //VLCLibrary init
@@ -399,7 +399,7 @@ public class Client extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
-                new Client("").setVisible(true);
+                new Client().setVisible(true);
             }
         });
     }
