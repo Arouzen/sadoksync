@@ -25,6 +25,7 @@ import uk.co.caprica.vlcj.player.embedded.windows.Win32FullScreenStrategy;
  */
 public class Client extends javax.swing.JFrame {
 
+    private final Peer pr;
     // Create a media player factory
     private final MediaPlayerFactory mediaPlayerFactory;
 
@@ -40,7 +41,8 @@ public class Client extends javax.swing.JFrame {
     /**
      * Creates new form Client
      */
-    public Client() {
+    public Client(Peer pr) {
+        this.pr = pr;
         initComponents();
 
         //VLCLibrary init
@@ -416,9 +418,19 @@ public class Client extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
-                new Client().setVisible(true);
+                new Client(new Peer()).setVisible(true);
             }
         });
+    }
+
+    void setMedia(String string) {
+
+        final String mediaURL = "rtsp://"+ string + ":5555/demo";
+
+        //mediaPlayer.setPlaySubItems(true);
+     
+        mediaPlayer.playMedia(mediaURL);
+
     }
 
     class FullScreenPlayer {

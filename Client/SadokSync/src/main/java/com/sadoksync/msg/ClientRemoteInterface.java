@@ -20,6 +20,6 @@ public interface ClientRemoteInterface extends Remote {
     void ping(ClientRemoteInterface rri) throws RemoteException;
     void setComunity(ClientRemoteInterface rri) throws RemoteException;
     void setComunityList(List nameli)throws RemoteException;
-
+    void setStream(String myIp)throws RemoteException;
 
 }

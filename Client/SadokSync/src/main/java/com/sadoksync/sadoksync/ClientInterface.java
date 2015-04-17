@@ -34,8 +34,10 @@ public class ClientInterface extends UnicastRemoteObject implements ClientRemote
     }
 
     @Override
-    public void register(String name, ClientRemoteInterface rri, String ipAddr) throws RemoteException {
-        pr.RegPeer(new PeerReg(name, rri, ipAddr));
+    public void register(String name, ClientRemoteInterface cri, String ipAddr) throws RemoteException {
+        pr.RegPeer(new PeerReg(name, cri, ipAddr));
+        //Respond with myIP
+        cri.setStream(pr.getMyIp());
     }
 
     @Override
@@ -80,6 +82,11 @@ public class ClientInterface extends UnicastRemoteObject implements ClientRemote
     
     void setPeer(Peer pr){
         this.pr = pr;
+    }
+
+    @Override
+    public void setStream(String myIp) throws RemoteException {
+        pr.setMedia(myIp);
     }
 
 }
