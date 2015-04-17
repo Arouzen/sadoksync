@@ -1,4 +1,7 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> origin/master
 package com.sadoksync.sadoksync;
 
 import com.sun.jna.NativeLibrary;
@@ -498,6 +501,7 @@ public class Client extends javax.swing.JFrame {
     private javax.swing.JTextArea textarea;
     // End of variables declaration//GEN-END:variables
 }
+<<<<<<< HEAD
 =======
 package com.sadoksync.sadoksync;
 
@@ -1000,3 +1004,5 @@ public class Client extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 }
 >>>>>>> Changed Bundle
+=======
+>>>>>>> origin/master
