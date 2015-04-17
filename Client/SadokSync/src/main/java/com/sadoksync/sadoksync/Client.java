@@ -1,32 +1,16 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.sadoksync.sadoksync;
 
 import com.sun.jna.NativeLibrary;
 import java.awt.Canvas;
-import java.awt.Graphics;
+import java.awt.FileDialog;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
-import java.awt.Window;
 import java.awt.event.ActionEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JComponent;
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
-import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import uk.co.caprica.vlcj.player.MediaPlayerFactory;
 import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
@@ -40,7 +24,7 @@ import uk.co.caprica.vlcj.player.embedded.windows.Win32FullScreenStrategy;
 public class Client extends javax.swing.JFrame {
 
     // Create a media player factory
-    private MediaPlayerFactory mediaPlayerFactory;
+    private final MediaPlayerFactory mediaPlayerFactory;
 
     // Create a new media player instance for the run-time platform
     public EmbeddedMediaPlayer mediaPlayer;
@@ -49,31 +33,7 @@ public class Client extends javax.swing.JFrame {
     public CanvasVideoSurface videoSurface;
 
     // Create fullscreen player
-    public FullScreenPlayer fullscreenplayer;
-
-    public class ImagePanel extends JPanel {
-
-        private BufferedImage image;
-
-        public ImagePanel() {
-            try {
-                image = ImageIO.read(new File("C:\\Users\\ibo\\Pictures\\wallpaper-2774743"));
-            } catch (IOException ex) {
-                // handle exception...
-            }
-        }
-
-        /**
-         *
-         * @param g
-         */
-        @Override
-        protected void paintComponent(Graphics g) {
-            super.paintComponent(g);
-            g.drawImage(image, 0, 0, null); // see javadoc for more info on the parameters            
-        }
-
-    }
+    private final FullScreenPlayer fullscreenplayer;
 
     /**
      * Creates new form Client
@@ -123,6 +83,8 @@ public class Client extends javax.swing.JFrame {
         ButtonPause = new javax.swing.JButton();
         ButtonStop = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
+        jButton5 = new javax.swing.JButton();
+        jButton6 = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         Open = new javax.swing.JMenuItem();
@@ -228,12 +190,11 @@ public class Client extends javax.swing.JFrame {
             }
         });
 
+        jButton5.setText("Show Users");
+
+        jButton6.setText("Show Chat");
+
         jMenu1.setText("File");
-        jMenu1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenu1ActionPerformed(evt);
-            }
-        });
 
         Open.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.CTRL_MASK));
         Open.setText("Open");
@@ -284,10 +245,10 @@ public class Client extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 404, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(textFileLocation)
@@ -301,9 +262,13 @@ public class Client extends javax.swing.JFrame {
                         .addComponent(buttonPlay, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(canvas, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(scrollPaneChatt, javax.swing.GroupLayout.DEFAULT_SIZE, 281, Short.MAX_VALUE)
-                    .addComponent(panelChatt, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(scrollPaneChatt, javax.swing.GroupLayout.PREFERRED_SIZE, 281, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(panelChatt, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jButton6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -318,7 +283,12 @@ public class Client extends javax.swing.JFrame {
                             .addComponent(jButton3))
                         .addGap(19, 19, 19)
                         .addComponent(canvas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addComponent(scrollPaneChatt))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jButton5)
+                            .addComponent(jButton6))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(scrollPaneChatt)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(panelChatt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -335,34 +305,18 @@ public class Client extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void OpenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_OpenActionPerformed
-       // int returnVal = fileChooser.showOpenDialog(this);
-       // if (returnVal == JFileChooser.APPROVE_OPTION) {
-         //   File file = fileChooser.getSelectedFile();
-           // textFileLocation.setText(file.getAbsolutePath());
-        //} else {
-          //  System.out.println("File access cancelled by user.");
-       // }
-        new java.awt.FileDialog((java.awt.Frame) null).setVisible(true);
+        FileDialog fileDialog;
+        fileDialog = new FileDialog(this);
+        fileDialog.setVisible(true);
+        File[] returnVal = fileDialog.getFiles();
+        if (returnVal[0] != null) {
+            textFileLocation.setText(returnVal[0].getAbsolutePath());
+        }
     }//GEN-LAST:event_OpenActionPerformed
 
     private void ExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ExitActionPerformed
         System.exit(0);
     }//GEN-LAST:event_ExitActionPerformed
-
-    private void jMenu1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenu1ActionPerformed
-        int returnVal = fileChooser.showOpenDialog(this);
-        if (returnVal == JFileChooser.APPROVE_OPTION) {
-            File file = fileChooser.getSelectedFile();
-            try {
-                // What to do with the file, e.g. display it in a TextArea
-                textarea.read(new FileReader(file.getAbsolutePath()), null);
-            } catch (IOException ex) {
-                System.out.println("problem accessing file" + file.getAbsolutePath());
-            }
-        } else {
-            System.out.println("File access cancelled by user.");
-        }
-    }//GEN-LAST:event_jMenu1ActionPerformed
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
         new HelpContentsGUI().setVisible(true);
@@ -373,11 +327,17 @@ public class Client extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void buttonPlayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonPlayActionPerformed
-        mediaPlayer.playMedia(textFileLocation.getText());
+        if (!textFileLocation.getText().isEmpty()) {
+            mediaPlayer.playMedia(textFileLocation.getText());
+        }
     }//GEN-LAST:event_buttonPlayActionPerformed
 
     private void ButtonPauseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonPauseActionPerformed
-        mediaPlayer.pause();
+        if (mediaPlayer.isPlaying()) {
+            mediaPlayer.pause();
+        } else {
+            mediaPlayer.play();
+        }
     }//GEN-LAST:event_ButtonPauseActionPerformed
 
     private void ButtonStopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonStopActionPerformed
@@ -385,18 +345,22 @@ public class Client extends javax.swing.JFrame {
     }//GEN-LAST:event_ButtonStopActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        String[] arbeit = new String[1];
-        arbeit[0] = textFileLocation.getText();
-        try {
-            StreamRtsp.main(arbeit);
-        } catch (Exception ex) {
-            System.out.println("No please");
+        if (!textFileLocation.getText().isEmpty()) {
+            String[] arbeit = new String[1];
+            arbeit[0] = textFileLocation.getText();
+            try {
+                StreamRtsp.main(arbeit);
+            } catch (Exception ex) {
+                System.out.println("No please");
+            }
         }
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        fullscreenplayer.fullscreen();
-        mediaPlayer.setFullScreen(true);
+        if (mediaPlayer.isPlaying()) {
+            fullscreenplayer.fullscreen();
+            mediaPlayer.setFullScreen(true);
+        }
     }//GEN-LAST:event_jButton3ActionPerformed
 
     /**
@@ -430,6 +394,7 @@ public class Client extends javax.swing.JFrame {
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
+            @Override
             public void run() {
                 new Client().setVisible(true);
             }
@@ -442,8 +407,8 @@ public class Client extends javax.swing.JFrame {
         public JFrame frame;
         public CanvasVideoSurface videoSurface;
 
-        private KeyStroke escapeKeyStroke;
-        private Action escapeAction;
+        private final KeyStroke escapeKeyStroke;
+        private final Action escapeAction;
 
         private FullScreenPlayer() {
             frame = new JFrame();
@@ -478,6 +443,7 @@ public class Client extends javax.swing.JFrame {
             mediaPlayer.setVideoSurface(this.videoSurface);
             mediaPlayer.attachVideoSurface();
 
+            // Put videotrack back
             mediaPlayer.setVideoTrack(vid);
 
         }
@@ -490,6 +456,7 @@ public class Client extends javax.swing.JFrame {
             mediaPlayer.setVideoSurface(Client.this.videoSurface);
             mediaPlayer.attachVideoSurface();
 
+            // Put videotrack back
             mediaPlayer.setVideoTrack(vid);
 
             frame.setVisible(false);
@@ -509,6 +476,8 @@ public class Client extends javax.swing.JFrame {
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
+    private javax.swing.JButton jButton5;
+    private javax.swing.JButton jButton6;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
