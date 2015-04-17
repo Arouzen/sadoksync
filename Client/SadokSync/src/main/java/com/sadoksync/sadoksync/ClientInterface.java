@@ -25,19 +25,17 @@ import javax.swing.ListModel;
 public class ClientInterface extends UnicastRemoteObject implements ClientRemoteInterface {
 
     String nick;
-    Comunity com;
     Lobby lb;
     Client cli;
     Peer pr;
     
-    public ClientInterface(String nick, Comunity com) throws RemoteException, MalformedURLException {
-        this.com = com;
-        this.nick = nick;
+    public ClientInterface(Peer pr) throws RemoteException, MalformedURLException {
+        this.pr = pr;
     }
 
     @Override
     public void register(String name, ClientRemoteInterface rri, String ipAddr) throws RemoteException {
-        com.RegPeer(name, new PeerReg(name, rri, ipAddr));
+        pr.RegPeer(new PeerReg(name, rri, ipAddr));
     }
 
     @Override
@@ -47,15 +45,9 @@ public class ClientInterface extends UnicastRemoteObject implements ClientRemote
 
     @Override
     public void setComunity(ClientRemoteInterface rri) throws RemoteException {
-        com.setHost(rri);
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                /* Enable when client is working
-                 cli.setVisible(true);
-                 lb.setVisible(false); //???
-                 */
-            }
-        });
+        pr.setComunityHost(rri);
+        //Show the client
+        //pr.openClient();
 
     }
 
