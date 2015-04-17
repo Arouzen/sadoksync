@@ -335,13 +335,14 @@ public class Client extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void OpenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_OpenActionPerformed
-        int returnVal = fileChooser.showOpenDialog(this);
-        if (returnVal == JFileChooser.APPROVE_OPTION) {
-            File file = fileChooser.getSelectedFile();
-            textFileLocation.setText(file.getAbsolutePath());
-        } else {
-            System.out.println("File access cancelled by user.");
-        }
+       // int returnVal = fileChooser.showOpenDialog(this);
+       // if (returnVal == JFileChooser.APPROVE_OPTION) {
+         //   File file = fileChooser.getSelectedFile();
+           // textFileLocation.setText(file.getAbsolutePath());
+        //} else {
+          //  System.out.println("File access cancelled by user.");
+       // }
+        new java.awt.FileDialog((java.awt.Frame) null).setVisible(true);
     }//GEN-LAST:event_OpenActionPerformed
 
     private void ExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ExitActionPerformed
