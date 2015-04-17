@@ -24,6 +24,8 @@ public class ActionApplyProperties implements Runnable {
         pr.setMyIP(ipAddr);
         pr.setMyVlcPath(vlcpath);
         pr.openLobby();
+        
+        pr.setMySR(new ServiceRegistry("Sadoksync", ipAddr));
     }
     
 }

@@ -39,6 +39,7 @@ public class Properties extends JFrame {
     JTextField jTextFieldPath;
     JScrollPane jScrollPaneIP;
     JPanel jp;
+
     public Properties(Peer pr) {
         this.pr = pr;
         jp = new JPanel();
@@ -50,7 +51,7 @@ public class Properties extends JFrame {
         jp.add(createVLC());
         jp.add(createIP());
         jp.add(createApply());
-        
+
         setContentPane(jp);
         pack();
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -69,18 +70,17 @@ public class Properties extends JFrame {
         pVLC.setBorder(
                 new TitledBorder(new EtchedBorder(), "VLC"));
 
-
         jLabelPath = new javax.swing.JLabel();
         jTextFieldPath = new javax.swing.JTextField(20);
         jTextFieldPath.setText("C:\\Program Files (x86)\\VideoLAN\\VLC");
-        
+
         //jLabelPath.setFont(new java.awt.Font("Tahoma", 0, 48)); // NOI18N
         jLabelPath.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabelPath.setText("Set your path to 32 bit vlc: ");
-        
+
         pVLC.add(jLabelPath);
         pVLC.add(jTextFieldPath);
-        
+
         return pVLC;
     }
 
@@ -89,11 +89,10 @@ public class Properties extends JFrame {
         pIP.setBorder(
                 new TitledBorder(new EtchedBorder(), "IP"));
 
-
         jLabelIP = new javax.swing.JLabel();
         jListIP = new javax.swing.JList();
         jScrollPaneIP = new javax.swing.JScrollPane();
-       //jLabelIP.setFont(new java.awt.Font("Tahoma", 0, 48)); // NOI18N
+        //jLabelIP.setFont(new java.awt.Font("Tahoma", 0, 48)); // NOI18N
         jLabelIP.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabelIP.setText("Pick your IP to connect to: ");
         //Get the ip of the client;
@@ -130,11 +129,11 @@ public class Properties extends JFrame {
             }
         });
         jScrollPaneIP.setViewportView(jListIP);
-        
+
         pIP.add(jLabelIP);
         //pIP.add(jListIP);
         pIP.add(jScrollPaneIP);
-        
+
         return pIP;
     }
 
@@ -142,8 +141,6 @@ public class Properties extends JFrame {
         JPanel pApply = new JPanel();
         pApply.setBorder(
                 new TitledBorder(new EtchedBorder(), "VLC"));
-        
-
 
         jButtonApply = new javax.swing.JButton();
         jButtonApply.setText("Apply");
@@ -153,7 +150,7 @@ public class Properties extends JFrame {
             }
 
         });
-        
+
         pApply.add(jButtonApply);
         return pApply;
     }

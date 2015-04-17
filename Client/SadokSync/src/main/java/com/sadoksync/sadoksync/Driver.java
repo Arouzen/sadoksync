@@ -33,7 +33,7 @@ public class Driver {
     }
 
     public Driver() {
-        sr = new ServiceRegistry("Sadoksync");
+        
         
         pr = new Peer();
         pr.run();

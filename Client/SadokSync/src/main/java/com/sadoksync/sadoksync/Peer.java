@@ -16,7 +16,9 @@ import java.util.logging.Logger;
  * @author Pontus
  */
 public class Peer {
-
+    ServiceRegistry sr; 
+    
+    
     Comunity com;
     ClientInterface cri;
     String nick;
@@ -211,6 +213,10 @@ public class Peer {
             cli.setMedia(myIp);
         }
 
+    }
+
+    void setMySR(ServiceRegistry serviceRegistry) {
+        sr = serviceRegistry;
     }
 
 }

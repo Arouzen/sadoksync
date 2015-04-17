@@ -18,9 +18,9 @@ public class ServiceRegistry {
     SynchReg criMap;
     private static final int REGISTRY_PORT_NUMBER = 1099;
 
-    public ServiceRegistry(String sname) {
+    public ServiceRegistry(String sname,String ipAddr) {
         criMap = new SynchReg();
-        
+        System.setProperty("java.rmi.server.hostname",ipAddr);
         try {
             try {
                 LocateRegistry.getRegistry(REGISTRY_PORT_NUMBER).list();
@@ -36,10 +36,5 @@ public class ServiceRegistry {
             System.out.println(re);
             System.exit(1);
         }
-    }
-
-    public static void main(String[] args) {
-        new ServiceRegistry("Sadoksync");
-
     }
 }
