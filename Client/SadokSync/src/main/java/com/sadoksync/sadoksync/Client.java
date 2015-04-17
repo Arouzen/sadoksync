@@ -393,7 +393,7 @@ public class Client extends javax.swing.JFrame {
         }
         //</editor-fold>
 
-        NativeLibrary.addSearchPath("libvlc", "C:\\Program Files (x86)\\VideoLAN\\VLC");
+        //NativeLibrary.addSearchPath("libvlc", "C:\\Program Files (x86)\\VideoLAN\\VLC");
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
