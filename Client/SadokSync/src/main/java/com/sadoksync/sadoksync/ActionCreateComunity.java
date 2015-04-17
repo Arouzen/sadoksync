@@ -5,6 +5,9 @@
  */
 package com.sadoksync.sadoksync;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author Pontus
@@ -29,7 +32,11 @@ public class ActionCreateComunity implements Runnable {
         
         System.out.println("ActionCreateComunity: Registring Comunity " + cname);
         pr.registerComunity(addr,"Sadoksync",1099);
-        
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(ActionCreateComunity.class.getName()).log(Level.SEVERE, null, ex);
+        }
         System.out.println("ActionCreateComunity: Joining Comunity " + cname);
         pr.joinComunity(cname, addr, "Sadoksync", 1099);
     }
