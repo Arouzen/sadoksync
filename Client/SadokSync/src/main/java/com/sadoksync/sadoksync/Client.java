@@ -38,7 +38,7 @@ public class Client extends javax.swing.JFrame {
     /**
      * Creates new form Client
      */
-    public Client() {
+    public Client(String VLCPath) {
         initComponents();
 
         //VLCLibrary init
@@ -276,8 +276,7 @@ public class Client extends javax.swing.JFrame {
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jButton6)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButton5)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
+                                .addComponent(jButton5)))))
                 .addGap(0, 0, 0))
         );
         layout.setVerticalGroup(
@@ -393,13 +392,14 @@ public class Client extends javax.swing.JFrame {
         }
         //</editor-fold>
 
-        NativeLibrary.addSearchPath("libvlc", "C:\\Program Files (x86)\\VideoLAN\\VLC");
+        //VLC now included in project instead
+        //NativeLibrary.addSearchPath("libvlc", "C:\\Program Files (x86)\\VideoLAN\\VLC");
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {
-                new Client().setVisible(true);
+                new Client("").setVisible(true);
             }
         });
     }
