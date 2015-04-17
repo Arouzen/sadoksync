@@ -22,7 +22,7 @@ public class ClientRtsp {
     public static void main(String[] args) {
         StringBuilder filePath = new StringBuilder();
         filePath.append(new File("").getAbsolutePath());
-        filePath.append("\\target\\VLC64");
+        filePath.append("\\target\\VLC");
         System.out.println(filePath);
         NativeLibrary.addSearchPath(RuntimeUtil.getLibVlcLibraryName(), filePath.toString());
 
@@ -32,8 +32,8 @@ public class ClientRtsp {
         frame.setSize(1050, 600);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setVisible(true);
-
-        mediaPlayerComponent.getMediaPlayer().playMedia("rtp://@127.0.0.1:5555/demo");
+        //No @ before the ip address, otherwise it wont work. 
+        mediaPlayerComponent.getMediaPlayer().playMedia("rtsp://130.229.149.43:5555/stream");
 
     }
 //        String options = formatRtspStream("127.0.0.1", 5555, "demo");

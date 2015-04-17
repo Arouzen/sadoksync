@@ -28,20 +28,21 @@ public class ClientInterface extends UnicastRemoteObject implements ClientRemote
     Comunity com;
     Lobby lb;
     Client cli;
-
+    Peer pr;
+    
     public ClientInterface(String nick, Comunity com) throws RemoteException, MalformedURLException {
         this.com = com;
         this.nick = nick;
     }
 
     @Override
-    public void register(String name, ClientRemoteInterface rri) throws RemoteException {
-        com.RegPeer(name, new PeerReg(name, rri));
+    public void register(String name, ClientRemoteInterface rri, String ipAddr) throws RemoteException {
+        com.RegPeer(name, new PeerReg(name, rri, ipAddr));
     }
 
     @Override
     public void ping(ClientRemoteInterface rri) throws RemoteException {
-        rri.register(nick, this);
+        rri.register(nick, this, pr.getMyIp());
     }
 
     @Override
@@ -83,6 +84,10 @@ public class ClientInterface extends UnicastRemoteObject implements ClientRemote
 
     void setClient(Client cli) {
         this.cli = cli;
+    }
+    
+    void setPeer(Peer pr){
+        this.pr = pr;
     }
 
 }

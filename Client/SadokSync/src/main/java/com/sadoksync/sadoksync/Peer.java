@@ -22,6 +22,11 @@ public class Peer {
     String nick;
     Lobby lb;
     Client cli;
+    Properties prop;
+
+    String myVlcPath;
+    String myIP;
+
     public Peer() {
 
         com = new Comunity();
@@ -32,7 +37,7 @@ public class Peer {
             Logger.getLogger(Peer.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
+    
     void setNick(String me) {
         this.nick = me;
         com.setNick(this.nick);
@@ -93,9 +98,58 @@ public class Peer {
         cri.setLobby(lb);
     }
 
+    void setProp(Properties prop) {
+        this.prop = prop;
+    }
+
     void setClient(Client cli) {
         this.cli = cli;
         cri.setClient(cli);
+    }
+
+    void setMyIP(String ipAddr) {
+        this.myIP = ipAddr;
+    }
+
+    void setMyVlcPath(String vlcpath) {
+        this.myVlcPath = vlcpath;
+    }
+
+    void openLobby() {
+        final Lobby flb = lb;
+        final Properties fprop = prop;
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                flb.setVisible(true);
+                //cli.setVisible(false);
+                fprop.setVisible(false);
+            }
+        });
+    }
+
+    void openProperties() {
+        final Lobby flb = lb;
+        final Properties fprop = prop;
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                flb.setVisible(false);
+                //cli.setVisible(false);
+                fprop.setVisible(true);
+            }
+        });
+    }
+
+    String getMyIp() {
+        return this.myIP;
+    }
+
+    void run() {
+        prop = new Properties(this);
+        lb = new Lobby(this);
+
+        this.setProp(prop);
+        this.setLobby(lb);
+        this.openProperties();
     }
 
 }

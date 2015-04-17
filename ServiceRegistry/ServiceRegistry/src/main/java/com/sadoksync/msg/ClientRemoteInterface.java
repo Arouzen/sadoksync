@@ -16,7 +16,7 @@ import java.util.List;
  */
 public interface ClientRemoteInterface extends Remote {
     //Registrera en client och des nick med ett comunity
-    void register(String nick, ClientRemoteInterface rri) throws RemoteException;
+    void register(String nick, ClientRemoteInterface rri, String ipAddr) throws RemoteException;
     void ping(ClientRemoteInterface rri) throws RemoteException;
     void setComunity(ClientRemoteInterface rri) throws RemoteException;
     void setComunityList(List nameli)throws RemoteException;

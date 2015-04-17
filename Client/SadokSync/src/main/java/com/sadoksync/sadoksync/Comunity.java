@@ -60,11 +60,6 @@ public class Comunity {
     
     void setHost(ClientRemoteInterface host){
         this.host = host;
-        try {
-            host.register(nick, mycri);
-        } catch (RemoteException ex) {
-            Logger.getLogger(Comunity.class.getName()).log(Level.SEVERE, null, ex);
-        }
     }
 
     void find(String cname, ClientRemoteInterface cri, String rhost, String sname, int port) {
