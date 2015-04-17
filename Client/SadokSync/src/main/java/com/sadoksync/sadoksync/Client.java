@@ -350,25 +350,7 @@ public class Client extends javax.swing.JFrame {
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         if (!textFileLocation.getText().isEmpty()) {
-            final String[] arbeit = new String[1];
-            arbeit[0] = textFileLocation.getText();
-            try {
-                Thread streamingServer = new Thread() {
-                    public void run() {
-                        try {
-                            StreamRtsp.main(arbeit);
-                        } catch (InterruptedException v) {
-                            v.printStackTrace();
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
-                        }
-                    }
-                };
-                
-                streamingServer.start();
-            } catch (Exception ex) {
-                System.out.println("No please");
-            }
+            startStreamingServer(textFileLocation.getText());
         }
     }//GEN-LAST:event_jButton4ActionPerformed
 
@@ -378,6 +360,27 @@ public class Client extends javax.swing.JFrame {
             mediaPlayer.setFullScreen(true);
         }
     }//GEN-LAST:event_jButton3ActionPerformed
+
+    public void startStreamingServer(String url) {
+        final String[] arbeit = new String[1];
+        arbeit[0] = url;
+        try {
+            Thread streamingServer = new Thread() {
+                public void run() {
+                    try {
+                        StreamRtsp.main(arbeit);
+                    } catch (InterruptedException v) {
+                        v.printStackTrace();
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            };
+            streamingServer.start();
+        } catch (Exception ex) {
+            System.out.println("No please");
+        }
+    }
 
     /**
      * @param args the command line arguments
