@@ -90,4 +90,11 @@ public class RegistryConnecter {
         }
     }
 
+    void register(Comunity com) {
+        try {
+            rri.register(com.getComunityName(), com.getHost(), com.getTopic());
+        } catch (java.rmi.RemoteException re) {
+            re.printStackTrace();
+        }
+    }
 }
