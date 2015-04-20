@@ -53,6 +53,8 @@ public class Client extends javax.swing.JFrame {
 
     // Save server ip
     public String server;
+    
+    public ServerNameGUI serverNameGUI;
 
     /**
      * Creates new form Client
@@ -67,7 +69,10 @@ public class Client extends javax.swing.JFrame {
         location.append("VLC/");
         System.out.println(location);
         NativeLibrary.addSearchPath("libvlc", location.toString());
-
+        
+        // server page init
+        serverNameGUI = new ServerNameGUI();
+        
         //Fullscreenplayer init
         fullscreenplayer = new FullScreenPlayer();
 
@@ -411,7 +416,7 @@ public class Client extends javax.swing.JFrame {
     }//GEN-LAST:event_ExitActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        new ServerNameGUI().setVisible(true);
+        serverNameGUI.setVisible(true);
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void buttonPlayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonPlayActionPerformed
