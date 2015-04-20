@@ -19,6 +19,6 @@ public class ActionFindAllComunitys implements Runnable {
     
     @Override
     public void run() {
-        pr.findAllComunity(addr,"Sadoksync",1099);
+        pr.findAllComunity(addr,4444);
     }
 }

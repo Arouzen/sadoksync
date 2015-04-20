@@ -29,6 +29,7 @@ public class Comunity {
     PeerMap pMap;
 
     public Comunity() {
+        System.out.println("Initializing Comunity View");
         this.topic = "";
         this.pMap = new PeerMap();
     }

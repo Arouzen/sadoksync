@@ -19,7 +19,7 @@ import java.util.logging.Logger;
  * @author Pontus
  */
 public class ConnectionHandler extends Thread {
-
+    SynchReg synchMap;
     Socket clientSocket;
     Peer pr;
     ObjectInputStream in;
@@ -28,6 +28,7 @@ public class ConnectionHandler extends Thread {
     ConnectionHandler(Socket clientSocket, Peer pr) {
         this.clientSocket = clientSocket;
         this.pr = pr;
+        this.synchMap = pr.getSynchReg();
     }
 
     @Override
@@ -43,7 +44,22 @@ public class ConnectionHandler extends Thread {
             msgObj = in.readObject();
 
             if (msgObj instanceof Message) {
-                ((Message) msgObj).getType();
+                Message msg = ((Message) msgObj);
+                switch (msg.getType()) {
+                    case "Register Client":
+                        System.out.println("Register Client");
+                        break;
+                    case "Join Comunity":
+                        System.out.println("Join Comunity");
+                        break;
+                    case "Find All":
+                        System.out.println("Find All");
+                        break;
+                    case "Comunity Registration":
+                        System.out.println("Comunity Registration");
+                        synchMap.put(msg.getName(), new ComunityRegistration(msg.getName(), msg.getipAddr(), msg.getText()));
+                        break;
+                }
             }
 
             in.close();

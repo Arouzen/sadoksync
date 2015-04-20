@@ -17,7 +17,7 @@ public class Message implements Serializable {
     String type;
     String ipAddr;
     String text;
-    
+
     public Message() {
 
     }
@@ -51,5 +51,14 @@ public class Message implements Serializable {
 
     public String getName() {
         return this.name;
+    }
+
+    public void setText(String text) {
+
+        this.text = text;
+    }
+
+    public String getText() {
+        return text;
     }
 }

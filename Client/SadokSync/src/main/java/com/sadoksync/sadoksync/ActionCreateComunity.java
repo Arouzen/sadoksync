@@ -31,14 +31,14 @@ public class ActionCreateComunity implements Runnable {
         pr.createComunity(cname, topic);
         
         System.out.println("ActionCreateComunity: Registring Comunity " + cname);
-        pr.registerComunity(addr,"Sadoksync",1099);
+        pr.registerComunity(addr,4444);
         try {
             Thread.sleep(1000);
         } catch (InterruptedException ex) {
             Logger.getLogger(ActionCreateComunity.class.getName()).log(Level.SEVERE, null, ex);
         }
         System.out.println("ActionCreateComunity: Joining Comunity " + cname);
-        pr.joinComunity(cname, addr, "Sadoksync", 1099);
+        pr.joinComunity(cname, addr, 4444);
     }
 }
     

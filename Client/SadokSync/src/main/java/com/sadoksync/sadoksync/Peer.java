@@ -8,6 +8,8 @@ package com.sadoksync.sadoksync;
 import com.sadoksync.msg.ClientRemoteInterface;
 import java.net.MalformedURLException;
 import java.rmi.RemoteException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -17,6 +19,7 @@ import java.util.logging.Logger;
  */
 public class Peer {
 
+    ExecutorService executor;
     PeerServerThread pst;
 
     String nick;
@@ -31,40 +34,26 @@ public class Peer {
     Client cli;
     Properties prop;
 
+    SynchReg synchMap;
+    
     public Peer() {
-
+        executor = Executors.newFixedThreadPool(50);
     }
 
-    void setNick(String me) {
-        this.nick = me;
-        com.setNick(this.nick);
-        //com.setCri(this.cri);
+    //del?
+    void setComunityTopic(String topic) {
+        //System.out.println("Peer: setComunityTopic:" + topic);
+        com.setTopic(topic);
     }
 
+    //del?
     void createComunity(String cname, String topic) {
         com.create(cname, myIP, topic, nick);
     }
 
     void registerComunity(String rhost, int port) {
         Message msg = new Message(com);
-
         this.sendMsg(rhost, msg);
-        //call client to start streaming
-        // cli.startStreamingServer("C:\\pontus\\studier\\ID1003ProjIT\\sample\\test.mp4");
-
-        //com.Register(rhost, registry, port);
-/*
-         RegistryConnecter rc = new RegistryConnecter(rhost, registry, port);
-
-         if (rc.Connect()) {
-         rc.register(com);
-         };
-         */
-    }
-
-    void setComunityTopic(String topic) {
-        //System.out.println("Peer: setComunityTopic:" + topic);
-        com.setTopic(topic);
     }
 
     void findAllComunity(String rhost, int port) {
@@ -73,35 +62,29 @@ public class Peer {
         msg.setType("Find All");
         msg.setName(this.getNick());
         this.sendMsg(rhost, msg);
-
-        //com.findAll(rhost, service, port, cri);
-/*
-         RegistryConnecter rc = new RegistryConnecter(rhost, registry, port);
-
-         if (rc.Connect()) {
-         rc.getAll(cri);
-         };
-         */
     }
 
-    void joinComunity(String cname, String rhost, String registry, int port) {
-        //System.out.println("Peer: findComunity:" + cname);
-        //com.find(cname, cri, rhost, service, port);
+    void joinComunity(String cname, String addr, int port) {
+        Message msg = new Message();
+        msg.setipAddr(this.getMyIp());
+        msg.setType("Join Comunity");
+        msg.setName(this.getNick());
+        msg.setText(cname);
 
-        RegistryConnecter rc = new RegistryConnecter(rhost, registry, port);
-
-        if (rc.Connect()) {
-            rc.getComunity(cname, cri);
-        };
+        this.sendMsg(addr, msg);
     }
 
-    String getNick() {
-        return nick;
+    void setComunityHost(String host) {
+        System.out.println("Peer: setComunityHost");
+
+        this.openClient();
+        com.setHost(host);
+
+        this.joinComunity(com.getComunityName(), host, 4444);
     }
 
     void setLobby(Lobby lb) {
         this.lb = lb;
-        //cri.setLobby(lb);
     }
 
     void setProp(Properties prop) {
@@ -110,15 +93,31 @@ public class Peer {
 
     void setClient(Client cli) {
         this.cli = cli;
-        cri.setClient(cli);
+    }
+
+    void setNick(String me) {
+        this.nick = me;
+        //com.setNick(this.nick);
+    }
+
+    String getNick() {
+        return nick;
     }
 
     void setMyIP(String ipAddr) {
         this.myIP = ipAddr;
     }
 
+    String getMyIp() {
+        return this.myIP;
+    }
+
     void setMyVlcPath(String vlcpath) {
         this.myVlcPath = vlcpath;
+    }
+
+    String getMyVlc() {
+        return myVlcPath;
     }
 
     void openLobby() {
@@ -160,54 +159,23 @@ public class Peer {
         });
     }
 
-    String getMyIp() {
-        return this.myIP;
-    }
-
-    String getMyVlc() {
-        return myVlcPath;
-    }
-
     void run() {
         this.startServer();
 
         com = new Comunity();
 
-        /*
-         try {
-         cri = new ClientInterface(this);
-         } catch (RemoteException | MalformedURLException ex) {
-         Logger.getLogger(Peer.class.getName()).log(Level.SEVERE, null, ex);
-         }
-         */
-        cli = new Client(this);
-        prop = new Properties(this);
-        lb = new Lobby(this);
+        this.setProp(new Properties(this));
+        this.setLobby(new Lobby(this));
+        this.setClient(new Client(this));
 
-        this.setProp(prop);
-        this.setLobby(lb);
+        synchMap = new SynchReg();
+        
         this.openProperties();
     }
 
     void RegPeer(PeerReg peerReg) {
         System.out.println("Peer: RegPeer: Registering " + peerReg.getName() + " with comunity");
         com.RegPeer(peerReg);
-    }
-
-    void setComunityHost(ClientRemoteInterface rri) {
-        System.out.println("Peer: setComunityHost");
-        this.openClient();
-        com.setHost(rri);
-        try {
-            rri.register(this.getNick(), this.getMyCri(), this.getMyIp());
-        } catch (RemoteException ex) {
-            Logger.getLogger(Peer.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-    }
-
-    private ClientRemoteInterface getMyCri() {
-        return cri;
     }
 
     void setMedia(String myIp) {
@@ -219,18 +187,17 @@ public class Peer {
 
     }
 
-    void setMySR(ServiceRegistry serviceRegistry) {
-        sr = serviceRegistry;
-    }
-
     void startServer() {
         pst = new PeerServerThread(this);
-        pst.start();
+        executor.execute(pst);
     }
 
     void sendMsg(String host, Message msg) {
-        PeerClientThread pct = new PeerClientThread(host, msg);
-        pct.start();
+        executor.execute(new PeerClientThread(host, msg));
+    }
+
+    public SynchReg getSynchReg() {
+        return synchMap;
     }
 
 }

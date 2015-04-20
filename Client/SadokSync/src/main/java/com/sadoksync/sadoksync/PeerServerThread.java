@@ -37,7 +37,7 @@ class PeerServerThread extends Thread {
 
     @Override
     public void run() {
-
+        System.out.println("Starting Server Socket Thread");
         while (listening) {
             Socket clientSocket;
             try {
