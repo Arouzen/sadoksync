@@ -2,15 +2,17 @@ package com.sadoksync.sadoksync;
 
 import com.sun.jna.NativeLibrary;
 import java.awt.Canvas;
+import java.awt.Component;
 import java.awt.FileDialog;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.io.File;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.ArrayList;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.DefaultListModel;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.KeyStroke;
@@ -38,6 +40,12 @@ public class Client extends javax.swing.JFrame {
     // Create fullscreen player
     private final FullScreenPlayer fullscreenplayer;
 
+    // Temp rightpanel for switching views
+    private Component tmpChatPanel;
+
+    // Mode for right panel
+    private String mode;
+
     /**
      * Creates new form Client
      */
@@ -61,6 +69,9 @@ public class Client extends javax.swing.JFrame {
 
         videoSurface = mediaPlayerFactory.newVideoSurface(canvas);
         mediaPlayer.setVideoSurface(videoSurface);
+
+        jSplitPane1.setDividerLocation(0.7);
+        mode = "chat";
     }
 
     /**
@@ -73,9 +84,11 @@ public class Client extends javax.swing.JFrame {
     private void initComponents() {
 
         fileChooser = new javax.swing.JFileChooser();
+        scrollListPanel = new javax.swing.JScrollPane();
+        listInScrollpane = new javax.swing.JList();
         panelChatt = new javax.swing.JPanel();
-        jButton2 = new javax.swing.JButton();
-        jTextField1 = new javax.swing.JTextField();
+        buttonSendChat = new javax.swing.JButton();
+        textChatInput = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
         buttonPlay = new javax.swing.JButton();
@@ -84,12 +97,13 @@ public class Client extends javax.swing.JFrame {
         ButtonPause = new javax.swing.JButton();
         ButtonStop = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
-        jButton5 = new javax.swing.JButton();
-        jButton6 = new javax.swing.JButton();
+        buttonShowUsers = new javax.swing.JButton();
+        buttonShowChat = new javax.swing.JButton();
         jSplitPane1 = new javax.swing.JSplitPane();
         canvas = new java.awt.Canvas();
         scrollPaneChatt = new javax.swing.JScrollPane();
-        textarea = new javax.swing.JTextArea();
+        textChatOutput = new javax.swing.JTextArea();
+        buttonShowPlaylist = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         Open = new javax.swing.JMenuItem();
@@ -100,38 +114,46 @@ public class Client extends javax.swing.JFrame {
         jSeparator1 = new javax.swing.JPopupMenu.Separator();
         jMenuItem2 = new javax.swing.JMenuItem();
 
+        DefaultListModel listModel = new DefaultListModel();
+        listInScrollpane.setModel(listModel);
+        scrollListPanel.setViewportView(listInScrollpane);
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(82, 68, 68));
 
-        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/send_button_default _ off.png"))); // NOI18N
-        jButton2.setMaximumSize(new java.awt.Dimension(85, 40));
-        jButton2.setMinimumSize(new java.awt.Dimension(85, 40));
-        jButton2.setPreferredSize(new java.awt.Dimension(85, 40));
-        jButton2.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/send_button_default _ off_click.png"))); // NOI18N
-        jButton2.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/send_button_default _ off_hover.png"))); // NOI18N
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        buttonSendChat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/send_button_default _ off.png"))); // NOI18N
+        buttonSendChat.setMaximumSize(new java.awt.Dimension(85, 40));
+        buttonSendChat.setMinimumSize(new java.awt.Dimension(85, 40));
+        buttonSendChat.setPreferredSize(new java.awt.Dimension(85, 40));
+        buttonSendChat.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/send_button_default _ off_click.png"))); // NOI18N
+        buttonSendChat.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/send_button_default _ off_hover.png"))); // NOI18N
+        buttonSendChat.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                buttonSendChatActionPerformed(evt);
             }
         });
 
-        jTextField1.setText("jTextField1");
+        textChatInput.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                textChatInputKeyPressed(evt);
+            }
+        });
 
         javax.swing.GroupLayout panelChattLayout = new javax.swing.GroupLayout(panelChatt);
         panelChatt.setLayout(panelChattLayout);
         panelChattLayout.setHorizontalGroup(
             panelChattLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelChattLayout.createSequentialGroup()
-                .addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 260, Short.MAX_VALUE)
+                .addComponent(textChatInput, javax.swing.GroupLayout.DEFAULT_SIZE, 375, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(buttonSendChat, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         panelChattLayout.setVerticalGroup(
             panelChattLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelChattLayout.createSequentialGroup()
-                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(textChatInput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
-            .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(buttonSendChat, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
@@ -195,22 +217,39 @@ public class Client extends javax.swing.JFrame {
             }
         });
 
-        jButton5.setText("Show Users");
+        buttonShowUsers.setText("Show Users");
+        buttonShowUsers.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonShowUsersActionPerformed(evt);
+            }
+        });
 
-        jButton6.setText("Show Chat");
+        buttonShowChat.setText("Show Chat");
+        buttonShowChat.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonShowChatActionPerformed(evt);
+            }
+        });
 
         canvas.setMinimumSize(new java.awt.Dimension(590, 484));
         jSplitPane1.setLeftComponent(canvas);
 
-        textarea.setEditable(false);
-        textarea.setBackground(new java.awt.Color(102, 102, 102));
-        textarea.setColumns(20);
-        textarea.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
-        textarea.setForeground(new java.awt.Color(255, 255, 255));
-        textarea.setRows(5);
-        scrollPaneChatt.setViewportView(textarea);
+        textChatOutput.setEditable(false);
+        textChatOutput.setBackground(new java.awt.Color(102, 102, 102));
+        textChatOutput.setColumns(20);
+        textChatOutput.setFont(new java.awt.Font("Times New Roman", 0, 14)); // NOI18N
+        textChatOutput.setForeground(new java.awt.Color(255, 255, 255));
+        textChatOutput.setRows(5);
+        scrollPaneChatt.setViewportView(textChatOutput);
 
         jSplitPane1.setRightComponent(scrollPaneChatt);
+
+        buttonShowPlaylist.setText("Show Playlist");
+        buttonShowPlaylist.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonShowPlaylistActionPerformed(evt);
+            }
+        });
 
         jMenu1.setText("File");
 
@@ -240,11 +279,6 @@ public class Client extends javax.swing.JFrame {
         jMenu2.setText("Help");
 
         jMenuItem1.setText("Help Contents");
-        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem1ActionPerformed(evt);
-            }
-        });
         jMenu2.add(jMenuItem1);
         jMenu2.add(jSeparator1);
 
@@ -262,7 +296,7 @@ public class Client extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 840, Short.MAX_VALUE)
+                    .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 963, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
@@ -273,23 +307,24 @@ public class Client extends javax.swing.JFrame {
                             .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(84, 84, 84)
-                                .addComponent(jButton3)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                                 .addComponent(ButtonStop, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(ButtonPause, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(buttonPlay, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(panelChatt, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jButton6)
+                                .addComponent(buttonPlay, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButton5)))))
+                                .addComponent(panelChatt, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addComponent(jButton3)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(buttonShowChat)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(buttonShowUsers)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(buttonShowPlaylist)))))
                 .addGap(0, 0, 0))
         );
         layout.setVerticalGroup(
@@ -300,8 +335,9 @@ public class Client extends javax.swing.JFrame {
                     .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton1)
                     .addComponent(jButton3)
-                    .addComponent(jButton6)
-                    .addComponent(jButton5))
+                    .addComponent(buttonShowChat)
+                    .addComponent(buttonShowUsers)
+                    .addComponent(buttonShowPlaylist))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jSplitPane1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -332,10 +368,6 @@ public class Client extends javax.swing.JFrame {
     private void ExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ExitActionPerformed
         System.exit(0);
     }//GEN-LAST:event_ExitActionPerformed
-
-    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-        new HelpContentsGUI().setVisible(true);
-    }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         new ServerNameGUI().setVisible(true);
@@ -372,9 +404,47 @@ public class Client extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jButton3ActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton2ActionPerformed
+    private void buttonSendChatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonSendChatActionPerformed
+        addToChat(textChatInput.getText());
+        textChatInput.setText("");
+    }//GEN-LAST:event_buttonSendChatActionPerformed
+
+    private void textChatInputKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_textChatInputKeyPressed
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            addToChat(textChatInput.getText());
+            textChatInput.setText("");
+        }
+    }//GEN-LAST:event_textChatInputKeyPressed
+
+    private void buttonShowUsersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonShowUsersActionPerformed
+        updateRightPanel(getUsers());
+    }//GEN-LAST:event_buttonShowUsersActionPerformed
+
+    private void buttonShowChatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonShowChatActionPerformed
+        jSplitPane1.setRightComponent(scrollPaneChatt);
+    }//GEN-LAST:event_buttonShowChatActionPerformed
+
+    private void buttonShowPlaylistActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonShowPlaylistActionPerformed
+        updateRightPanel(getPlaylist());
+    }//GEN-LAST:event_buttonShowPlaylistActionPerformed
+
+    public void updateRightPanel(Iterable<String> elements) {
+        DefaultListModel model = (DefaultListModel) listInScrollpane.getModel();
+        model.clear();
+
+        for (String element : elements) {
+            model.addElement(element);
+        }
+
+        jSplitPane1.setRightComponent(scrollListPanel);
+    }
+
+    public void addToChat(String text) {
+        if (!text.isEmpty()) {
+            textChatOutput.append("\r\n" + text);
+        }
+    }
+
     public void startStreamingServer(String url) {
         final String[] arbeit = new String[1];
         arbeit[0] = url;
@@ -437,12 +507,31 @@ public class Client extends javax.swing.JFrame {
 
     void setMedia(String string) {
 
-        final String mediaURL = "rtsp://"+ string + ":5555/demo";
+        final String mediaURL = "rtsp://" + string + ":5555/demo";
 
         //mediaPlayer.setPlaySubItems(true);
-     
         mediaPlayer.playMedia(mediaURL);
 
+    }
+
+    // TODO un-hardcode
+    private Iterable<String> getUsers() {
+        ArrayList<String> list = new ArrayList<String>();
+        list.add("Sadok");
+        list.add("Jehova");
+        list.add("Judas");
+        list.add("Gandalf");
+        return list;
+    }
+
+    // TODO : un-hardcode
+    private Iterable<String> getPlaylist() {
+        ArrayList<String> list = new ArrayList<String>();
+        list.add("jehova witness documentary");
+        list.add("gandalf the movie");
+        list.add("xXx sadok myseries");
+        list.add("24hour epic sax guy");
+        return list;
     }
 
     class FullScreenPlayer {
@@ -514,14 +603,15 @@ public class Client extends javax.swing.JFrame {
     private javax.swing.JMenuItem Exit;
     private javax.swing.JMenuItem Open;
     private javax.swing.JButton buttonPlay;
+    private javax.swing.JButton buttonSendChat;
+    private javax.swing.JButton buttonShowChat;
+    private javax.swing.JButton buttonShowPlaylist;
+    private javax.swing.JButton buttonShowUsers;
     private java.awt.Canvas canvas;
     private javax.swing.JFileChooser fileChooser;
     private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
-    private javax.swing.JButton jButton6;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
@@ -531,10 +621,12 @@ public class Client extends javax.swing.JFrame {
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JSplitPane jSplitPane1;
-    private javax.swing.JTextField jTextField1;
+    private javax.swing.JList listInScrollpane;
     private javax.swing.JPanel panelChatt;
+    private javax.swing.JScrollPane scrollListPanel;
     private javax.swing.JScrollPane scrollPaneChatt;
+    private javax.swing.JTextField textChatInput;
+    private javax.swing.JTextArea textChatOutput;
     private javax.swing.JTextField textFileLocation;
-    private javax.swing.JTextArea textarea;
     // End of variables declaration//GEN-END:variables
 }
