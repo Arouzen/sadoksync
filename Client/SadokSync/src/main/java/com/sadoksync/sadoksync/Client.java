@@ -615,7 +615,7 @@ public class Client extends javax.swing.JFrame {
     private ArrayList<String> getPlaylist() {
         ArrayList<String> list = new ArrayList<String>();
         for (Pair entry : playlist.getMediaList()) {
-            list.add("Key = " + entry.key() + ", Value = " + entry.value().toString());
+            list.add("Owner: " + entry.key() + " || " + entry.value().getName());
         }
         return list;
     }
