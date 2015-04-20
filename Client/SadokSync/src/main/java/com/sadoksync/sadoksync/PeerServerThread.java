@@ -30,7 +30,7 @@ class PeerServerThread extends Thread {
             listening = true;
         } catch (IOException e) {
             System.err.println("Could not listen on port: 4444.");
-            System.exit(1);
+            //System.exit(1);
         }
 
     }
@@ -44,7 +44,7 @@ class PeerServerThread extends Thread {
                 clientSocket = serverSocket.accept();
                 (new ConnectionHandler(clientSocket, pr)).start();
             } catch (IOException ex) {
-                Logger.getLogger(ServerS.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(PeerServerThread.class.getName()).log(Level.SEVERE, null, ex);
             }
 
         }

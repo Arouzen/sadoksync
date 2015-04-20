@@ -17,13 +17,14 @@ import java.util.logging.Logger;
 public class Comunity {
 
     String nick;
-    ClientRemoteInterface mycri;
+    //ClientRemoteInterface mycri;
 
     String topic;
     String cname;
     RegistryConnecter rc;
 
-    ClientRemoteInterface host;
+    String host;
+    //ClientRemoteInterface host;
 
     PeerMap pMap;
 
@@ -31,74 +32,77 @@ public class Comunity {
         this.topic = "";
         this.pMap = new PeerMap();
     }
-/*
-    public void Register(String rhost, String name, int port) {
-        //System.out.println("Comunity: Register: " + name + ", " + port);
-        rc = new RegistryConnecter(rhost, name, port);
-        //rc = new RegistryConnecter();
+    /*
+     public void Register(String rhost, String name, int port) {
+     //System.out.println("Comunity: Register: " + name + ", " + port);
+     rc = new RegistryConnecter(rhost, name, port);
+     //rc = new RegistryConnecter();
 
-        //"localhost"
-        if (rc.Connect()) {
-            rc.register(cname, this.host, topic);
-        };
-    }
-*/
+     //"localhost"
+     if (rc.Connect()) {
+     rc.register(cname, this.host, topic);
+     };
+     }
+     */
+
     public void RegPeer(PeerReg peer) {
         System.out.println("Comunity: RegPeer: " + nick);
         //TO DO: Send registration of user to all other clients if this should be done. 
         pMap.put(peer.getName(), peer);
     }
 
-    void create(String cname, ClientRemoteInterface host, String topic, String nick) {
-        System.out.println("Comunity: create: " + cname + ", " + topic);
+    void create(String cname, String myIP, String topic, String nick) {
+        System.out.println("Comunity: create: " + cname + ", " + topic +", @" + myIP);
         this.cname = cname;
-        this.host = host;
+        this.host = myIP;
         this.topic = topic;
+ 
         //Now you have to join a comunity that you create.
         //RegPeer(nick, new PeerReg(nick, host));
     }
 
-    void setHost(ClientRemoteInterface host) {
+    void setHost(String host) {
         this.host = host;
     }
-/*
-    void find(String cname, ClientRemoteInterface cri, String rhost, String sname, int port) {
-        RegistryConnecter rc = new RegistryConnecter(rhost, sname, port);
+    /*
+     void find(String cname, ClientRemoteInterface cri, String rhost, String sname, int port) {
+     RegistryConnecter rc = new RegistryConnecter(rhost, sname, port);
 
-        if (rc.Connect()) {
-            rc.getComunity(cname, cri);
-        };
-    }
-*/
+     if (rc.Connect()) {
+     rc.getComunity(cname, cri);
+     };
+     }
+     */
+
     void setTopic(String topic) {
         this.topic = topic;
     }
-/*
-    void findAll(String rhost, String name, int port, ClientRemoteInterface cri) {
-        RegistryConnecter rc = new RegistryConnecter(rhost, name, port);
+    /*
+     void findAll(String rhost, String name, int port, ClientRemoteInterface cri) {
+     RegistryConnecter rc = new RegistryConnecter(rhost, name, port);
 
-        if (rc.Connect()) {
-            rc.getAll(cri);
-        };
-    }
-*/
+     if (rc.Connect()) {
+     rc.getAll(cri);
+     };
+     }
+     */
+
     void setNick(String nick) {
         this.nick = nick;
     }
 
-    void setCri(ClientInterface cri) {
-        this.mycri = cri;
-    }
+
 
     String getComunityName() {
         return cname;
     }
 
-    ClientRemoteInterface getHost() {
+    String getHost() {
         return host;
     }
-    
+
     String getTopic() {
         return topic;
     }
+
 }

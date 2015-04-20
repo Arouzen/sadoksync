@@ -24,10 +24,7 @@ import javax.swing.JFrame;
 public class Driver {
 
     Peer pr;
-    Lobby lb;
-    Client cli;
-    Properties gui;
-    ServiceRegistry sr;
+
     public static void main(String[] args) {
         new Driver();
     }

@@ -16,19 +16,20 @@ import java.util.logging.Logger;
  * @author Pontus
  */
 public class Peer {
-    ServiceRegistry sr; 
-    
+
     PeerServerThread pst;
-    
-    Comunity com;
-    ClientInterface cri;
+
     String nick;
+    String myVlcPath;
+    String myIP;
+
+    Comunity com;
+
+    //ClientInterface cri;
+    //ServiceRegistry sr; 
     Lobby lb;
     Client cli;
     Properties prop;
-
-    String myVlcPath;
-    String myIP;
 
     public Peer() {
 
@@ -37,36 +38,28 @@ public class Peer {
     void setNick(String me) {
         this.nick = me;
         com.setNick(this.nick);
-        com.setCri(this.cri);
+        //com.setCri(this.cri);
     }
 
     void createComunity(String cname, String topic) {
-        com.create(cname, cri, topic, nick);
+        com.create(cname, myIP, topic, nick);
     }
 
-    void registerComunity(String rhost, String registry, int port) {
-        
+    void registerComunity(String rhost, int port) {
+        Message msg = new Message(com);
+
+        this.sendMsg(rhost, msg);
         //call client to start streaming
-         cli.startStreamingServer("C:\\pontus\\studier\\ID1003ProjIT\\sample\\test.mp4");
+        // cli.startStreamingServer("C:\\pontus\\studier\\ID1003ProjIT\\sample\\test.mp4");
+
         //com.Register(rhost, registry, port);
+/*
+         RegistryConnecter rc = new RegistryConnecter(rhost, registry, port);
 
-        RegistryConnecter rc = new RegistryConnecter(rhost, registry, port);
-
-        if (rc.Connect()) {
-            rc.register(com);
-        };
-    }
-
-    void registerComunity(String rhost, String registry) {
-
-        System.out.println("Peer: Registreara Comunity");
-        this.registerComunity(rhost, registry, 1099);
-        //Starta Stream i tråd
-
-    }
-
-    void registerComunity() {
-        this.registerComunity("localhost", "Sadocsynk", 1099);
+         if (rc.Connect()) {
+         rc.register(com);
+         };
+         */
     }
 
     void setComunityTopic(String topic) {
@@ -74,14 +67,21 @@ public class Peer {
         com.setTopic(topic);
     }
 
-    void findAllComunity(String rhost, String registry, int port) {
+    void findAllComunity(String rhost, int port) {
+        Message msg = new Message();
+        msg.setipAddr(this.getMyIp());
+        msg.setType("Find All");
+        msg.setName(this.getNick());
+        this.sendMsg(rhost, msg);
+
         //com.findAll(rhost, service, port, cri);
+/*
+         RegistryConnecter rc = new RegistryConnecter(rhost, registry, port);
 
-        RegistryConnecter rc = new RegistryConnecter(rhost, registry, port);
-
-        if (rc.Connect()) {
-            rc.getAll(cri);
-        };
+         if (rc.Connect()) {
+         rc.getAll(cri);
+         };
+         */
     }
 
     void joinComunity(String cname, String rhost, String registry, int port) {
@@ -101,7 +101,7 @@ public class Peer {
 
     void setLobby(Lobby lb) {
         this.lb = lb;
-        cri.setLobby(lb);
+        //cri.setLobby(lb);
     }
 
     void setProp(Properties prop) {
@@ -169,14 +169,17 @@ public class Peer {
     }
 
     void run() {
+        this.startServer();
+
         com = new Comunity();
 
-        try {
-            cri = new ClientInterface(this);
-        } catch (RemoteException | MalformedURLException ex) {
-            Logger.getLogger(Peer.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
+        /*
+         try {
+         cri = new ClientInterface(this);
+         } catch (RemoteException | MalformedURLException ex) {
+         Logger.getLogger(Peer.class.getName()).log(Level.SEVERE, null, ex);
+         }
+         */
         cli = new Client(this);
         prop = new Properties(this);
         lb = new Lobby(this);
@@ -220,13 +223,14 @@ public class Peer {
         sr = serviceRegistry;
     }
 
-    void startServer(){
+    void startServer() {
         pst = new PeerServerThread(this);
         pst.start();
     }
-    
-    void sendMsg(String host, String msg){
+
+    void sendMsg(String host, Message msg) {
         PeerClientThread pct = new PeerClientThread(host, msg);
+        pct.start();
     }
-        
+
 }

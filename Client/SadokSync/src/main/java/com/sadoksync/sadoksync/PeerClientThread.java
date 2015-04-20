@@ -8,6 +8,7 @@ package com.sadoksync.sadoksync;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
@@ -18,12 +19,10 @@ import java.net.UnknownHostException;
 class PeerClientThread extends Thread {
 
     Socket clientSocket = null;
-    BufferedInputStream in = null;
-    BufferedOutputStream out = null;
-
-    String msg;
-
-    PeerClientThread(String host, String msg) {
+    ObjectOutputStream out = null;
+    Message msg;
+    
+    PeerClientThread(String host, Message msg) {
         this.msg = msg;
 
         try {
@@ -43,17 +42,18 @@ class PeerClientThread extends Thread {
     public void run() {
 
         try {
-            in = new BufferedInputStream(clientSocket.getInputStream());
-            out = new BufferedOutputStream(clientSocket.getOutputStream());
+            //in = new BufferedInputStream(clientSocket.getInputStream());
+            out = new ObjectOutputStream(clientSocket.getOutputStream());
 
             //Create and send the message
-            byte[] toServer = msg.getBytes(); // convert to byte array
-            out.write(toServer, 0, toServer.length); // send message
+            //byte[] toServer = msg.getBytes(); // convert to byte array
+            //out.write(toServer, 0, toServer.length); // send message
+            out.writeObject(msg); 
             out.flush();                       // ensure that message is sent
 
             //Asnchronous message passing... Response is sent to a ServerSocket
             out.close();           // close output stream
-            in.close();            // close input stream
+            //in.close();            // close input stream
             clientSocket.close();  // close connection
 
         } catch (IOException e) {
