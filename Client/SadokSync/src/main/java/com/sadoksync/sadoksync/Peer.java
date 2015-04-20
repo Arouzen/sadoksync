@@ -18,6 +18,7 @@ import java.util.logging.Logger;
 public class Peer {
     ServiceRegistry sr; 
     
+    PeerServerThread pst;
     
     Comunity com;
     ClientInterface cri;
@@ -219,4 +220,13 @@ public class Peer {
         sr = serviceRegistry;
     }
 
+    void startServer(){
+        pst = new PeerServerThread(this);
+        pst.start();
+    }
+    
+    void sendMsg(String host, String msg){
+        PeerClientThread pct = new PeerClientThread(host, msg);
+    }
+        
 }

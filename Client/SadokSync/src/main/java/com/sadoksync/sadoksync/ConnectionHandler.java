@@ -16,16 +16,16 @@ import java.util.logging.Logger;
  *
  * @author Pontus
  */
-public class ConnectionHandler extends Thread  {
+public class ConnectionHandler extends Thread {
 
     Socket clientSocket;
-    ServerMonitor sMonitor;
+    Peer pr;
     BufferedInputStream in;
     BufferedOutputStream out;
 
-    ConnectionHandler(Socket clientSocket, ServerMonitor sMonitor) {
+    ConnectionHandler(Socket clientSocket, Peer pr) {
         this.clientSocket = clientSocket;
-        this.sMonitor = sMonitor;
+        this.pr = pr;
     }
 
     @Override
@@ -52,8 +52,7 @@ public class ConnectionHandler extends Thread  {
 
             //Handle Message
             System.out.println(new String(msg));
-            
-            
+
             //Close connection
             out.close();
             in.close();
