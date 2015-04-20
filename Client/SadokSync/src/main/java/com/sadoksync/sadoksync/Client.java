@@ -7,8 +7,6 @@ import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.event.ActionEvent;
 import java.io.File;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JComponent;
@@ -61,6 +59,8 @@ public class Client extends javax.swing.JFrame {
 
         videoSurface = mediaPlayerFactory.newVideoSurface(canvas);
         mediaPlayer.setVideoSurface(videoSurface);
+        
+        jSplitPane1.setDividerLocation(0.7);
     }
 
     /**
