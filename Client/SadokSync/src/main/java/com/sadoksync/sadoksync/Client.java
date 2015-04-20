@@ -70,7 +70,7 @@ public class Client extends javax.swing.JFrame {
         System.out.println(location);
         NativeLibrary.addSearchPath("libvlc", location.toString());
         
-        // server page init
+        //Server popup thingy (???) init
         serverNameGUI = new ServerNameGUI();
         
         //Fullscreenplayer init
