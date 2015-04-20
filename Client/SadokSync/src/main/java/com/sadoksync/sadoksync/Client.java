@@ -1,8 +1,8 @@
 package com.sadoksync.sadoksync;
 
+import com.sadoksync.sadoksync.PublicPlaylist.Pair;
 import com.sun.jna.NativeLibrary;
 import java.awt.Canvas;
-import java.awt.Component;
 import java.awt.FileDialog;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
@@ -10,16 +10,21 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.DefaultListModel;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.KeyStroke;
+import uk.co.caprica.vlcj.player.MediaPlayer;
+import uk.co.caprica.vlcj.player.MediaPlayerEventAdapter;
 import uk.co.caprica.vlcj.player.MediaPlayerFactory;
 import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
 import uk.co.caprica.vlcj.player.embedded.videosurface.CanvasVideoSurface;
 import uk.co.caprica.vlcj.player.embedded.windows.Win32FullScreenStrategy;
+import uk.co.caprica.vlcj.player.headless.HeadlessMediaPlayer;
 
 /**
  *
@@ -34,17 +39,20 @@ public class Client extends javax.swing.JFrame {
     // Create a new media player instance for the run-time platform
     public EmbeddedMediaPlayer mediaPlayer;
 
+    // Create the server media player used to stream
+    public HeadlessMediaPlayer serverMediaPlayer;
+
     // Create video surface
     public CanvasVideoSurface videoSurface;
 
     // Create fullscreen player
     private final FullScreenPlayer fullscreenplayer;
 
-    // Temp rightpanel for switching views
-    private Component tmpChatPanel;
+    // Create the public playlist
+    private PublicPlaylist playlist;
 
-    // Mode for right panel
-    private String mode;
+    // Save server ip
+    public String server;
 
     /**
      * Creates new form Client
@@ -70,8 +78,39 @@ public class Client extends javax.swing.JFrame {
         videoSurface = mediaPlayerFactory.newVideoSurface(canvas);
         mediaPlayer.setVideoSurface(videoSurface);
 
+        mediaPlayer.addMediaPlayerEventListener(new MediaPlayerEventAdapter() {
+            @Override
+            public void finished(MediaPlayer mediaPlayer) {
+                if (!playlist.isEmpty()) {
+                    persistClient(mediaPlayer);
+                }
+            }
+
+            @Override
+            public void stopped(MediaPlayer mediaPlayer) {
+                if (!playlist.isEmpty()) {
+                    persistClient(mediaPlayer);
+                }
+            }
+        });
+
         jSplitPane1.setDividerLocation(0.7);
-        mode = "chat";
+
+        // TODO, remove hardcode
+        // Public playlist init, i am host so i create it :)
+        playlist = new PublicPlaylist();
+        // I am host, so ip is me :)
+        server = "rtsp://localhost:5555/demo";
+    }
+
+    public void persistClient(MediaPlayer mediaPlayer) {
+        System.out.println("Playing next video after 5sec...(client)");
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        mediaPlayer.playMedia(server);
     }
 
     /**
@@ -361,7 +400,9 @@ public class Client extends javax.swing.JFrame {
         fileDialog.setVisible(true);
         File[] returnVal = fileDialog.getFiles();
         if (returnVal[0] != null) {
-            textFileLocation.setText(returnVal[0].getAbsolutePath());
+            //textFileLocation.setText(returnVal[0].getAbsolutePath());
+            playlist.addToPlaylist(returnVal[0].getName(), returnVal[0].getAbsolutePath(), "20min lol", "videofil");
+            updateRightPanel(getPlaylist());
         }
     }//GEN-LAST:event_OpenActionPerformed
 
@@ -374,8 +415,9 @@ public class Client extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void buttonPlayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonPlayActionPerformed
-        if (!textFileLocation.getText().isEmpty()) {
-            mediaPlayer.playMedia(textFileLocation.getText());
+        if (!playlist.isEmpty()) {
+            //mediaPlayer.playMedia(textFileLocation.getText());
+            mediaPlayer.playMedia(server);
         }
     }//GEN-LAST:event_buttonPlayActionPerformed
 
@@ -388,12 +430,19 @@ public class Client extends javax.swing.JFrame {
     }//GEN-LAST:event_ButtonPauseActionPerformed
 
     private void ButtonStopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonStopActionPerformed
+        serverMediaPlayer.stop();
         mediaPlayer.stop();
     }//GEN-LAST:event_ButtonStopActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        if (!textFileLocation.getText().isEmpty()) {
-            startStreamingServer(textFileLocation.getText());
+        if (!playlist.isEmpty()) {
+            startStreamingServer();
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException ex) {
+                ex.printStackTrace();
+            }
+            mediaPlayer.playMedia(server);
         }
     }//GEN-LAST:event_jButton4ActionPerformed
 
@@ -428,7 +477,11 @@ public class Client extends javax.swing.JFrame {
         updateRightPanel(getPlaylist());
     }//GEN-LAST:event_buttonShowPlaylistActionPerformed
 
-    public void updateRightPanel(Iterable<String> elements) {
+    public void setMedia(String media) {
+        mediaPlayer.playMedia(media);
+    }
+    
+    public void updateRightPanel(ArrayList<String> elements) {
         DefaultListModel model = (DefaultListModel) listInScrollpane.getModel();
         model.clear();
 
@@ -445,16 +498,59 @@ public class Client extends javax.swing.JFrame {
         }
     }
 
-    public void startStreamingServer(String url) {
-        final String[] arbeit = new String[1];
-        arbeit[0] = url;
+    public void startStreamingServer() {
         try {
             Thread streamingServer = new Thread() {
                 public void run() {
                     try {
-                        StreamRtsp.main(arbeit);
-                    } catch (InterruptedException v) {
-                        v.printStackTrace();
+                        String media = playlist.getNowPlaying();
+                        //No ip address here, only an @. 
+                        final String options = formatRtspStream("@", 5555, "demo");
+                        System.out.println("Streaming '" + media + "' to '" + options + "'");
+                        MediaPlayerFactory mediaPlayerFactory = new MediaPlayerFactory();
+                        serverMediaPlayer = mediaPlayerFactory.newHeadlessMediaPlayer();
+
+                        serverMediaPlayer.addMediaPlayerEventListener(new MediaPlayerEventAdapter() {
+                            @Override
+                            public void finished(MediaPlayer mediaPlayer) {
+                                if (!playlist.isEmpty()) {
+                                    streamNextMedia(mediaPlayer);
+                                }
+                            }
+
+                            @Override
+                            public void stopped(MediaPlayer mediaPlayer) {
+                                if (!playlist.isEmpty()) {
+                                    streamNextMedia(mediaPlayer);
+                                }
+                            }
+
+                            private void streamNextMedia(MediaPlayer mediaPlayer) {
+                                System.out.println("Playing next video after 2sec...");
+                                playlist.removeFirstInQueue();
+                                updateRightPanel(getPlaylist());
+                                try {
+                                    Thread.sleep(2000);
+                                } catch (InterruptedException ex) {
+                                    Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+                                mediaPlayer.playMedia(playlist.getNowPlaying(),
+                                        options,
+                                        ":no-sout-rtp-sap",
+                                        ":no-sout-standard-sap",
+                                        ":sout-all",
+                                        ":sout-keep"
+                                );
+                            }
+                        });
+
+                        serverMediaPlayer.playMedia(media,
+                                options,
+                                ":no-sout-rtp-sap",
+                                ":no-sout-standard-sap",
+                                ":sout-all",
+                                ":sout-keep"
+                        );
                     } catch (Exception ex) {
                         ex.printStackTrace();
                     }
@@ -504,18 +600,9 @@ public class Client extends javax.swing.JFrame {
             }
         });
     }
-
-    void setMedia(String string) {
-
-        final String mediaURL = "rtsp://" + string + ":5555/demo";
-
-        //mediaPlayer.setPlaySubItems(true);
-        mediaPlayer.playMedia(mediaURL);
-
-    }
-
+    
     // TODO un-hardcode
-    private Iterable<String> getUsers() {
+    private ArrayList<String> getUsers() {
         ArrayList<String> list = new ArrayList<String>();
         list.add("Sadok");
         list.add("Jehova");
@@ -525,13 +612,24 @@ public class Client extends javax.swing.JFrame {
     }
 
     // TODO : un-hardcode
-    private Iterable<String> getPlaylist() {
+    private ArrayList<String> getPlaylist() {
         ArrayList<String> list = new ArrayList<String>();
-        list.add("jehova witness documentary");
-        list.add("gandalf the movie");
-        list.add("xXx sadok myseries");
-        list.add("24hour epic sax guy");
+        for (Pair entry : playlist.getMediaList()) {
+            list.add("Key = " + entry.key() + ", Value = " + entry.value().toString());
+        }
         return list;
+    }
+
+    private static String formatRtspStream(String serverAddress, int serverPort, String id) {
+        StringBuilder sb = new StringBuilder(60);
+        sb.append(":sout=#rtp{sdp=rtsp://@");
+        sb.append(serverAddress);
+        sb.append(':');
+        sb.append(serverPort);
+        sb.append('/');
+        sb.append(id);
+        sb.append("}");
+        return sb.toString();
     }
 
     class FullScreenPlayer {

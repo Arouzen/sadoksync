@@ -46,7 +46,7 @@ public class Peer {
     void registerComunity(String rhost, String registry, int port) {
         
         //call client to start streaming
-         cli.startStreamingServer("C:\\pontus\\studier\\ID1003ProjIT\\sample\\test.mp4");
+         cli.startStreamingServer();
         //com.Register(rhost, registry, port);
 
         RegistryConnecter rc = new RegistryConnecter(rhost, registry, port);
@@ -206,7 +206,7 @@ public class Peer {
         return cri;
     }
 
-    void setMedia(String myIp) {
+    void setMedia(String myIp) { // TODO fix this lol
         if (myIp.equals(this.getMyIp())) {
             cli.setMedia("127.0.0.1");
         } else {
