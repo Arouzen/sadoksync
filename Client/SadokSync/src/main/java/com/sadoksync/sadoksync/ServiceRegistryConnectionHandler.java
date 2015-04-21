@@ -32,7 +32,7 @@ class ServiceRegistryConnectionHandler extends Thread {
         this.cMap = cMap;
         this.clientSocket = clientSocket;
         this.pr = pr;
-        this.synchMap = pr.getSynchReg();
+        //this.synchMap = pr.getSynchReg();
     }
 
     @Override
