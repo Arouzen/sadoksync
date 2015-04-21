@@ -73,25 +73,8 @@ public class Client extends javax.swing.JFrame {
      * @param pr Peer
      */
     public Client(Peer pr) {
-        // Save java Look&Feel (L&F)
-        LookAndFeel originalLaf = UIManager.getLookAndFeel();
-        try {
-            // Switch to Windows L&F
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception ex) {
-            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        //Create the Windows L&F file chooser
-        fileChooser = new JFileChooser();
-
-        try {
-            //Flick the L&F back to the default
-            UIManager.setLookAndFeel(originalLaf);
-        } catch (UnsupportedLookAndFeelException ex) {
-            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
+        // Init style and layout
+        initStyle();
         // Now create rest of components with saved default layout
         initComponents();
 
@@ -141,11 +124,11 @@ public class Client extends javax.swing.JFrame {
         // Public playlist init
         playlist = new PublicPlaylist();
         /*
-        this.isHost = pr.isHost();
-        if (!isHost) {
-            buttonStream.setEnabled(false);
-        }
-        */
+         this.isHost = pr.isHost();
+         if (!isHost) {
+         buttonStream.setEnabled(false);
+         }
+         */
     }
 
     public void persistClient(MediaPlayer mediaPlayer) {
@@ -688,6 +671,44 @@ public class Client extends javax.swing.JFrame {
         sb.append(id);
         sb.append("}");
         return sb.toString();
+    }
+
+    private void initStyle() {
+        // Nimbus L&F
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
+                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                    break;
+                }
+            }
+        } catch (ClassNotFoundException ex) {
+            java.util.logging.Logger.getLogger(Client.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (InstantiationException ex) {
+            java.util.logging.Logger.getLogger(Client.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (IllegalAccessException ex) {
+            java.util.logging.Logger.getLogger(Client.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+            java.util.logging.Logger.getLogger(Client.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        // Save java Look&Feel (L&F)
+        LookAndFeel originalLaf = UIManager.getLookAndFeel();
+        try {
+            // Switch to Windows L&F
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception ex) {
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        //Create the Windows L&F file chooser
+        fileChooser = new JFileChooser();
+
+        try {
+            //Flick the L&F back to the default
+            UIManager.setLookAndFeel(originalLaf);
+        } catch (UnsupportedLookAndFeelException ex) {
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     class FullScreenPlayer {
