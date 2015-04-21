@@ -39,7 +39,7 @@ public class Peer {
     Client cli;
     Properties prop;
 
-    SynchReg synchMap;
+    //SynchReg synchMap;
     Map<String, ComunityRegistration> cMap;
 
     public Peer() {
@@ -90,6 +90,7 @@ public class Peer {
         //msg.setText(cname);
 
         this.sendMsg(cr.getHost(), 4444, msg);
+
     }
     /*
      void setComunityHost(String host) {
@@ -188,8 +189,7 @@ public class Peer {
         this.setLobby(new Lobby(this));
         this.setClient(new Client(this));
 
-        synchMap = new SynchReg();
-
+        //synchMap = new SynchReg();
         this.openProperties();
     }
 
@@ -231,20 +231,25 @@ public class Peer {
             Iterator i = s.iterator(); // Must be in synchronized block
             while (i.hasNext()) {
                 key = (String) i.next();
-                opr = (PeerReg)m.get(key);
-                if(!this.getMyIp().equals(opr.getAddr())){
+                opr = (PeerReg) m.get(key);
+                if (!this.getMyIp().equals(opr.getAddr())) {
                     this.sendMsg(opr.getAddr(), 4444, msg);
                 }
             }
         }
     }
-
-    public SynchReg getSynchReg() {
-        return synchMap;
-    }
+    /*
+     public SynchReg getSynchReg() {
+     return synchMap;
+     }
+     */
 
     Lobby getLobby() {
         return lb;
+    }
+
+    Client getClient() {
+        return cli;
     }
 
     void addKnownComunity(ComunityRegistration cm) {
@@ -254,14 +259,34 @@ public class Peer {
     void PeerToJoin(Message msg) {
         com.addPeer(msg.getName(), msg.getipAddr());
         msg.setType("Register Client");
-        if(this.getMyIp().equals(com.getHost())){
+        if (this.getMyIp().equals(com.getHost())) {
             this.sendMsgToComunity(msg);
-        }else{
             
+            //When a new client joins the Comunity it neads to know where the stream is currently
+            this.DeliverStream(msg.getipAddr(), "Path");
+        } else {
+
         }
         //If comunity Host register the peer
         //If not comunity Host, send this to comunity Host
 
     }
 
+    void DeliverStream(String ipAddr, String path) {
+        //Delives a message that set where the stream is currently.
+        Message msgret = new Message();
+        msgret.setipAddr(this.getMyIp());
+        msgret.setType("Set Stream");
+        msgret.setName(path);
+        this.sendMsg(ipAddr, 4444, msgret);
+    }
+    
+        void DeliverStreamToComunity(String ipAddr, String path) {
+        //Delives a message that set where the stream is currently.
+        Message msgret = new Message();
+        msgret.setipAddr(this.getMyIp());
+        msgret.setType("Set Stream");
+        msgret.setName(path);
+        this.sendMsgToComunity(msgret);
+    }
 }

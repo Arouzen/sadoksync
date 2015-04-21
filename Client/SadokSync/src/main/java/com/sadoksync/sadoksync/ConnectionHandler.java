@@ -31,7 +31,7 @@ public class ConnectionHandler extends Thread {
     ConnectionHandler(Socket clientSocket, Peer pr) {
         this.clientSocket = clientSocket;
         this.pr = pr;
-        this.synchMap = pr.getSynchReg();
+        //this.synchMap = pr.getSynchReg();
     }
 
     @Override
@@ -49,6 +49,13 @@ public class ConnectionHandler extends Thread {
             if (msgObj instanceof Message) {
                 Message msg = ((Message) msgObj);
                 switch (msg.getType()) {
+                    case "Set Stream":
+                        System.out.println("Set Stream");
+                        pr.getClient().setHost(msg.getipAddr());
+                        pr.getClient().setPort("5555");
+                        pr.getClient().setRtspPath(msg.getName());
+                        
+                        break;
                     case "Register Client":
                         System.out.println("Register Client");
 
