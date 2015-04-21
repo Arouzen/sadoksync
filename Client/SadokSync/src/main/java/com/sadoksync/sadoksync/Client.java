@@ -140,11 +140,12 @@ public class Client extends javax.swing.JFrame {
 
         // Public playlist init
         playlist = new PublicPlaylist();
-        
+        /*
         this.isHost = pr.isHost();
         if (!isHost) {
             buttonStream.setEnabled(false);
         }
+        */
     }
 
     public void persistClient(MediaPlayer mediaPlayer) {
