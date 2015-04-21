@@ -1,10 +1,8 @@
 package com.sadoksync.sadoksync;
 
 import com.sadoksync.sadoksync.PublicPlaylist.Pair;
-import com.sun.java.swing.plaf.windows.WindowsFileChooserUI;
 import com.sun.jna.NativeLibrary;
 import java.awt.Canvas;
-import java.awt.FileDialog;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.event.ActionEvent;
@@ -63,6 +61,9 @@ public class Client extends javax.swing.JFrame {
     private String port;
     private String rtspPath;
 
+    private boolean isHost;
+    private Peer pr;
+
     public ServerNameGUI serverNameGUI;
     private final String nick;
 
@@ -94,6 +95,7 @@ public class Client extends javax.swing.JFrame {
         // Now create rest of components with saved default layout
         initComponents();
 
+        this.pr = pr;
         this.nick = pr.getNick();
 
         //VLCLibrary init
@@ -124,23 +126,25 @@ public class Client extends javax.swing.JFrame {
             @Override
             public void finished(MediaPlayer mediaPlayer) {
                 if (!playlist.isEmpty()) {
-                    persistClient(mediaPlayer);
                 }
             }
 
             @Override
             public void stopped(MediaPlayer mediaPlayer) {
                 if (!playlist.isEmpty()) {
-                    persistClient(mediaPlayer);
                 }
             }
         });
 
         jSplitPane1.setDividerLocation(0.7);
 
-        // TODO, remove hardcode
-        // Public playlist init, i am host so i create it :)
+        // Public playlist init
         playlist = new PublicPlaylist();
+        
+        this.isHost = pr.isHost();
+        if (!isHost) {
+            buttonStream.setEnabled(false);
+        }
     }
 
     public void persistClient(MediaPlayer mediaPlayer) {
@@ -190,7 +194,7 @@ public class Client extends javax.swing.JFrame {
         jButton3 = new javax.swing.JButton();
         ButtonPause = new javax.swing.JButton();
         ButtonStop = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
+        buttonStream = new javax.swing.JButton();
         buttonShowUsers = new javax.swing.JButton();
         buttonShowChat = new javax.swing.JButton();
         jSplitPane1 = new javax.swing.JSplitPane();
@@ -304,10 +308,10 @@ public class Client extends javax.swing.JFrame {
             }
         });
 
-        jButton4.setText("Start Streaming");
-        jButton4.addActionListener(new java.awt.event.ActionListener() {
+        buttonStream.setText("Start Streaming");
+        buttonStream.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton4ActionPerformed(evt);
+                buttonStreamActionPerformed(evt);
             }
         });
 
@@ -396,7 +400,7 @@ public class Client extends javax.swing.JFrame {
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(textFileLocation)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButton4)
+                                .addComponent(buttonStream)
                                 .addGap(9, 9, 9))
                             .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -439,7 +443,7 @@ public class Client extends javax.swing.JFrame {
                     .addComponent(panelChatt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(textFileLocation, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jButton4))
+                        .addComponent(buttonStream))
                     .addComponent(buttonPlay, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(ButtonPause, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(ButtonStop, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -485,7 +489,7 @@ public class Client extends javax.swing.JFrame {
         mediaPlayer.stop();
     }//GEN-LAST:event_ButtonStopActionPerformed
 
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+    private void buttonStreamActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonStreamActionPerformed
         if (!playlist.isEmpty()) {
             startStreamingServer();
             try {
@@ -495,7 +499,7 @@ public class Client extends javax.swing.JFrame {
             }
             mediaPlayer.playMedia(getRtspUrl());
         }
-    }//GEN-LAST:event_jButton4ActionPerformed
+    }//GEN-LAST:event_buttonStreamActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         if (mediaPlayer.isPlaying()) {
@@ -528,7 +532,7 @@ public class Client extends javax.swing.JFrame {
         updateRightPanel(getPlaylist());
     }//GEN-LAST:event_buttonShowPlaylistActionPerformed
 
-    public void setMedia(String media) {
+    public void connectToRtsp() {
         mediaPlayer.playMedia(getRtspUrl());
     }
 
@@ -592,6 +596,7 @@ public class Client extends javax.swing.JFrame {
                                         ":sout-all",
                                         ":sout-keep"
                                 );
+                                pr.DeliverStreamToComunity(pr.getMyIp(), "demo");
                             }
                         });
 
@@ -602,6 +607,7 @@ public class Client extends javax.swing.JFrame {
                                 ":sout-all",
                                 ":sout-keep"
                         );
+                        pr.DeliverStreamToComunity(pr.getMyIp(), "demo");
                     } catch (Exception ex) {
                         ex.printStackTrace();
                     }
@@ -756,10 +762,10 @@ public class Client extends javax.swing.JFrame {
     private javax.swing.JButton buttonShowChat;
     private javax.swing.JButton buttonShowPlaylist;
     private javax.swing.JButton buttonShowUsers;
+    private javax.swing.JButton buttonStream;
     private java.awt.Canvas canvas;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;

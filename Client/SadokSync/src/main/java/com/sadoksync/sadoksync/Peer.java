@@ -198,15 +198,6 @@ public class Peer {
         com.RegPeer(peerReg);
     }
 
-    void setMedia(String myIp) {
-        if (myIp.equals(this.getMyIp())) {
-            cli.setMedia("127.0.0.1");
-        } else {
-            cli.setMedia(myIp);
-        }
-
-    }
-
     private void stertServiceRegistry() {
         sr = new ServiceRegistry(this);
         executor.execute(sr);
