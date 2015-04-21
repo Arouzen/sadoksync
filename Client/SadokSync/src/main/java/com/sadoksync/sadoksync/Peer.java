@@ -280,4 +280,8 @@ public class Peer {
         msgret.setName(path);
         this.sendMsgToComunity(msgret);
     }
+
+    boolean isHost() {
+        return this.getMyIp().equals(com.getHost());
+    }
 }
