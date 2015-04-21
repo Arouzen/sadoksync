@@ -51,11 +51,15 @@ public class Client extends javax.swing.JFrame {
     // Create the public playlist
     private PublicPlaylist playlist;
 
-    // Save server ip
-    public String server;
+    // Rtsp variables
+    private String server;
+    private String port;
+    private String rtspPath;
+
     
     public ServerNameGUI serverNameGUI;
-
+    
+    
     /**
      * Creates new form Client
      */
@@ -115,7 +119,23 @@ public class Client extends javax.swing.JFrame {
         } catch (InterruptedException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
-        mediaPlayer.playMedia(server);
+        mediaPlayer.playMedia(getRtspUrl());
+    }
+    
+    public void setHost(String ip) {
+        this.server = ip;
+    }
+    
+    public void setPort(String port) {
+        this.port = port;
+    }
+    
+    public void setRtspPath(String path) {
+        this.rtspPath = path;
+    }
+    
+    public String getRtspUrl() {
+        return "rtsp://" + this.server + ":" + this.port + "/" + this.rtspPath;
     }
 
     /**
@@ -421,8 +441,7 @@ public class Client extends javax.swing.JFrame {
 
     private void buttonPlayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonPlayActionPerformed
         if (!playlist.isEmpty()) {
-            //mediaPlayer.playMedia(textFileLocation.getText());
-            mediaPlayer.playMedia(server);
+            mediaPlayer.playMedia(getRtspUrl());
         }
     }//GEN-LAST:event_buttonPlayActionPerformed
 
@@ -447,7 +466,7 @@ public class Client extends javax.swing.JFrame {
             } catch (InterruptedException ex) {
                 ex.printStackTrace();
             }
-            mediaPlayer.playMedia(server);
+            mediaPlayer.playMedia(getRtspUrl());
         }
     }//GEN-LAST:event_jButton4ActionPerformed
 
@@ -483,7 +502,7 @@ public class Client extends javax.swing.JFrame {
     }//GEN-LAST:event_buttonShowPlaylistActionPerformed
 
     public void setMedia(String media) {
-        mediaPlayer.playMedia(media);
+        mediaPlayer.playMedia(getRtspUrl());
     }
     
     public void updateRightPanel(ArrayList<String> elements) {
