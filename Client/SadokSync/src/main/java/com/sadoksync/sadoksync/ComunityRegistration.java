@@ -16,33 +16,33 @@ import java.io.Serializable;
  * @author Pontus
  */
 public class ComunityRegistration implements Serializable {
-    ClientRemoteInterface cri;
+    String ipAddr;
     String topic;
     String name;
-    public ComunityRegistration(String name, ClientRemoteInterface cri, String topic){
+    public ComunityRegistration(String name, String ipAddr, String topic){
         this.name = name;
-        this.cri = cri;
+        this.ipAddr = ipAddr;
         this.topic = topic;
     }
 
-    public ClientRemoteInterface getHost() {
-        return this.cri;
+    public String getHost() {
+        return this.ipAddr;
     }
     
     public String getTopic(){
-        return topic;
+        return this.topic;
     }
     
     public String getName(){
-        return name;
+        return this.name;
     }
     
     public void setName(){
         this.name = name;
     }
     
-    public void setHost(ClientRemoteInterface cri){
-        this.cri = cri;
+    public void setHost(String ipAddr){
+        this.ipAddr = ipAddr;
     }
     public void setTopic(String topic){
         this.topic = topic;
