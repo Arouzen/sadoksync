@@ -254,7 +254,7 @@ public class Peer {
             this.sendMsgToComunity(msg);
             
             //When a new client joins the Comunity it neads to know where the stream is currently
-            this.DeliverStream(msg.getipAddr(), "Path");
+            this.DeliverStream(msg.getipAddr(), "demo");
         } else {
 
         }
