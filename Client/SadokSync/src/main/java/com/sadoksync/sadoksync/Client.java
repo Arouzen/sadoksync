@@ -32,7 +32,6 @@ import uk.co.caprica.vlcj.player.headless.HeadlessMediaPlayer;
  */
 public class Client extends javax.swing.JFrame {
 
-    private final Peer pr;
     // Create a media player factory
     private final MediaPlayerFactory mediaPlayerFactory;
 
@@ -58,14 +57,17 @@ public class Client extends javax.swing.JFrame {
 
     
     public ServerNameGUI serverNameGUI;
+    private final String nick;
     
     
     /**
      * Creates new form Client
+     * @param pr Peer
      */
     public Client(Peer pr) {
-        this.pr = pr;
         initComponents();
+        
+        this.nick = pr.getNick();
 
         //VLCLibrary init
         StringBuilder location = new StringBuilder(Client.class.getProtectionDomain().getCodeSource().getLocation().toString());
@@ -518,7 +520,7 @@ public class Client extends javax.swing.JFrame {
 
     public void addToChat(String text) {
         if (!text.isEmpty()) {
-            textChatOutput.append("\r\n" + text);
+            textChatOutput.append("\r\n" + this.nick + ": " + text);
         }
     }
 
