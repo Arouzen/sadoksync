@@ -5,36 +5,51 @@
  */
 package com.sadoksync.sadoksync;
 
-import java.net.MalformedURLException;
-import java.rmi.Naming;
-import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
+import java.io.IOException;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
- * @author Arouz
+ * @author Pontus
  */
-public class ServiceRegistry {
-    SynchReg criMap;
-    private static final int REGISTRY_PORT_NUMBER = 1099;
+public class ServiceRegistry extends Thread {
 
-    public ServiceRegistry(String sname,String ipAddr) {
-        criMap = new SynchReg();
-        System.setProperty("java.rmi.server.hostname",ipAddr);
+    Map<String, ComunityRegistration> cMap;
+    ServerSocket serverSocket = null;
+    Boolean listening;
+
+    Peer pr;
+
+    public ServiceRegistry(Peer pr) {
+        this.cMap = Collections.synchronizedMap(new HashMap<String, ComunityRegistration>());
+        this.pr = pr;
         try {
+            serverSocket = new ServerSocket(3333);
+            listening = true;
+        } catch (IOException e) {
+            System.err.println("Could not listen on port: 3333.");
+            //System.exit(1);
+        }
+    }
+
+    @Override
+    public void run() {
+        System.out.println("Starting Server Socket Thread");
+        while (listening) {
+            Socket clientSocket;
             try {
-                LocateRegistry.getRegistry(REGISTRY_PORT_NUMBER).list();
-                System.out.println("Found Registry");
-                
-            } catch (RemoteException e) {
-                LocateRegistry.createRegistry(REGISTRY_PORT_NUMBER);
-                System.out.println("Did not find a Registry. Starting one.");
-                Naming.rebind("rmi://localhost/" + sname, new RegistryImplementation(criMap));
+                clientSocket = serverSocket.accept();
+                (new ServiceRegistryConnectionHandler(clientSocket, cMap, pr)).start();
+            } catch (IOException ex) {
+                Logger.getLogger(ServiceRegistry.class.getName()).log(Level.SEVERE, null, ex);
             }
-            
-        } catch (RemoteException | MalformedURLException re) {
-            System.out.println(re);
-            System.exit(1);
+
         }
     }
 }

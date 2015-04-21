@@ -22,12 +22,12 @@ class PeerClientThread extends Thread {
     ObjectOutputStream out = null;
     Message msg;
     
-    PeerClientThread(String host, Message msg) {
+    PeerClientThread(String host, int port, Message msg) {
         this.msg = msg;
 
         try {
 
-            clientSocket = new Socket(host, 4444);
+            clientSocket = new Socket(host, port);
 
         } catch (UnknownHostException e) {
             System.err.println("Don't know about host: " + host + ".");

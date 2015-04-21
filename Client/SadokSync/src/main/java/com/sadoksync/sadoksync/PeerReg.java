@@ -12,18 +12,16 @@ import com.sadoksync.msg.ClientRemoteInterface;
  * @author Pontus
  */
 public class PeerReg {
-    String name;
-    ClientRemoteInterface addr;
-    String myip;
-    public PeerReg(String name, ClientRemoteInterface host, String ipAddr) {
-        this.name = name;
-        this.addr = host;
-        this.myip = ipAddr;
+    String nick;
+    String ipAddr;
+    public PeerReg(String nick, String ipAddr) {
+        this.nick = nick;
+        this.ipAddr = ipAddr;
     }
-    public String getName(){
-        return name;
+    public String getNick(){
+        return nick;
     }
-    public ClientRemoteInterface getAddr(){
-        return addr;
+    public String getAddr(){
+        return ipAddr;
     }
 }

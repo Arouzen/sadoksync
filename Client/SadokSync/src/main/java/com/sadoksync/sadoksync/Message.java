@@ -6,6 +6,7 @@
 package com.sadoksync.sadoksync;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  *
@@ -17,7 +18,7 @@ public class Message implements Serializable {
     String type;
     String ipAddr;
     String text;
-
+    List li = null;
     public Message() {
 
     }
@@ -60,5 +61,13 @@ public class Message implements Serializable {
 
     public String getText() {
         return text;
+    }
+    
+    public void setList(List li){
+        this.li = li;
+    }
+    
+    public List getList(){
+        return li;
     }
 }

@@ -5,8 +5,10 @@
  */
 package com.sadoksync.sadoksync;
 
-import com.sadoksync.msg.ClientRemoteInterface;
-import java.rmi.RemoteException;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -21,17 +23,17 @@ public class Comunity {
 
     String topic;
     String cname;
-    RegistryConnecter rc;
 
     String host;
     //ClientRemoteInterface host;
 
-    PeerMap pMap;
+    Map<String,PeerReg> pMap;
 
     public Comunity() {
         System.out.println("Initializing Comunity View");
         this.topic = "";
-        this.pMap = new PeerMap();
+ 
+        this.pMap = Collections.synchronizedMap(new HashMap<String,PeerReg>());
     }
     /*
      public void Register(String rhost, String name, int port) {
@@ -47,9 +49,9 @@ public class Comunity {
      */
 
     public void RegPeer(PeerReg peer) {
-        System.out.println("Comunity: RegPeer: " + nick);
+        System.out.println("Comunity: RegPeer: " + peer.getNick());
         //TO DO: Send registration of user to all other clients if this should be done. 
-        pMap.put(peer.getName(), peer);
+        pMap.put(peer.getNick(), peer);
     }
 
     void create(String cname, String myIP, String topic, String nick) {
@@ -106,4 +108,12 @@ public class Comunity {
         return topic;
     }
 
+    Map getComunityPeers(){
+        return pMap;
+    }
+
+    void addPeer(String name, String ipAddr) {
+        System.out.println("Comunity: addPeer: Adding " + name + " @" + ipAddr);
+        pMap.put(name, new PeerReg(name, ipAddr));       
+    }
 }

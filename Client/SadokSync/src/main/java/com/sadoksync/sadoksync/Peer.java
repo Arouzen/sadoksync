@@ -8,6 +8,11 @@ package com.sadoksync.sadoksync;
 import com.sadoksync.msg.ClientRemoteInterface;
 import java.net.MalformedURLException;
 import java.rmi.RemoteException;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
@@ -29,15 +34,17 @@ public class Peer {
     Comunity com;
 
     //ClientInterface cri;
-    //ServiceRegistry sr; 
+    ServiceRegistry sr;
     Lobby lb;
     Client cli;
     Properties prop;
 
     SynchReg synchMap;
-    
+    Map<String, ComunityRegistration> cMap;
+
     public Peer() {
         executor = Executors.newFixedThreadPool(50);
+        this.cMap = Collections.synchronizedMap(new HashMap<String, ComunityRegistration>());
     }
 
     //del?
@@ -53,7 +60,7 @@ public class Peer {
 
     void registerComunity(String rhost, int port) {
         Message msg = new Message(com);
-        this.sendMsg(rhost, msg);
+        this.sendMsg(rhost, 3333, msg);
     }
 
     void findAllComunity(String rhost, int port) {
@@ -61,27 +68,39 @@ public class Peer {
         msg.setipAddr(this.getMyIp());
         msg.setType("Find All");
         msg.setName(this.getNick());
-        this.sendMsg(rhost, msg);
+        this.sendMsg(rhost, 3333, msg);
     }
+    /*
+     void joinComunity(String cname, String addr, int port) {
+     Message msg = new Message();
+     msg.setipAddr(this.getMyIp());
+     msg.setType("Join Comunity");
+     msg.setName(this.getNick());
+     msg.setText(cname);      
+     }
+     */
 
-    void joinComunity(String cname, String addr, int port) {
+    void joinComunity(String cname) {
+        ComunityRegistration cr = cMap.get(cname);
+
         Message msg = new Message();
         msg.setipAddr(this.getMyIp());
         msg.setType("Join Comunity");
         msg.setName(this.getNick());
-        msg.setText(cname);
+        //msg.setText(cname);
 
-        this.sendMsg(addr, msg);
+        this.sendMsg(cr.getHost(), 4444, msg);
     }
+    /*
+     void setComunityHost(String host) {
+     System.out.println("Peer: setComunityHost");
 
-    void setComunityHost(String host) {
-        System.out.println("Peer: setComunityHost");
+     this.openClient();
+     com.setHost(host);
 
-        this.openClient();
-        com.setHost(host);
-
-        this.joinComunity(com.getComunityName(), host, 4444);
-    }
+     this.joinComunity(com.getComunityName(), host, 4444);
+     }
+     */
 
     void setLobby(Lobby lb) {
         this.lb = lb;
@@ -160,6 +179,7 @@ public class Peer {
     }
 
     void run() {
+        this.stertServiceRegistry();
         this.startServer();
 
         com = new Comunity();
@@ -169,12 +189,12 @@ public class Peer {
         this.setClient(new Client(this));
 
         synchMap = new SynchReg();
-        
+
         this.openProperties();
     }
 
     void RegPeer(PeerReg peerReg) {
-        System.out.println("Peer: RegPeer: Registering " + peerReg.getName() + " with comunity");
+        System.out.println("Peer: RegPeer: Registering " + peerReg.getNick() + " with comunity");
         com.RegPeer(peerReg);
     }
 
@@ -187,17 +207,61 @@ public class Peer {
 
     }
 
+    private void stertServiceRegistry() {
+        sr = new ServiceRegistry(this);
+        executor.execute(sr);
+    }
+
     void startServer() {
         pst = new PeerServerThread(this);
         executor.execute(pst);
     }
 
-    void sendMsg(String host, Message msg) {
-        executor.execute(new PeerClientThread(host, msg));
+    void sendMsg(String host, int port, Message msg) {
+        executor.execute(new PeerClientThread(host, port, msg));
+    }
+
+    void sendMsgToComunity(Message msg) {
+        //Sends a message to all other members of a comunity
+        Map m = com.getComunityPeers();
+        Set s = m.keySet(); // Needn't be in synchronized block
+        String key;
+        PeerReg opr;
+        synchronized (m) {  // Synchronizing on m, not s!
+            Iterator i = s.iterator(); // Must be in synchronized block
+            while (i.hasNext()) {
+                key = (String) i.next();
+                opr = (PeerReg)m.get(key);
+                if(!this.getMyIp().equals(opr.getAddr())){
+                    this.sendMsg(opr.getAddr(), 4444, msg);
+                }
+            }
+        }
     }
 
     public SynchReg getSynchReg() {
         return synchMap;
+    }
+
+    Lobby getLobby() {
+        return lb;
+    }
+
+    void addKnownComunity(ComunityRegistration cm) {
+        cMap.put(cm.getName(), cm);
+    }
+
+    void PeerToJoin(Message msg) {
+        com.addPeer(msg.getName(), msg.getipAddr());
+        msg.setType("Register Client");
+        if(this.getMyIp().equals(com.getHost())){
+            this.sendMsgToComunity(msg);
+        }else{
+            
+        }
+        //If comunity Host register the peer
+        //If not comunity Host, send this to comunity Host
+
     }
 
 }

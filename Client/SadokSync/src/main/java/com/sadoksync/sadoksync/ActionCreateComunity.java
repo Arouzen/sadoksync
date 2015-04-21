@@ -32,13 +32,7 @@ public class ActionCreateComunity implements Runnable {
         
         System.out.println("ActionCreateComunity: Registring Comunity " + cname);
         pr.registerComunity(addr,4444);
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(ActionCreateComunity.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        System.out.println("ActionCreateComunity: Joining Comunity " + cname);
-        pr.joinComunity(cname, addr, 4444);
+
     }
 }
     

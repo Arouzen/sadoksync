@@ -5,30 +5,31 @@
  */
 package com.sadoksync.sadoksync;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.OptionalDataException;
 import java.net.Socket;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.DefaultListModel;
+import java.util.Map;
+import java.util.Set;
 
 /**
  *
  * @author Pontus
  */
-public class ConnectionHandler extends Thread {
+class ServiceRegistryConnectionHandler extends Thread {
 
     SynchReg synchMap;
     Socket clientSocket;
     Peer pr;
     ObjectInputStream in;
-    //BufferedOutputStream out;
+    Map<String, ComunityRegistration> cMap;
 
-    ConnectionHandler(Socket clientSocket, Peer pr) {
+    //BufferedOutputStream out;
+    public ServiceRegistryConnectionHandler(Socket clientSocket, Map<String, ComunityRegistration> cMap, Peer pr) {
+        this.cMap = cMap;
         this.clientSocket = clientSocket;
         this.pr = pr;
         this.synchMap = pr.getSynchReg();
@@ -50,46 +51,37 @@ public class ConnectionHandler extends Thread {
                 Message msg = ((Message) msgObj);
                 switch (msg.getType()) {
                     case "Register Client":
-                        System.out.println("Register Client");
-
+                        System.out.println("Register Client: Error Wrong Handler");
                         break;
                     case "Join Comunity":
-                        System.out.println("Join Comunity");
-                        pr.PeerToJoin(msg);
-                        //If comunity Host register the peer
-                        //If not comunity Host, send this to comunity Host
+                        System.out.println("Join Comunity: Error Wrong Handler");
                         break;
-
-                    case "Comunity List":
-                        System.out.println("Comunity List");
-                        List<ComunityRegistration> li = (List<ComunityRegistration>) msg.getList();
-
-                        DefaultListModel lm = new DefaultListModel();
-                        ComunityRegistration cm;
-                        for (Object s : li) {
-                            cm =(ComunityRegistration) s; 
-                            pr.addKnownComunity(cm);
-                            lm.addElement(cm.getName());
-                        }
-
-                        final DefaultListModel flm = lm;
-
-                        java.awt.EventQueue.invokeLater(new Runnable() {
-                            public void run() {
-                                pr.getLobby().jList1.setModel(flm);
-                            }
-                        });
-
-                        break;
-
                     case "Find All":
-                        System.out.println("Find All: ERROR. Wrong handler");
+                        System.out.println("Find All");
+
+                        //Turn Map into List
+                        List retList = new LinkedList();
+                        Set s = cMap.keySet(); // Needn't be in synchronized block
+                        ComunityRegistration opr;
+                        synchronized (cMap) {  // Synchronizing on m, not s!
+                            Iterator i = s.iterator(); // Must be in synchronized block
+                            while (i.hasNext()) {
+                                opr = cMap.get(i.next());
+
+                                //Add to list
+                                retList.add(opr);
+                            }
+                        }
+                        //Create return message
+                        msg = new Message();
+                        msg.setType("Comunity List");
+                        msg.setList(retList);
+                        pr.sendMsg(null, 4444, msg);
                         break;
                     case "Comunity Registration":
-                        System.out.println("Comunity Registration: ERROR. Wrong handler");
-
+                        System.out.println("Comunity Registration");
+                        cMap.put(msg.getName(), new ComunityRegistration(msg.getName(), msg.getipAddr(), msg.getText()));
                         break;
-
                 }
             }
 
