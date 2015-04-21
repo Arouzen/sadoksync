@@ -72,11 +72,12 @@ class ServiceRegistryConnectionHandler extends Thread {
                                 retList.add(opr);
                             }
                         }
+                        String retIP = msg.getipAddr();
                         //Create return message
                         msg = new Message();
                         msg.setType("Comunity List");
                         msg.setList(retList);
-                        pr.sendMsg(null, 4444, msg);
+                        pr.sendMsg(retIP, 4444, msg);
                         break;
                     case "Comunity Registration":
                         System.out.println("Comunity Registration");
