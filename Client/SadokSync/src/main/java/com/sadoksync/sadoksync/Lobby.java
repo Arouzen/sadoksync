@@ -81,7 +81,7 @@ public class Lobby extends javax.swing.JFrame {
 
         jLabel2.setText("Registry: ");
 
-        jButton3.setText("Seach");
+        jButton3.setText("Search");
         jButton3.setEnabled(false);
         jButton3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
