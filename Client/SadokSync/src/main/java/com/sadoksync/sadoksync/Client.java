@@ -456,17 +456,17 @@ public class Client extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void buttonPlayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonPlayActionPerformed
-        if (!playlist.isEmpty()) {
-            mediaPlayer.playMedia(getRtspUrl());
-        }
+
+        connectToRtsp();
+
     }//GEN-LAST:event_buttonPlayActionPerformed
 
     private void ButtonPauseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonPauseActionPerformed
-        if (mediaPlayer.isPlaying()) {
-            mediaPlayer.pause();
-        } else {
-            mediaPlayer.play();
-        }
+        /*        if (mediaPlayer.isPlaying()) {
+         mediaPlayer.pause();
+         } else {
+         mediaPlayer.play();
+         }*/
     }//GEN-LAST:event_ButtonPauseActionPerformed
 
     private void ButtonStopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonStopActionPerformed
