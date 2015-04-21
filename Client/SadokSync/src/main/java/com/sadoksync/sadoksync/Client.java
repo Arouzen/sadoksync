@@ -61,6 +61,7 @@ public class Client extends javax.swing.JFrame {
     private String port;
     private String rtspPath;
 
+    // Socket variables
     private boolean isHost;
     private Peer pr;
 
@@ -552,27 +553,28 @@ public class Client extends javax.swing.JFrame {
                         serverMediaPlayer.addMediaPlayerEventListener(new MediaPlayerEventAdapter() {
                             @Override
                             public void finished(MediaPlayer mediaPlayer) {
+                                playlist.removeFirstInQueue();
+                                updateRightPanel(getPlaylist());
                                 if (!playlist.isEmpty()) {
                                     streamNextMedia(mediaPlayer);
+                                } else {
+                                    System.out.println("[Server] No more media in list");
                                 }
                             }
 
                             @Override
                             public void stopped(MediaPlayer mediaPlayer) {
+                                playlist.removeFirstInQueue();
+                                updateRightPanel(getPlaylist());
                                 if (!playlist.isEmpty()) {
                                     streamNextMedia(mediaPlayer);
+                                } else {
+                                    System.out.println("[Server] No more media in list");
                                 }
                             }
 
                             private void streamNextMedia(MediaPlayer mediaPlayer) {
-                                System.out.println("Playing next video after 2sec...");
-                                playlist.removeFirstInQueue();
-                                updateRightPanel(getPlaylist());
-                                try {
-                                    Thread.sleep(2000);
-                                } catch (InterruptedException ex) {
-                                    Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
-                                }
+                                System.out.println("[Server] Media stopped/finished, moving next in list!");
                                 mediaPlayer.playMedia(playlist.getNowPlaying(),
                                         options,
                                         ":no-sout-rtp-sap",
@@ -580,7 +582,13 @@ public class Client extends javax.swing.JFrame {
                                         ":sout-all",
                                         ":sout-keep"
                                 );
+                                try {
+                                    Thread.sleep(2000);
+                                } catch (InterruptedException ex) {
+                                    Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+                                }
                                 pr.DeliverStreamToComunity(pr.getMyIp(), "demo");
+                                connectToRtsp();
                             }
                         });
 
