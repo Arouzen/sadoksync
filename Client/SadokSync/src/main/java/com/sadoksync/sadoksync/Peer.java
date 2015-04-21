@@ -90,7 +90,7 @@ public class Peer {
         //msg.setText(cname);
 
         this.sendMsg(cr.getHost(), 4444, msg);
-
+        this.openClient();
     }
     /*
      void setComunityHost(String host) {
