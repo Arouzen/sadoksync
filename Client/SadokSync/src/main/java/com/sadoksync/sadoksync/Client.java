@@ -1,6 +1,7 @@
 package com.sadoksync.sadoksync;
 
 import com.sadoksync.sadoksync.PublicPlaylist.Pair;
+import com.sun.java.swing.plaf.windows.WindowsFileChooserUI;
 import com.sun.jna.NativeLibrary;
 import java.awt.Canvas;
 import java.awt.FileDialog;
@@ -16,8 +17,12 @@ import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.DefaultListModel;
 import javax.swing.JComponent;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.KeyStroke;
+import javax.swing.LookAndFeel;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 import uk.co.caprica.vlcj.player.MediaPlayer;
 import uk.co.caprica.vlcj.player.MediaPlayerEventAdapter;
 import uk.co.caprica.vlcj.player.MediaPlayerFactory;
@@ -50,23 +55,45 @@ public class Client extends javax.swing.JFrame {
     // Create the public playlist
     private PublicPlaylist playlist;
 
+    // Create windows-look file chooser
+    private JFileChooser fileChooser;
+
     // Rtsp variables
     private String server;
     private String port;
     private String rtspPath;
 
-    
     public ServerNameGUI serverNameGUI;
     private final String nick;
-    
-    
+
     /**
      * Creates new form Client
+     *
      * @param pr Peer
      */
     public Client(Peer pr) {
+        // Save java Look&Feel (L&F)
+        LookAndFeel originalLaf = UIManager.getLookAndFeel();
+        try {
+            // Switch to Windows L&F
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception ex) {
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        //Create the Windows L&F file chooser
+        fileChooser = new JFileChooser();
+
+        try {
+            //Flick the L&F back to the default
+            UIManager.setLookAndFeel(originalLaf);
+        } catch (UnsupportedLookAndFeelException ex) {
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        // Now create rest of components with saved default layout
         initComponents();
-        
+
         this.nick = pr.getNick();
 
         //VLCLibrary init
@@ -75,10 +102,14 @@ public class Client extends javax.swing.JFrame {
         location.append("VLC/");
         System.out.println(location);
         NativeLibrary.addSearchPath("libvlc", location.toString());
-        
+
         //Server popup thingy (???) init
         serverNameGUI = new ServerNameGUI();
-        
+
+        //File chooser settings init
+        fileChooser.setFileFilter(new FileFilter());
+        fileChooser.setAcceptAllFileFilterUsed(false);
+
         //Fullscreenplayer init
         fullscreenplayer = new FullScreenPlayer();
 
@@ -110,8 +141,6 @@ public class Client extends javax.swing.JFrame {
         // TODO, remove hardcode
         // Public playlist init, i am host so i create it :)
         playlist = new PublicPlaylist();
-        // I am host, so ip is me :)
-        server = "rtsp://localhost:5555/demo";
     }
 
     public void persistClient(MediaPlayer mediaPlayer) {
@@ -123,19 +152,19 @@ public class Client extends javax.swing.JFrame {
         }
         mediaPlayer.playMedia(getRtspUrl());
     }
-    
+
     public void setHost(String ip) {
         this.server = ip;
     }
-    
+
     public void setPort(String port) {
         this.port = port;
     }
-    
+
     public void setRtspPath(String path) {
         this.rtspPath = path;
     }
-    
+
     public String getRtspUrl() {
         return "rtsp://" + this.server + ":" + this.port + "/" + this.rtspPath;
     }
@@ -149,7 +178,6 @@ public class Client extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        fileChooser = new javax.swing.JFileChooser();
         scrollListPanel = new javax.swing.JScrollPane();
         listInScrollpane = new javax.swing.JList();
         panelChatt = new javax.swing.JPanel();
@@ -422,13 +450,10 @@ public class Client extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void OpenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_OpenActionPerformed
-        FileDialog fileDialog;
-        fileDialog = new FileDialog(this);
-        fileDialog.setVisible(true);
-        File[] returnVal = fileDialog.getFiles();
-        if (returnVal[0] != null) {
-            //textFileLocation.setText(returnVal[0].getAbsolutePath());
-            playlist.addToPlaylist(returnVal[0].getName(), returnVal[0].getAbsolutePath(), "20min lol", "videofil");
+        int returnVal = fileChooser.showOpenDialog(this);
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            File selectedMedia = fileChooser.getSelectedFile();
+            playlist.addToPlaylist(selectedMedia.getName(), selectedMedia.getAbsolutePath(), "20min lol", "videofil");
             updateRightPanel(getPlaylist());
         }
     }//GEN-LAST:event_OpenActionPerformed
@@ -506,7 +531,7 @@ public class Client extends javax.swing.JFrame {
     public void setMedia(String media) {
         mediaPlayer.playMedia(getRtspUrl());
     }
-    
+
     public void updateRightPanel(ArrayList<String> elements) {
         DefaultListModel model = (DefaultListModel) listInScrollpane.getModel();
         model.clear();
@@ -626,7 +651,7 @@ public class Client extends javax.swing.JFrame {
             }
         });
     }
-    
+
     // TODO un-hardcode
     private ArrayList<String> getUsers() {
         ArrayList<String> list = new ArrayList<String>();
@@ -732,7 +757,6 @@ public class Client extends javax.swing.JFrame {
     private javax.swing.JButton buttonShowPlaylist;
     private javax.swing.JButton buttonShowUsers;
     private java.awt.Canvas canvas;
-    private javax.swing.JFileChooser fileChooser;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
