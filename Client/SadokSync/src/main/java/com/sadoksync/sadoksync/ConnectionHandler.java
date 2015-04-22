@@ -42,9 +42,11 @@ public class ConnectionHandler extends Thread {
                 switch (msg.getType()) {
 
                     case "Set Playlist":
+                        System.out.println("Message: Set Playlist");
                         pr.getClient().setPlayList(msg.getPlaylist());
                         break;
                     case "Playlist":
+                        System.out.println("Message: Playlist");
                         if (msg.getText().equals("add") && pr.isHost()) {
                             pr.getClient().addtoPlaylist(msg.getPair());
                         }
