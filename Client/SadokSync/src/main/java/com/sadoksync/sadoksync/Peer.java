@@ -334,4 +334,24 @@ public class Peer {
         msgret.setList(li);
         this.sendMsg(ipAddr, 4444, msgret);
     }
+    
+    void DeliverPlaylistToComunity() {
+        //Deliver the playlist... how?
+        List li = null;
+        PublicPlaylist pli = cli.getPubicPlaylist();
+        pli.getLock().lock();
+        try {
+            //get media from li and put into a list.
+            li = pli.getMediaList();
+
+            pli.getCV().signalAll();
+        } finally {
+            pli.getLock().unlock();
+        }
+        Message msgret = new Message();
+        msgret.setipAddr(this.getMyIp());
+        msgret.setType("Set Playlist");
+        msgret.setList(li);
+        this.sendMsgToComunity(msgret);
+    }
 }

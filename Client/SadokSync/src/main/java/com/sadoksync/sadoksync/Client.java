@@ -442,6 +442,7 @@ public class Client extends javax.swing.JFrame {
             File selectedMedia = fileChooser.getSelectedFile();
             playlist.addToPlaylist(selectedMedia.getName(), selectedMedia.getAbsolutePath(), "20min lol", "videofil");
             updateRightPanel(getPlaylist());
+            pr.DeliverPlaylistToComunity();
         }
     }//GEN-LAST:event_OpenActionPerformed
 
