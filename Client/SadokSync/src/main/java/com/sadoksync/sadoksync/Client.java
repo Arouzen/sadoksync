@@ -765,7 +765,6 @@ public class Client extends javax.swing.JFrame {
                 } catch (Exception e) {
                     return false;
                 }
-                DefaultListModel model = (DefaultListModel) listInScrollpane.getModel();
                 for (File file : data) {
                     if (new FileFilter().accept(file)) {
                         playlist.addToPlaylist(file.getName(), file.getAbsolutePath(), "20", "local video");
