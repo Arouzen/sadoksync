@@ -255,7 +255,7 @@ public class Peer {
             this.sendMsgToComunity(msg);
 
             //When a new client joins the Comunity it neads to know where the stream is currently
-            //this.DeliverPlaylist(msg.getipAddr());
+            this.DeliverPlaylist(msg.getipAddr());
         } else {
 
         }
@@ -274,13 +274,16 @@ public class Peer {
             while (i.hasNext()) {
                 key = (String) i.next();
                 opr = (PeerReg) m.get(key);
+
                 Message msg = new Message();
 
                 msg.setipAddr(opr.getAddr());
                 msg.setType("Register Client");
                 msg.setName(opr.getNick());
+                if (!this.getMyIp().equals(opr.getAddr())) {
+                    this.sendMsg(ipAddr, 4444, msg);
+                }
 
-                this.sendMsg(ipAddr, 4444, msg);
             }
         }
     }
@@ -304,6 +307,7 @@ public class Peer {
     }
 
     boolean isHost() {
+        System.out.println("isHost: " + this.getMyIp() + " and " + com.getHost());
         return this.getMyIp().equals(com.getHost());
     }
 
