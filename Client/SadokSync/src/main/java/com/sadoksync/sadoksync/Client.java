@@ -12,6 +12,9 @@ import java.awt.event.KeyEvent;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.AbstractAction;
@@ -661,10 +664,13 @@ public class Client extends javax.swing.JFrame {
     // TODO un-hardcode
     private ArrayList<String> getUsers() {
         ArrayList<String> list = new ArrayList<String>();
-        list.add("Sadok");
-        list.add("Jehova");
-        list.add("Judas");
-        list.add("Gandalf");
+        Map map = pr.com.getComunityPeers();
+        
+        for (Object entry : map.keySet()) {
+            String key = entry.toString();
+            list.add(key);
+        }
+        
         return list;
     }
 
