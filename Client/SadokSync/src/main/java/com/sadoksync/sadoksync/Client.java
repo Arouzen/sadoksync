@@ -72,7 +72,6 @@ public class Client extends javax.swing.JFrame {
     private boolean isHost;
     private Peer pr;
 
-    public ServerNameGUI serverNameGUI;
     private final String nick;
 
     /**
@@ -89,6 +88,7 @@ public class Client extends javax.swing.JFrame {
         // Drag and drop init
         initDragnDrop();
 
+        // Peer init
         this.pr = pr;
         this.nick = pr.getNick();
 
@@ -98,9 +98,6 @@ public class Client extends javax.swing.JFrame {
         location.append("VLC/");
         System.out.println(location);
         NativeLibrary.addSearchPath("libvlc", location.toString());
-
-        //Server popup thingy (???) init
-        serverNameGUI = new ServerNameGUI();
 
         //File chooser settings init
         fileChooser.setFileFilter(new FileFilter());
@@ -185,7 +182,6 @@ public class Client extends javax.swing.JFrame {
         buttonSendChat = new javax.swing.JButton();
         textChatInput = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
         buttonPlay = new javax.swing.JButton();
         textFileLocation = new javax.swing.JTextField();
         jButton3 = new javax.swing.JButton();
@@ -254,13 +250,6 @@ public class Client extends javax.swing.JFrame {
         jLabel1.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("S A D O K S Y N C !");
-
-        jButton1.setText("Server");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
 
         buttonPlay.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Button_play_Default.png"))); // NOI18N
         buttonPlay.setMaximumSize(new java.awt.Dimension(85, 40));
@@ -413,8 +402,6 @@ public class Client extends javax.swing.JFrame {
                                 .addGap(0, 0, Short.MAX_VALUE)
                                 .addComponent(jButton3)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(buttonShowChat)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(buttonShowUsers)
@@ -428,7 +415,6 @@ public class Client extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1)
                     .addComponent(jButton3)
                     .addComponent(buttonShowChat)
                     .addComponent(buttonShowUsers)
@@ -463,14 +449,8 @@ public class Client extends javax.swing.JFrame {
         System.exit(0);
     }//GEN-LAST:event_ExitActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        serverNameGUI.setVisible(true);
-    }//GEN-LAST:event_jButton1ActionPerformed
-
     private void buttonPlayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonPlayActionPerformed
-
         connectToRtsp();
-
     }//GEN-LAST:event_buttonPlayActionPerformed
 
     private void ButtonPauseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonPauseActionPerformed
@@ -879,7 +859,6 @@ public class Client extends javax.swing.JFrame {
     private javax.swing.JButton buttonShowUsers;
     private javax.swing.JButton buttonStream;
     private java.awt.Canvas canvas;
-    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JMenu jMenu1;
