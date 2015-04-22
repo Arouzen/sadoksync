@@ -81,6 +81,11 @@ public class Lobby extends javax.swing.JFrame {
                 jTextFieldRegistryAddrActionPerformed(evt);
             }
         });
+        jTextFieldRegistryAddr.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                jTextFieldRegistryAddrKeyPressed(evt);
+            }
+        });
 
         jLabel2.setText("Registry: ");
 
@@ -203,9 +208,10 @@ public class Lobby extends javax.swing.JFrame {
     }//GEN-LAST:event_jTextFieldRegistryAddrActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-
-        ActionFindAllComunitys afac = new ActionFindAllComunitys(pr, jTextFieldRegistryAddr.getText());
-        new Thread(afac).start();
+        if (!jTextFieldRegistryAddr.getText().isEmpty()) {
+            ActionFindAllComunitys afac = new ActionFindAllComunitys(pr, jTextFieldRegistryAddr.getText());
+            new Thread(afac).start();
+        }
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
@@ -222,6 +228,7 @@ public class Lobby extends javax.swing.JFrame {
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         if (jTextFieldNick.getText().length() > 2 && jTextFieldNick.getText().length() < 15) {
             ActionSetName asn = new ActionSetName(pr, jTextFieldNick.getText(), this);
+            jTextFieldNick.setEnabled(false);
             new Thread(asn).start();
         }
     }//GEN-LAST:event_jButton4ActionPerformed
@@ -239,6 +246,15 @@ public class Lobby extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_jTextFieldNickKeyPressed
+
+    private void jTextFieldRegistryAddrKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextFieldRegistryAddrKeyPressed
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            if (!jTextFieldRegistryAddr.getText().isEmpty()) {
+                ActionFindAllComunitys afac = new ActionFindAllComunitys(pr, jTextFieldRegistryAddr.getText());
+                new Thread(afac).start();
+            }
+        }
+    }//GEN-LAST:event_jTextFieldRegistryAddrKeyPressed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
