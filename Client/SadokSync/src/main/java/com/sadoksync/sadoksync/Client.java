@@ -774,6 +774,7 @@ public class Client extends javax.swing.JFrame {
                         displayDropLocation("Does only accept media files.");
                     }
                 }
+                updateRightPanel(getPlaylist());
                 return true;
             }
 
