@@ -5,6 +5,8 @@
  */
 package com.sadoksync.sadoksync;
 
+import java.awt.event.KeyEvent;
+
 /**
  *
  * @author Arouz
@@ -13,6 +15,7 @@ public class Lobby extends javax.swing.JFrame {
 
     Peer pr;
     Client cli;
+
     /**
      * Creates new form panel
      */
@@ -94,6 +97,11 @@ public class Lobby extends javax.swing.JFrame {
         jTextFieldNick.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jTextFieldNickActionPerformed(evt);
+            }
+        });
+        jTextFieldNick.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                jTextFieldNickKeyPressed(evt);
             }
         });
 
@@ -180,13 +188,13 @@ public class Lobby extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         String cname = jTextField1.getText();
-        if(!cname.equals("")){
+        if (!cname.equals("")) {
             ActionCreateComunity acc = new ActionCreateComunity(pr, jTextFieldRegistryAddr.getText(), cname, "Comunity Topic");
             new Thread(acc).start();
-        }else{
+        } else {
             //Complain
         }
-        
+
 
     }//GEN-LAST:event_jButton1ActionPerformed
 
@@ -202,7 +210,7 @@ public class Lobby extends javax.swing.JFrame {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         int firstSelIx = jList1.getSelectedIndex();
-        String sel = (String)jList1.getModel().getElementAt(firstSelIx);
+        String sel = (String) jList1.getModel().getElementAt(firstSelIx);
         ActionJoinComunitys afac = new ActionJoinComunitys(pr, jTextFieldRegistryAddr.getText(), sel);
         new Thread(afac).start();
     }//GEN-LAST:event_jButton2ActionPerformed
@@ -212,15 +220,25 @@ public class Lobby extends javax.swing.JFrame {
     }//GEN-LAST:event_jTextFieldNickActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        ActionSetName asn = new ActionSetName(pr, jTextFieldNick.getText(), this);
-        new Thread(asn).start();
+        if (jTextFieldNick.getText().length() > 2 && jTextFieldNick.getText().length() < 15) {
+            ActionSetName asn = new ActionSetName(pr, jTextFieldNick.getText(), this);
+            new Thread(asn).start();
+        }
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField1ActionPerformed
 
-
+    private void jTextFieldNickKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextFieldNickKeyPressed
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            if (jTextFieldNick.getText().length() > 2 && jTextFieldNick.getText().length() < 15) {
+                ActionSetName asn = new ActionSetName(pr, jTextFieldNick.getText(), this);
+                jTextFieldNick.setEnabled(false);
+                new Thread(asn).start();
+            }
+        }
+    }//GEN-LAST:event_jTextFieldNickKeyPressed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
