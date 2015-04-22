@@ -670,9 +670,15 @@ public class Client extends javax.swing.JFrame {
     // TODO : un-hardcode
     private ArrayList<String> getPlaylist() {
         ArrayList<String> list = new ArrayList<String>();
-        for (Pair entry : playlist.getMediaList()) {
-            list.add("Owner: " + entry.key() + " || " + entry.value().getName());
+        playlist.getLock().lock();
+        try {
+            for (Pair entry : playlist.getMediaList()) {
+                list.add("Owner: " + entry.key() + " || " + entry.value().getName());
+            }
+        } finally {
+            playlist.getLock().unlock();
         }
+
         return list;
     }
 
