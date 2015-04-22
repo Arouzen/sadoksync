@@ -6,6 +6,7 @@
 package com.sadoksync.sadoksync;
 
 import com.sadoksync.msg.ClientRemoteInterface;
+import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.rmi.RemoteException;
 import java.util.Collections;
@@ -22,7 +23,7 @@ import java.util.logging.Logger;
  *
  * @author Pontus
  */
-public class Peer {
+public class Peer{
 
     ExecutorService executor;
     PeerServerThread pst;

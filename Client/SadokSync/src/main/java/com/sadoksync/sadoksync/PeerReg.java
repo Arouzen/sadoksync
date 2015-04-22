@@ -6,12 +6,13 @@
 package com.sadoksync.sadoksync;
 
 import com.sadoksync.msg.ClientRemoteInterface;
+import java.io.Serializable;
 
 /**
  *
  * @author Pontus
  */
-public class PeerReg {
+public class PeerReg implements Serializable {
     String nick;
     String ipAddr;
     public PeerReg(String nick, String ipAddr) {
