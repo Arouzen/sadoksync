@@ -72,8 +72,6 @@ public class Client extends javax.swing.JFrame {
     private boolean isHost;
     private Peer pr;
 
-    private final String nick;
-
     /**
      * Creates new form Client
      *
@@ -90,7 +88,6 @@ public class Client extends javax.swing.JFrame {
 
         // Peer init
         this.pr = pr;
-        this.nick = pr.getNick();
 
         //VLCLibrary init
         StringBuilder location = new StringBuilder(Client.class.getProtectionDomain().getCodeSource().getLocation().toString());
@@ -535,8 +532,18 @@ public class Client extends javax.swing.JFrame {
 
     public void addToChat(String text) {
         if (!text.isEmpty()) {
-            textChatOutput.append("\r\n" + this.nick + ": " + text);
+            Message msg = new Message();
+            msg.setipAddr(pr.getMyIp());
+            // TODO - validate IP with nick for security
+            msg.setType("chat message");
+            msg.setText(pr.getNick() + ": " + text);
+            pr.sendMsgToComunity(msg);
+            addToChatOutput(msg.getText());
         }
+    }
+    
+    public void addToChatOutput(String text) {
+        textChatOutput.append("\r\n" + text);
     }
 
     public void startStreamingServer() {
@@ -675,7 +682,8 @@ public class Client extends javax.swing.JFrame {
 
         return list;
     }
-    public void addtoPlaylist(PublicPlaylist.Pair pair){
+
+    public void addtoPlaylist(PublicPlaylist.Pair pair) {
         playlist.addToPlaylist(pair);
     }
     
@@ -752,12 +760,12 @@ public class Client extends javax.swing.JFrame {
                 if (!info.isDrop()) {
                     return false;
                 }
-                
+
                 // If mode isn't "playlist", fail
                 if (!rightPanelMode.equals("playlist")) {
                     return false;
                 }
-                
+
                 // Check for FileList flavor
                 if (!info.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
                     displayDropLocation("List doesn't accept a drop of this type.");
