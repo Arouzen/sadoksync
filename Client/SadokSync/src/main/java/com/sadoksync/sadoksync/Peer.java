@@ -247,7 +247,7 @@ public class Peer {
         com.addPeer(msg.getName(), msg.getipAddr());
         msg.setType("Register Client");
         if (this.isHost()) {
-
+            System.out.println("I am host and I am addinging: " + msg.getName() + " @" + msg.getipAddr());
             this.DeliverStream(msg.getipAddr(), "demo");
 
             //send cMap to list to msg.getipAddr()
@@ -255,7 +255,7 @@ public class Peer {
             this.sendMsgToComunity(msg);
 
             //When a new client joins the Comunity it neads to know where the stream is currently
-            this.DeliverPlaylist(msg.getipAddr());
+            //this.DeliverPlaylist(msg.getipAddr());
         } else {
 
         }
@@ -316,12 +316,12 @@ public class Peer {
         List li = null;
         PublicPlaylist pli = cli.getPubicPlaylist();
         pli.getLock().lock();
-        try{
+        try {
             //get media from li and put into a list.
             li = pli.getMediaList();
-            
+
             pli.getCV().signalAll();
-        }finally{
+        } finally {
             pli.getLock().unlock();
         }
         Message msgret = new Message();
