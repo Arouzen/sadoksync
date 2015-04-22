@@ -5,10 +5,13 @@ import com.sun.jna.NativeLibrary;
 import java.awt.Canvas;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.AbstractAction;
@@ -19,6 +22,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.KeyStroke;
 import javax.swing.LookAndFeel;
+import javax.swing.TransferHandler;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import uk.co.caprica.vlcj.player.MediaPlayer;
@@ -78,6 +82,9 @@ public class Client extends javax.swing.JFrame {
         initStyle();
         // Now create rest of components with saved default layout
         initComponents();
+
+        // Drag and drop init
+        initDragnDrop();
 
         this.pr = pr;
         this.nick = pr.getNick();
@@ -717,6 +724,58 @@ public class Client extends javax.swing.JFrame {
         } catch (UnsupportedLookAndFeelException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    private void initDragnDrop() {
+        listInScrollpane.setDragEnabled(true);
+
+        TransferHandler handler = new TransferHandler() {
+
+            @Override
+            public boolean canImport(TransferHandler.TransferSupport info) {
+                // we only import FileList
+                if (!info.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
+                    return false;
+                }
+                return true;
+            }
+
+            @Override
+            public boolean importData(TransferHandler.TransferSupport info) {
+                if (!info.isDrop()) {
+                    return false;
+                }
+
+                // Check for FileList flavor
+                if (!info.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
+                    displayDropLocation("List doesn't accept a drop of this type.");
+                    return false;
+                }
+
+                // Get the fileList that is being dropped.
+                Transferable t = info.getTransferable();
+                List<File> data;
+                try {
+                    data = (List<File>) t.getTransferData(DataFlavor.javaFileListFlavor);
+                } catch (Exception e) {
+                    return false;
+                }
+                DefaultListModel model = (DefaultListModel) listInScrollpane.getModel();
+                for (File file : data) {
+                    if (new FileFilter().accept(file)) {
+                        playlist.addToPlaylist(file.getName(), file.getAbsolutePath(), "20", "local video");
+                    } else {
+                        displayDropLocation("Does only accept media files.");
+                    }
+                }
+                return true;
+            }
+
+            private void displayDropLocation(String string) {
+                System.out.println(string);
+            }
+        };
+        listInScrollpane.setTransferHandler(handler);
     }
 
     class FullScreenPlayer {
