@@ -43,27 +43,13 @@ public class PublicPlaylist implements Serializable {
      Adds an item to the playlists.
      */
     public void addToPlaylist(String name, String path, String length, String type) {
-        lock.lock();
-        try {
-            if (pr.isHost()) {
-                playlist.add(new Pair("Sadok", new Media(name, path, length, type)));
-            } else {
-                Message msg = new Message();
-                msg.setipAddr(pr.getMyIp());
-                msg.setType("Playlist");
-                msg.setText("add");
-                msg.setPair(new Pair("Sadok", new Media(name, path, length, type)));
-                pr.sendMsg(pr.getHost(), 4444, msg);
-            }
-
-            ocupied.signalAll();
-        } finally {
-            lock.unlock();
-        }
+        Pair pair = new Pair("Sadok", new Media(name, path, length, type));
+        this.addToPlaylist(pair);
 
     }
-    void addToPlaylist(Pair pair) {
-               lock.lock();
+
+    public void addToPlaylist(Pair pair) {
+        lock.lock();
         try {
             if (pr.isHost()) {
                 playlist.add(pair);
@@ -86,6 +72,7 @@ public class PublicPlaylist implements Serializable {
      Ett lock måste sättas kring denna användning.
      //locket måste sitta runt det som kallar getMediaList...
      */
+
     public ArrayList<Pair> getMediaList() {
         return playlist;
     }
@@ -136,8 +123,6 @@ public class PublicPlaylist implements Serializable {
         }
         return ret;
     }
-
-
 
     public static class Pair implements Serializable {
 
