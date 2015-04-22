@@ -5,10 +5,6 @@
  */
 package com.sadoksync.sadoksync;
 
-import com.sadoksync.msg.ClientRemoteInterface;
-import java.io.Serializable;
-import java.net.MalformedURLException;
-import java.rmi.RemoteException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -16,8 +12,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
