@@ -252,9 +252,10 @@ public class Peer {
         msg.setType("Register Client");
         if (this.getMyIp().equals(com.getHost())) {
             this.sendMsgToComunity(msg);
-            
+
             //When a new client joins the Comunity it neads to know where the stream is currently
             this.DeliverStream(msg.getipAddr(), "demo");
+            this.DeliverPlaylist(msg.getipAddr());
         } else {
 
         }
@@ -271,8 +272,8 @@ public class Peer {
         msgret.setName(path);
         this.sendMsg(ipAddr, 4444, msgret);
     }
-    
-        void DeliverStreamToComunity(String ipAddr, String path) {
+
+    void DeliverStreamToComunity(String ipAddr, String path) {
         //Delives a message that set where the stream is currently.
         Message msgret = new Message();
         msgret.setipAddr(this.getMyIp());
@@ -287,5 +288,13 @@ public class Peer {
 
     String getHost() {
         return com.getHost();
+    }
+
+    void DeliverPlaylist(String ipAddr) {
+        Message msgret = new Message();
+        msgret.setipAddr(this.getMyIp());
+        msgret.setType("Set Playlist");
+        msgret.setPlaylist(cli.getPubicPlaylist());
+        this.sendMsg(ipAddr, 4444, msgret);
     }
 }

@@ -20,6 +20,7 @@ public class Message implements Serializable {
     String text;
     List li = null;
     PublicPlaylist.Pair pair;
+    PublicPlaylist playlist;
     
     public Message() {
 
@@ -79,4 +80,12 @@ public class Message implements Serializable {
     public PublicPlaylist.Pair getPair(){
         return pair;
     }
+
+    void setPlaylist(PublicPlaylist publicPlaylist) {
+       this.playlist = publicPlaylist;
+    }
+    PublicPlaylist getPlaylist(){
+        return this.playlist;
+    }
+    
 }

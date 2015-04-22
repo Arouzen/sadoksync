@@ -678,6 +678,11 @@ public class Client extends javax.swing.JFrame {
     public void addtoPlaylist(PublicPlaylist.Pair pair){
         playlist.addToPlaylist(pair);
     }
+    
+    public PublicPlaylist getPubicPlaylist(){
+        return playlist;
+    }
+    
     private static String formatRtspStream(String serverAddress, int serverPort, String id) {
         StringBuilder sb = new StringBuilder(60);
         sb.append(":sout=#rtp{sdp=rtsp://@");
@@ -783,6 +788,11 @@ public class Client extends javax.swing.JFrame {
             }
         };
         listInScrollpane.setTransferHandler(handler);
+    }
+
+    void setPlayList(PublicPlaylist playlist) {
+        this.playlist = playlist;
+        //Redraw???
     }
 
     class FullScreenPlayer {
