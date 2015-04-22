@@ -19,6 +19,8 @@ public class Message implements Serializable {
     String ipAddr;
     String text;
     List li = null;
+    PublicPlaylist.Pair pair;
+    
     public Message() {
 
     }
@@ -69,5 +71,12 @@ public class Message implements Serializable {
     
     public List getList(){
         return li;
+    }
+
+    public void setPair(PublicPlaylist.Pair pair) {
+        this.pair = pair;
+    }
+    public PublicPlaylist.Pair getPair(){
+        return pair;
     }
 }

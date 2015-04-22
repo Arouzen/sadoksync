@@ -132,7 +132,7 @@ public class Client extends javax.swing.JFrame {
         rightPanelMode = "chat";
 
         // Public playlist init
-        playlist = new PublicPlaylist();
+        playlist = new PublicPlaylist(pr);
         /*
          this.isHost = pr.isHost();
          if (!isHost) {
@@ -675,7 +675,9 @@ public class Client extends javax.swing.JFrame {
 
         return list;
     }
-
+    public void addtoPlaylist(PublicPlaylist.Pair pair){
+        playlist.addToPlaylist(pair);
+    }
     private static String formatRtspStream(String serverAddress, int serverPort, String id) {
         StringBuilder sb = new StringBuilder(60);
         sb.append(":sout=#rtp{sdp=rtsp://@");

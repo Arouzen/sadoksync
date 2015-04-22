@@ -10,17 +10,18 @@ import java.util.concurrent.locks.ReentrantLock;
  *
  * @author Arouz
  */
-public class PublicPlaylist implements Serializable  {
+public class PublicPlaylist implements Serializable {
 
     final Lock lock;
     final Condition ocupied;
-
+    final Peer pr;
     ArrayList<Pair> playlist;
 
-    public PublicPlaylist() {
+    public PublicPlaylist(Peer pr) {
         playlist = new ArrayList<Pair>();
         lock = new ReentrantLock();
         ocupied = lock.newCondition();
+        this.pr = pr;
     }
 
     /*
@@ -44,14 +45,42 @@ public class PublicPlaylist implements Serializable  {
     public void addToPlaylist(String name, String path, String length, String type) {
         lock.lock();
         try {
-            playlist.add(new Pair("Sadok", new Media(name, path, length, type)));
+            if (pr.isHost()) {
+                playlist.add(new Pair("Sadok", new Media(name, path, length, type)));
+            } else {
+                Message msg = new Message();
+                msg.setipAddr(pr.getMyIp());
+                msg.setType("Playlist");
+                msg.setText("add");
+                msg.setPair(new Pair("Sadok", new Media(name, path, length, type)));
+                pr.sendMsg(pr.getHost(), 4444, msg);
+            }
+
             ocupied.signalAll();
         } finally {
             lock.unlock();
         }
 
     }
+    void addToPlaylist(Pair pair) {
+               lock.lock();
+        try {
+            if (pr.isHost()) {
+                playlist.add(pair);
+            } else {
+                Message msg = new Message();
+                msg.setipAddr(pr.getMyIp());
+                msg.setType("Playlist");
+                msg.setText("add");
+                msg.setPair(pair);
+                pr.sendMsg(pr.getHost(), 4444, msg);
+            }
 
+            ocupied.signalAll();
+        } finally {
+            lock.unlock();
+        }
+    }
     /*
      Returnerar playlisten. Är inte syncronizerad. 
      Ett lock måste sättas kring denna användning.
@@ -107,6 +136,8 @@ public class PublicPlaylist implements Serializable  {
         }
         return ret;
     }
+
+
 
     public static class Pair implements Serializable {
 

@@ -284,4 +284,8 @@ public class Peer {
     boolean isHost() {
         return this.getMyIp().equals(com.getHost());
     }
+
+    String getHost() {
+        return com.getHost();
+    }
 }

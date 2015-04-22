@@ -1,10 +1,12 @@
 package com.sadoksync.sadoksync;
 
+import java.io.Serializable;
+
 /**
  *
  * @author Arouz
  */
-class Media {
+class Media implements Serializable {
 
     String name;
     String path;

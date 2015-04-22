@@ -49,6 +49,12 @@ public class ConnectionHandler extends Thread {
             if (msgObj instanceof Message) {
                 Message msg = ((Message) msgObj);
                 switch (msg.getType()) {
+                    case "Playlist":
+                        if(msg.getText().equals("add")&& pr.isHost()){
+                            pr.getClient().addtoPlaylist(msg.getPair());
+                        }
+                        
+
                     case "Set Stream":
                         System.out.println("Set Stream");
                         pr.getClient().setHost(msg.getipAddr());
@@ -74,7 +80,7 @@ public class ConnectionHandler extends Thread {
                         DefaultListModel lm = new DefaultListModel();
                         ComunityRegistration cm;
                         for (Object s : li) {
-                            cm =(ComunityRegistration) s; 
+                            cm = (ComunityRegistration) s;
                             pr.addKnownComunity(cm);
                             lm.addElement(cm.getName());
                         }
