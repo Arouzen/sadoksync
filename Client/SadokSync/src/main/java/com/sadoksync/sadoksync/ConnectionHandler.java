@@ -50,11 +50,9 @@ public class ConnectionHandler extends Thread {
                 Message msg = ((Message) msgObj);
                 switch (msg.getType()) {
                     case "Playlist":
-                        if(msg.getText().equals("add")&& pr.isHost()){
+                        if (msg.getText().equals("add") && pr.isHost()) {
                             pr.getClient().addtoPlaylist(msg.getPair());
                         }
-                        
-
                     case "Set Stream":
                         System.out.println("Set Stream");
                         pr.getClient().setHost(msg.getipAddr());
@@ -64,7 +62,6 @@ public class ConnectionHandler extends Thread {
                         break;
                     case "Register Client":
                         System.out.println("Register Client");
-
                         break;
                     case "Join Comunity":
                         System.out.println("Join Comunity");
@@ -72,7 +69,6 @@ public class ConnectionHandler extends Thread {
                         //If comunity Host register the peer
                         //If not comunity Host, send this to comunity Host
                         break;
-
                     case "Comunity List":
                         System.out.println("Comunity List");
                         List<ComunityRegistration> li = (List<ComunityRegistration>) msg.getList();
@@ -92,17 +88,16 @@ public class ConnectionHandler extends Thread {
                                 pr.getLobby().jList1.setModel(flm);
                             }
                         });
-
                         break;
-
                     case "Find All":
                         System.out.println("Find All: ERROR. Wrong handler");
                         break;
                     case "Comunity Registration":
                         System.out.println("Comunity Registration: ERROR. Wrong handler");
-
                         break;
-
+                    case "chat message":
+                        pr.getClient().addToChatOutput(msg.getText());
+                        break;
                 }
             }
 
