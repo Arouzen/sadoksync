@@ -60,6 +60,9 @@ public class Client extends javax.swing.JFrame {
     // Create windows-look file chooser
     private JFileChooser fileChooser;
 
+    // Right panel mode
+    private String rightPanelMode;
+
     // Rtsp variables
     private String server;
     private String port;
@@ -127,7 +130,9 @@ public class Client extends javax.swing.JFrame {
             }
         });
 
+        // Split panel inits
         jSplitPane1.setDividerLocation(0.7);
+        rightPanelMode = "chat";
 
         // Public playlist init
         playlist = new PublicPlaylist();
@@ -513,15 +518,24 @@ public class Client extends javax.swing.JFrame {
     }//GEN-LAST:event_textChatInputKeyPressed
 
     private void buttonShowUsersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonShowUsersActionPerformed
-        updateRightPanel(getUsers());
+        if (!rightPanelMode.equals("users")) {
+            updateRightPanel(getUsers());
+            rightPanelMode = "users";
+        }
     }//GEN-LAST:event_buttonShowUsersActionPerformed
 
     private void buttonShowChatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonShowChatActionPerformed
-        jSplitPane1.setRightComponent(scrollPaneChatt);
+        if (!rightPanelMode.equals("chat")) {
+            jSplitPane1.setRightComponent(scrollPaneChatt);
+            rightPanelMode = "chat";
+        }
     }//GEN-LAST:event_buttonShowChatActionPerformed
 
     private void buttonShowPlaylistActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonShowPlaylistActionPerformed
-        updateRightPanel(getPlaylist());
+        if (!rightPanelMode.equals("playlist")) {
+            updateRightPanel(getPlaylist());
+            rightPanelMode = "playlist";
+        }
     }//GEN-LAST:event_buttonShowPlaylistActionPerformed
 
     public void connectToRtsp() {
@@ -751,7 +765,12 @@ public class Client extends javax.swing.JFrame {
                 if (!info.isDrop()) {
                     return false;
                 }
-
+                
+                // If mode isn't "playlist", fail
+                if (!rightPanelMode.equals("playlist")) {
+                    return false;
+                }
+                
                 // Check for FileList flavor
                 if (!info.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
                     displayDropLocation("List doesn't accept a drop of this type.");
