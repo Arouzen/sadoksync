@@ -243,23 +243,21 @@ public class Peer {
     }
 
     void PeerToJoin(Message msg) {
-
+        com.addPeer(msg.getName(), msg.getipAddr());
         msg.setType("Register Client");
         if (this.isHost()) {
-            
+
             this.DeliverStream(msg.getipAddr(), "demo");
-            
+
             //send cMap to list to msg.getipAddr()
             this.SendPMap(msg.getipAddr());
             this.sendMsgToComunity(msg);
 
             //When a new client joins the Comunity it neads to know where the stream is currently
-            
             //this.DeliverPlaylist(msg.getipAddr());
         } else {
 
         }
-        com.addPeer(msg.getName(), msg.getipAddr());
 
         //If comunity Host register the peer
         //If not comunity Host, send this to comunity Host
@@ -276,7 +274,7 @@ public class Peer {
                 key = (String) i.next();
                 opr = (PeerReg) m.get(key);
                 Message msg = new Message();
-                
+
                 msg.setipAddr(opr.getAddr());
                 msg.setType("Register Client");
                 msg.setName(opr.getNick());
