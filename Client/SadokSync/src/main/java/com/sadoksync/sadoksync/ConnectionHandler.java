@@ -43,7 +43,9 @@ public class ConnectionHandler extends Thread {
 
                     case "Set Playlist":
                         System.out.println("Message: Set Playlist");
-                        pr.getClient().setPlayList(msg.getPlaylist());
+                        PublicPlaylist pl = new PublicPlaylist(pr, msg.getList());
+                        pr.getClient().setPlayList(pl);
+                        
                         break;
                     case "Playlist":
                         System.out.println("Message: Playlist");

@@ -2,6 +2,7 @@ package com.sadoksync.sadoksync;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -24,6 +25,14 @@ public class PublicPlaylist implements Serializable {
         this.pr = pr;
     }
 
+    public PublicPlaylist(Peer pr , List li) {
+        playlist = (ArrayList)li;
+        lock = new ReentrantLock();
+        ocupied = lock.newCondition();
+        this.pr = pr;
+    }
+    
+    
     /*
      Returns the Lock used by the playlist
      */

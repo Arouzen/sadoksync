@@ -8,6 +8,7 @@ package com.sadoksync.sadoksync;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
@@ -254,7 +255,7 @@ public class Peer {
             this.sendMsgToComunity(msg);
 
             //When a new client joins the Comunity it neads to know where the stream is currently
-            //this.DeliverPlaylist(msg.getipAddr());
+            this.DeliverPlaylist(msg.getipAddr());
         } else {
 
         }
@@ -311,10 +312,22 @@ public class Peer {
     }
 
     void DeliverPlaylist(String ipAddr) {
+        //Deliver the playlist... how?
+        List li = null;
+        PublicPlaylist pli = cli.getPubicPlaylist();
+        pli.getLock().lock();
+        try{
+            //get media from li and put into a list.
+            li = pli.getMediaList();
+            
+            pli.getCV().signalAll();
+        }finally{
+            pli.getLock().unlock();
+        }
         Message msgret = new Message();
         msgret.setipAddr(this.getMyIp());
         msgret.setType("Set Playlist");
-        msgret.setPlaylist(cli.getPubicPlaylist());
+        msgret.setList(li);
         this.sendMsg(ipAddr, 4444, msgret);
     }
 }
