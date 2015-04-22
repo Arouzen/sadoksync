@@ -61,6 +61,7 @@ public class ConnectionHandler extends Thread {
                         break;
                     case "Register Client":
                         System.out.println("Register Client");
+                        System.out.println(msg.getName());
                         pr.PeerToJoin(msg);
                         break;
                     case "Join Comunity":

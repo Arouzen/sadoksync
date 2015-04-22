@@ -5,10 +5,6 @@
  */
 package com.sadoksync.sadoksync;
 
-import com.sadoksync.msg.ClientRemoteInterface;
-import java.io.Serializable;
-import java.net.MalformedURLException;
-import java.rmi.RemoteException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -16,8 +12,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -255,7 +249,7 @@ public class Peer {
             //send cMap to list to msg.getipAddr()
             this.SendPMap(msg.getipAddr());
             this.sendMsgToComunity(msg);
-
+            
             //When a new client joins the Comunity it neads to know where the stream is currently
             this.DeliverStream(msg.getipAddr(), "demo");
             //this.DeliverPlaylist(msg.getipAddr());
@@ -281,7 +275,7 @@ public class Peer {
                 Message msg = new Message();
                 
                 msg.setipAddr(opr.getAddr());
-                msg.setType("Set Stream");
+                msg.setType("Register Client");
                 msg.setName(opr.getNick());
 
                 this.sendMsg(ipAddr, 4444, msg);
