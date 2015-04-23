@@ -80,7 +80,7 @@ class ServiceRegistryConnectionHandler extends Thread {
                         pr.sendMsg(retIP, 4444, msg);
                         break;
                     case "Comunity Registration":
-                        System.out.println("Comunity Registration");
+                        System.out.println("Comunity Registration: " + msg.getName()+ " @" + msg.getipAddr());
                         cMap.put(msg.getName(), new ComunityRegistration(msg.getName(), msg.getipAddr(), msg.getText()));
                         break;
                 }

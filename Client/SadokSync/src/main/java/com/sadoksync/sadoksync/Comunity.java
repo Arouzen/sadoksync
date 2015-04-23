@@ -220,4 +220,8 @@ public class Comunity {
     String getRegistryAddr(){
         return RegistryAddr;
     }
+
+    void setComunityName(String name) {
+        this.cname = name;
+    }
 }

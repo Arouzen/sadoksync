@@ -255,6 +255,7 @@ public class Peer {
 
             Message sethostmsg = new Message();
             sethostmsg.setipAddr(this.getMyIp());
+            sethostmsg.setName(this.com.getComunityName());
             sethostmsg.setType("Set Host");
             this.sendMsg(msg.getipAddr(), 4444, sethostmsg);
 
@@ -399,6 +400,9 @@ public class Peer {
 
     }
 
+    void setComunityName(String name){
+        com.setComunityName(name);
+    }
     void setHost(String ipAddr) {
         com.setHost(ipAddr);
         System.out.println("Host changed to: " + ipAddr);
