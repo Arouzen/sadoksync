@@ -116,7 +116,7 @@ public class Client extends javax.swing.JFrame {
         videoSurface = mediaPlayerFactory.newVideoSurface(canvas);
         mediaPlayer.setVideoSurface(videoSurface);
 
-        mediaPlayer.addMediaPlayerEventListener(new MediaPlayerEventAdapter() {
+        /*mediaPlayer.addMediaPlayerEventListener(new MediaPlayerEventAdapter() {
             @Override
             public void finished(MediaPlayer mediaPlayer) {
                 if (!playlist.isEmpty()) {
@@ -128,7 +128,7 @@ public class Client extends javax.swing.JFrame {
                 if (!playlist.isEmpty()) {
                 }
             }
-        });
+        });*/
 
         // Split panel inits
         jSplitPane1.setDividerLocation(0.7);
