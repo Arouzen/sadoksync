@@ -600,6 +600,7 @@ public class Client extends javax.swing.JFrame {
                                     Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
                                 }
                                 pr.DeliverStreamToComunity(pr.getMyIp(), "demo");
+                                pr.DeliverPlaylistToComunity();
                                 connectToRtsp();
                             }
                         });
