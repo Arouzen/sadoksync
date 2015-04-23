@@ -466,23 +466,27 @@ public class Client extends javax.swing.JFrame {
     }//GEN-LAST:event_ButtonPauseActionPerformed
 
     private void ButtonStopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonStopActionPerformed
-        serverMediaPlayer.stop();
+        if (pr.isHost()) {
+            serverMediaPlayer.stop();
+        }
         mediaPlayer.stop();
     }//GEN-LAST:event_ButtonStopActionPerformed
 
     private void buttonStreamActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonStreamActionPerformed
-        this.startStream();
-        /*
-        if (!playlist.isEmpty()) {
-            startStreamingServer();
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException ex) {
-                ex.printStackTrace();
-            }
-            playMedia(getRtspUrl());
+        if (pr.isHost()) {
+            this.startStream();
         }
-        */
+        /*
+         if (!playlist.isEmpty()) {
+         startStreamingServer();
+         try {
+         Thread.sleep(2000);
+         } catch (InterruptedException ex) {
+         ex.printStackTrace();
+         }
+         playMedia(getRtspUrl());
+         }
+         */
     }//GEN-LAST:event_buttonStreamActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
@@ -534,15 +538,15 @@ public class Client extends javax.swing.JFrame {
         if (s[s.length - 1].endsWith("mp3")) {
             //Media player init
             MediaPlayerFactory visualizerFactory = new MediaPlayerFactory("--audio-visual=visual", "--effect-list=spectrum");
-             EmbeddedMediaPlayer visualizerPlayer = visualizerFactory.newEmbeddedMediaPlayer();
-             CanvasVideoSurface visualizerSurface = visualizerFactory.newVideoSurface(canvas);
-             visualizerPlayer.setVideoSurface(visualizerSurface);
-             visualizerPlayer.playMedia(url);
-             System.out.println("visualize");
+            EmbeddedMediaPlayer visualizerPlayer = visualizerFactory.newEmbeddedMediaPlayer();
+            CanvasVideoSurface visualizerSurface = visualizerFactory.newVideoSurface(canvas);
+            visualizerPlayer.setVideoSurface(visualizerSurface);
+            visualizerPlayer.playMedia(url);
+            System.out.println("visualize");
             // Own visualizer stuff. I think this gives us a audiostream to work with
             /*MediaPlayerFactory factory = new MediaPlayerFactory();
-            DirectAudioPlayer audioPlayer = factory.newDirectAudioPlayer("S16N", 44100, 2, new TestAudioCallbackAdapter());
-            audioPlayer.playMedia(url);*/ 
+             DirectAudioPlayer audioPlayer = factory.newDirectAudioPlayer("S16N", 44100, 2, new TestAudioCallbackAdapter());
+             audioPlayer.playMedia(url);*/
         } else {
             mediaPlayer.playMedia(url);
         }
@@ -569,7 +573,7 @@ public class Client extends javax.swing.JFrame {
                 out.write(data);
             } catch (IOException ex) {
                 Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
-            } 
+            }
         }
     }
 
