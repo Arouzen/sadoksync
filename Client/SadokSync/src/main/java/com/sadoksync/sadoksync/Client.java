@@ -3,19 +3,18 @@ package com.sadoksync.sadoksync;
 import com.sadoksync.sadoksync.PublicPlaylist.Pair;
 import com.sun.jna.NativeLibrary;
 import java.awt.Canvas;
-import java.awt.Color;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -33,6 +32,8 @@ import javax.swing.UnsupportedLookAndFeelException;
 import uk.co.caprica.vlcj.player.MediaPlayer;
 import uk.co.caprica.vlcj.player.MediaPlayerEventAdapter;
 import uk.co.caprica.vlcj.player.MediaPlayerFactory;
+import uk.co.caprica.vlcj.player.directaudio.DefaultAudioCallbackAdapter;
+import uk.co.caprica.vlcj.player.directaudio.DirectAudioPlayer;
 import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
 import uk.co.caprica.vlcj.player.embedded.videosurface.CanvasVideoSurface;
 import uk.co.caprica.vlcj.player.embedded.windows.Win32FullScreenStrategy;
@@ -528,16 +529,44 @@ public class Client extends javax.swing.JFrame {
     public void playMedia(String url) {
         String[] s = playlist.getNowPlaying().split("\\.");
         if (s[s.length - 1].endsWith("mp3")) {
-
             //Media player init
             MediaPlayerFactory visualizerFactory = new MediaPlayerFactory("--audio-visual=visual", "--effect-list=spectrum");
-            EmbeddedMediaPlayer visualizerPlayer = visualizerFactory.newEmbeddedMediaPlayer();
-            CanvasVideoSurface visualizerSurface = visualizerFactory.newVideoSurface(canvas);
-            visualizerPlayer.setVideoSurface(visualizerSurface);
-            visualizerPlayer.playMedia(url);
-            System.out.println("visualize");
+             EmbeddedMediaPlayer visualizerPlayer = visualizerFactory.newEmbeddedMediaPlayer();
+             CanvasVideoSurface visualizerSurface = visualizerFactory.newVideoSurface(canvas);
+             visualizerPlayer.setVideoSurface(visualizerSurface);
+             visualizerPlayer.playMedia(url);
+             System.out.println("visualize");
+            // Own visualizer stuff. I think this gives us a audiostream to work with
+            /*MediaPlayerFactory factory = new MediaPlayerFactory();
+            DirectAudioPlayer audioPlayer = factory.newDirectAudioPlayer("S16N", 44100, 2, new TestAudioCallbackAdapter());
+            audioPlayer.playMedia(url);*/ 
         } else {
             mediaPlayer.playMedia(url);
+        }
+    }
+
+    private class TestAudioCallbackAdapter extends DefaultAudioCallbackAdapter {
+
+        /**
+         * Output stream.
+         */
+        private final BufferedOutputStream out;
+
+        /**
+         * Create an audio callback.
+         */
+        public TestAudioCallbackAdapter() {
+            super(4); // 4 is the block size for the audio samples
+            out = new BufferedOutputStream(System.out);
+        }
+
+        @Override
+        protected void onPlay(DirectAudioPlayer mediaPlayer, byte[] data, int sampleCount, long pts) {
+            try {
+                out.write(data);
+            } catch (IOException ex) {
+                Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+            } 
         }
     }
 
