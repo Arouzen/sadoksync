@@ -75,7 +75,7 @@ public class Peer {
         msg.setType("Join Comunity");
         msg.setName(this.getMyIp());
         //msg.setText(cname);
-
+        System.out.println("joinComunity");
         this.sendMsg(cr.getHost(), 4444, msg);
         this.openClient();
     }
@@ -194,12 +194,13 @@ public class Peer {
         Set s = m.keySet(); // Needn't be in synchronized block
         String key;
         PeerReg opr;
-        System.out.println("sendMsgToComunity");
+        
         synchronized (m) {  // Synchronizing on m, not s!
             Iterator i = s.iterator(); // Must be in synchronized block
             while (i.hasNext()) {
                 key = (String) i.next();
                 opr = (PeerReg) m.get(key);
+                System.out.println(this.getMyIp() + " ? " + opr.getAddr());
                 if (!this.getMyIp().equals(opr.getAddr())) {
                     System.out.println("Trigger");
                     this.sendMsg(opr.getAddr(), 4444, msg);
@@ -251,6 +252,7 @@ public class Peer {
         synchronized (m) {  // Synchronizing on m, not s!
             Iterator i = s.iterator(); // Must be in synchronized block
             while (i.hasNext()) {
+                
                 key = (String) i.next();
                 opr = (PeerReg) m.get(key);
                 Message msg = new Message();
@@ -258,8 +260,11 @@ public class Peer {
                 msg.setipAddr(opr.getAddr());
                 msg.setType("Register Client");
                 msg.setName(opr.getNick());
+                System.out.println(opr.getNick() + "adding");
 
-                this.sendMsg(ipAddr, 4444, msg);
+                 if (!this.getMyIp().equals(ipAddr)) {
+                   this.sendMsg(ipAddr, 4444, msg);
+                 }
             }
         }
     }
@@ -283,6 +288,7 @@ public class Peer {
     }
 
     boolean isHost() {
+        System.out.println("IsHost" + com.getHost() + " ? " + this.getMyIp() + " " + this.getMyIp().equals(com.getHost()));
         return this.getMyIp().equals(com.getHost());
     }
 
