@@ -51,23 +51,30 @@ public class ConnectionHandler extends Thread {
                         System.out.println("Message: Playlist");
                         if (msg.getText().equals("add") && pr.isHost()) {
                             System.out.println("Message: Playlist: Adding: ");
-                            
-                            
+
                             //Add to playlist and then send the play list to all.
                             pr.getClient().addtoPlaylist(msg.getPair());
                             pr.DeliverPlaylistToComunity();
-                        }else if (msg.getText().equals("add") && !pr.isHost()) {
+                        } else if (msg.getText().equals("add") && !pr.isHost()) {
                             //Relay message
                         }
                         break;
-
+                    case "Ping":
+                        pr.Pong(msg);
+                        break;
+                    case "Pong":
+                        pr.handlePong(msg);
+                        break;
                     case "Set Stream":
                         System.out.println("Set Stream");
-                        pr.com.setHost(msg.getipAddr());
+                        //pr.com.setHost(msg.getipAddr());
                         pr.getClient().setHost(msg.getipAddr());
                         pr.getClient().setPort("5555");
                         pr.getClient().setRtspPath(msg.getName());
                         pr.getClient().connectToRtsp();
+                        break;
+                    case "Set Host":
+                        pr.setHost(msg.getipAddr());
                         break;
                     case "Register Client":
                         System.out.println("Register Client: " + msg.getName());

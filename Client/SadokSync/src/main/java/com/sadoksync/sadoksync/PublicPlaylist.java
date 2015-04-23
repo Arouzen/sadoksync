@@ -108,6 +108,22 @@ public class PublicPlaylist implements Serializable {
         return Value.getPath();
     }
 
+        public String getNowPlayingOwner() {
+        Pair pair;
+        String key;
+        lock.lock();
+        try {
+            pair = playlist.get(0);
+            key = pair.key();
+
+            ocupied.signalAll();
+        } finally {
+            lock.unlock();
+        }
+
+        return key;
+    }
+    
     /*
      Lock the plalist and remove the first pair
      */

@@ -93,7 +93,6 @@ public class Comunity {
         lock.lock();
         try {
             this.host = host;
-
             ocupied.signalAll();
         } finally {
             lock.unlock();
@@ -208,5 +207,9 @@ public class Comunity {
             lock.unlock();
         }
 
+    }
+
+    String getPeerIP(String nowPlayingOwner) {
+        return pMap.get(nowPlayingOwner).getAddr();
     }
 }

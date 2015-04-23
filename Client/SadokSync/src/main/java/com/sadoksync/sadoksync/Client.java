@@ -471,6 +471,8 @@ public class Client extends javax.swing.JFrame {
     }//GEN-LAST:event_ButtonStopActionPerformed
 
     private void buttonStreamActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonStreamActionPerformed
+        this.startStream();
+        /*
         if (!playlist.isEmpty()) {
             startStreamingServer();
             try {
@@ -480,6 +482,7 @@ public class Client extends javax.swing.JFrame {
             }
             playMedia(getRtspUrl());
         }
+        */
     }//GEN-LAST:event_buttonStreamActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
@@ -634,21 +637,30 @@ public class Client extends javax.swing.JFrame {
 
                             private void streamNextMedia(MediaPlayer serverMediaPlayer) {
                                 System.out.println("[Server] Media stopped/finished, moving next in list!");
-                                serverMediaPlayer.playMedia(playlist.getNowPlaying(),
-                                        options,
-                                        ":no-sout-rtp-sap",
-                                        ":no-sout-standard-sap",
-                                        ":sout-all",
-                                        ":sout-keep"
-                                );
-                                try {
-                                    Thread.sleep(2000);
-                                } catch (InterruptedException ex) {
-                                    Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+
+                                //get the ip of the owner of the next media.
+                                String ip = pr.com.getPeerIP(playlist.getNowPlayingOwner());
+
+                                if (pr.getMyIp().equals(ip)) {
+                                    serverMediaPlayer.playMedia(playlist.getNowPlaying(),
+                                            options,
+                                            ":no-sout-rtp-sap",
+                                            ":no-sout-standard-sap",
+                                            ":sout-all",
+                                            ":sout-keep"
+                                    );
+                                    try {
+                                        Thread.sleep(2000);
+                                    } catch (InterruptedException ex) {
+                                        Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+                                    }
+                                    connectToRtsp();
+                                    pr.DeliverStreamToComunity(pr.getMyIp(), "demo");
+                                    pr.DeliverPlaylistToComunity();
+
+                                } else {
+                                    pr.Ping(ip, "Move Host");
                                 }
-                                pr.DeliverStreamToComunity(pr.getMyIp(), "demo");
-                                pr.DeliverPlaylistToComunity();
-                                connectToRtsp();
                             }
                         });
 
@@ -668,6 +680,24 @@ public class Client extends javax.swing.JFrame {
             streamingServer.start();
         } catch (Exception ex) {
             System.out.println("No please");
+        }
+    }
+
+    public void cleanStartOfPlaylist() {
+        while (pr.getMyIp().equals(pr.com.getPeerIP(playlist.getNowPlayingOwner()))) {
+            playlist.removeFirstInQueue();
+        }
+    }
+
+    public void startStream() {
+        if (!playlist.isEmpty()) {
+            startStreamingServer();
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException ex) {
+                ex.printStackTrace();
+            }
+            playMedia(getRtspUrl());
         }
     }
 

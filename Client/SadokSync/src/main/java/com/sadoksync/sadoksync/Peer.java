@@ -250,6 +250,11 @@ public class Peer {
             System.out.println("I am host and I am addinging: " + msg.getName() + " @" + msg.getipAddr());
             this.DeliverStream(msg.getipAddr(), "demo");
 
+            Message sethostmsg = new Message();
+            sethostmsg.setipAddr(this.getMyIp());
+            sethostmsg.setType("Set Host");
+            this.sendMsg(msg.getipAddr(), 4444, sethostmsg);
+
             //send cMap to list to msg.getipAddr()
             this.SendPMap(msg.getipAddr());
             this.sendMsgToComunity(msg);
@@ -334,7 +339,7 @@ public class Peer {
         msgret.setList(li);
         this.sendMsg(ipAddr, 4444, msgret);
     }
-    
+
     void DeliverPlaylistToComunity() {
         //Deliver the playlist... how?
         List li = null;
@@ -353,5 +358,58 @@ public class Peer {
         msgret.setType("Set Playlist");
         msgret.setList(li);
         this.sendMsgToComunity(msgret);
+    }
+
+    void Ping(String ipAddr, String why) {
+        Message msgret = new Message();
+        msgret.setipAddr(this.getMyIp());
+        msgret.setType("Ping");
+        msgret.setText(why);
+        this.sendMsg(ipAddr, 4444, msgret);
+    }
+
+    void Pong(Message msg) {
+        String ipAddr = msg.getipAddr();
+        Message msgret = new Message();
+        switch (msg.getText()) {
+            case "Move Host":
+                msgret.setipAddr(this.getMyIp());
+                msgret.setType("Pong");
+                msgret.setText("Move Host");
+                break;
+        }
+        this.sendMsg(ipAddr, 4444, msgret);
+    }
+
+    void handlePong(Message msg) {
+        Message msgret = new Message();
+        switch (msg.getText()) {
+            case "Move Host":
+                msgret.setipAddr(msg.getipAddr());
+                msgret.setType("Set Host");
+                this.sendMsg(msg.getipAddr(), 4444, msgret);
+                break;
+        }
+
+    }
+
+    void setHost(String ipAddr) {
+        com.setHost(ipAddr);
+        if (ipAddr.equals(this.getMyIp())) {
+            //send message to all with new host.
+            Message msgret = new Message();
+            msgret.setipAddr(ipAddr);
+            msgret.setType("Set Host");
+
+            this.sendMsgToComunity(msgret);
+            
+            //Reregister comunity. 
+            
+            //clean start of playlist
+            this.cli.cleanStartOfPlaylist();
+            
+            //start stream
+            this.cli.startStream();
+        }
     }
 }
