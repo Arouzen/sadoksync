@@ -73,7 +73,7 @@ public class Peer {
         Message msg = new Message();
         msg.setipAddr(this.getMyIp());
         msg.setType("Join Comunity");
-        msg.setName(this.getNick());
+        msg.setName(this.getMyIp());
         //msg.setText(cname);
 
         this.sendMsg(cr.getHost(), 4444, msg);
@@ -115,9 +115,6 @@ public class Peer {
         this.myVlcPath = vlcpath;
     }
 
-    String getMyVlc() {
-        return myVlcPath;
-    }
 
     void openLobby() {
         final Lobby flb = lb;
@@ -197,22 +194,20 @@ public class Peer {
         Set s = m.keySet(); // Needn't be in synchronized block
         String key;
         PeerReg opr;
+        System.out.println("sendMsgToComunity");
         synchronized (m) {  // Synchronizing on m, not s!
             Iterator i = s.iterator(); // Must be in synchronized block
             while (i.hasNext()) {
                 key = (String) i.next();
                 opr = (PeerReg) m.get(key);
                 if (!this.getMyIp().equals(opr.getAddr())) {
+                    System.out.println("Trigger");
                     this.sendMsg(opr.getAddr(), 4444, msg);
                 }
             }
         }
     }
-    /*
-     public SynchReg getSynchReg() {
-     return synchMap;
-     }
-     */
+
 
     Lobby getLobby() {
         return lb;
@@ -230,7 +225,7 @@ public class Peer {
         com.addPeer(msg.getName(), msg.getipAddr());
         msg.setType("Register Client");
         if (this.isHost()) {
-
+            System.out.println("This is host");
             this.DeliverStream(msg.getipAddr(), "demo");
 
             //send cMap to list to msg.getipAddr()
@@ -249,6 +244,7 @@ public class Peer {
 
     void SendPMap(String ipAddr) {
         Map m = com.getComunityPeers();
+        System.out.println("SendPMap");
         Set s = m.keySet(); // Needn't be in synchronized block
         String key;
         PeerReg opr;
