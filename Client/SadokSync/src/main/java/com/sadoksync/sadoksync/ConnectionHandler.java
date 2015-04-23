@@ -50,6 +50,9 @@ public class ConnectionHandler extends Thread {
                     case "Playlist":
                         System.out.println("Message: Playlist");
                         if (msg.getText().equals("add") && pr.isHost()) {
+                            System.out.println("Message: Playlist: Adding: ");
+                            
+                            
                             //Add to playlist and then send the play list to all.
                             pr.getClient().addtoPlaylist(msg.getPair());
                             pr.DeliverPlaylistToComunity();

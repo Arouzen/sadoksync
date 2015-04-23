@@ -58,6 +58,8 @@ public class PublicPlaylist implements Serializable {
     }
 
     public void addToPlaylist(Pair pair) {
+        System.out.println("Adding " + pair.value().getName() + " owned by " + pair.key());
+        
         lock.lock();
         try {
             if (pr.isHost()) {
