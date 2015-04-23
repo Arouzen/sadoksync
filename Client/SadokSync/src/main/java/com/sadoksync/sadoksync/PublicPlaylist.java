@@ -62,6 +62,7 @@ public class PublicPlaylist implements Serializable {
         try {
             if (pr.isHost()) {
                 playlist.add(pair);
+                pr.DeliverPlaylistToComunity();
             } else {
                 Message msg = new Message();
                 msg.setipAddr(pr.getMyIp());

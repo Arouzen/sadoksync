@@ -276,11 +276,11 @@ public class Peer {
                 opr = (PeerReg) m.get(key);
 
                 Message msg = new Message();
-
+                System.out.println("Adding " + opr.getNick() + " @" + opr.getAddr() + " to list of users to be sent to " + ipAddr);
                 msg.setipAddr(opr.getAddr());
                 msg.setType("Register Client");
                 msg.setName(opr.getNick());
-                if (!this.getMyIp().equals(opr.getAddr())) {
+                if (!this.getMyIp().equals(ipAddr)) {
                     this.sendMsg(ipAddr, 4444, msg);
                 }
 

@@ -50,7 +50,11 @@ public class ConnectionHandler extends Thread {
                     case "Playlist":
                         System.out.println("Message: Playlist");
                         if (msg.getText().equals("add") && pr.isHost()) {
+                            //Add to playlist and then send the play list to all.
                             pr.getClient().addtoPlaylist(msg.getPair());
+                            pr.DeliverPlaylistToComunity();
+                        }else if (msg.getText().equals("add") && !pr.isHost()) {
+                            //Relay message
                         }
                         break;
 
@@ -62,8 +66,7 @@ public class ConnectionHandler extends Thread {
                         pr.getClient().connectToRtsp();
                         break;
                     case "Register Client":
-                        System.out.println("Register Client");
-                        System.out.println(msg.getName());
+                        System.out.println("Register Client: " + msg.getName());
                         pr.PeerToJoin(msg);
                         break;
                     case "Join Comunity":
