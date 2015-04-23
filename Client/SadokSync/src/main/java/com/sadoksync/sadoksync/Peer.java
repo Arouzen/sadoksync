@@ -52,7 +52,6 @@ public class Peer {
     //del?
     void createComunity(String cname, String topic) {
         com.create(cname, myIP, topic, nick);
-        System.out.println("Peer.java CreateComunity: " + myIP);
     }
 
     void registerComunity(String rhost, int port) {
