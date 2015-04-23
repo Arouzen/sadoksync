@@ -21,6 +21,7 @@ public class ActionCreateComunity implements Runnable {
     public ActionCreateComunity(Peer pr, String addr, String cname, String topic){
         this.pr = pr;
         this.addr = addr;
+        System.out.println("ActionCreateComunity this.addr: " + this.addr);
         this.cname = cname;
         this.topic = topic;
     }

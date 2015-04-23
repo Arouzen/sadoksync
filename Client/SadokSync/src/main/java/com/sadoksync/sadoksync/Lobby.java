@@ -195,6 +195,7 @@ public class Lobby extends javax.swing.JFrame {
         String cname = jTextField1.getText();
         if (!cname.equals("")) {
             ActionCreateComunity acc = new ActionCreateComunity(pr, jTextFieldRegistryAddr.getText(), cname, "Comunity Topic");
+            System.out.println("ActionCreateComunity: " + jTextFieldRegistryAddr.getText());
             new Thread(acc).start();
         } else {
             //Complain
