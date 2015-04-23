@@ -16,7 +16,7 @@ public class Message implements Serializable {
 
     String name;
     String type;
-    String ipAddr;
+    //String ipAddr
     String text;
     List li = null;
     PublicPlaylist.Pair pair;
@@ -29,7 +29,7 @@ public class Message implements Serializable {
     Message(Comunity com) {
         this.name = com.getComunityName();
         this.type = "Comunity Registration";
-        this.ipAddr = com.getHost();
+        //this.ipAddr = com.getHost();
         this.text = com.getTopic();
     }
 
@@ -42,12 +42,12 @@ public class Message implements Serializable {
     }
 
     public void setipAddr(String ipAddr) {
-        this.ipAddr = ipAddr;
+        //this.ipAddr = ipAddr;
     }
 
-    public String getipAddr() {
-        return this.ipAddr;
-    }
+    //public String getipAddr() {
+    //    return this.ipAddr;
+    //}
 
     public void setName(String name) {
         this.name = name;

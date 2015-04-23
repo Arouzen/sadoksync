@@ -72,7 +72,10 @@ class ServiceRegistryConnectionHandler extends Thread {
                                 retList.add(opr);
                             }
                         }
-                        String retIP = msg.getipAddr();
+                        //String retIP = clientSocket.getRemoteSocketAddress().toString().substring(1);
+                        String retIP = clientSocket.getInetAddress().toString().substring(1);
+                        System.out.println("Find all retIP:" + retIP);
+                        /////////////////// ALOT OF SHIT HERER //// TESTING!!!!!!!!!!!!!!!!!!!!!!!!
                         //Create return message
                         msg = new Message();
                         msg.setType("Comunity List");
@@ -81,7 +84,7 @@ class ServiceRegistryConnectionHandler extends Thread {
                         break;
                     case "Comunity Registration":
                         System.out.println("Comunity Registration");
-                        cMap.put(msg.getName(), new ComunityRegistration(msg.getName(), msg.getipAddr(), msg.getText()));
+                        cMap.put(msg.getName(), new ComunityRegistration(msg.getName(), msg.getName(), msg.getText()));
                         break;
                 }
             }

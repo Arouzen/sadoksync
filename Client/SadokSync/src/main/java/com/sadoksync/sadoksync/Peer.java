@@ -51,6 +51,7 @@ public class Peer {
 
     //del?
     void createComunity(String cname, String topic) {
+        System.out.println("cname: " + cname + ",myIp: " + myIP + "topic: " + topic + "nick: " + nick);
         com.create(cname, myIP, topic, nick);
     }
 
@@ -61,6 +62,7 @@ public class Peer {
 
     void findAllComunity(String rhost, int port) {
         Message msg = new Message();
+        System.out.print("Find Community: " +rhost);
         msg.setipAddr(this.getMyIp());
         msg.setType("Find All");
         msg.setName(this.getNick());
@@ -185,6 +187,7 @@ public class Peer {
     }
 
     void sendMsg(String host, int port, Message msg) {
+        System.out.println("sendMsg" + host);
         executor.execute(new PeerClientThread(host, port, msg));
     }
 
@@ -223,18 +226,18 @@ public class Peer {
     }
 
     void PeerToJoin(Message msg) {
-        com.addPeer(msg.getName(), msg.getipAddr());
+        com.addPeer(msg.getName(), msg.getName());
         msg.setType("Register Client");
         if (this.isHost()) {
             System.out.println("This is host");
-            this.DeliverStream(msg.getipAddr(), "demo");
+            this.DeliverStream(msg.getName(), "demo");
 
             //send cMap to list to msg.getipAddr()
-            this.SendPMap(msg.getipAddr());
+            this.SendPMap(msg.getName());
             this.sendMsgToComunity(msg);
 
             //When a new client joins the Comunity it neads to know where the stream is currently
-            this.DeliverPlaylist(msg.getipAddr());
+            this.DeliverPlaylist(msg.getName());
         } else {
 
         }
