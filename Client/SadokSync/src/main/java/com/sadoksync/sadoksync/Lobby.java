@@ -122,6 +122,11 @@ public class Lobby extends javax.swing.JFrame {
                 jTextField1ActionPerformed(evt);
             }
         });
+        jTextField1.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                jTextField1KeyPressed(evt);
+            }
+        });
 
         jLabel4.setText("Comunity Name:");
 
@@ -196,6 +201,8 @@ public class Lobby extends javax.swing.JFrame {
         if (!cname.equals("")) {
             ActionCreateComunity acc = new ActionCreateComunity(pr, jTextFieldRegistryAddr.getText(), cname, "Comunity Topic");
             System.out.println("ActionCreateComunity: " + jTextFieldRegistryAddr.getText());
+            jButton1.setEnabled(false);
+            jTextField1.setEnabled(false);
             new Thread(acc).start();
         } else {
             //Complain
@@ -256,6 +263,21 @@ public class Lobby extends javax.swing.JFrame {
             }
         }
     }//GEN-LAST:event_jTextFieldRegistryAddrKeyPressed
+
+    private void jTextField1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField1KeyPressed
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            String cname = jTextField1.getText();
+            if (!cname.equals("")) {
+                ActionCreateComunity acc = new ActionCreateComunity(pr, jTextFieldRegistryAddr.getText(), cname, "Comunity Topic");
+                System.out.println("ActionCreateComunity: " + jTextFieldRegistryAddr.getText());
+                jButton1.setEnabled(false);
+                jTextField1.setEnabled(false);
+                new Thread(acc).start();
+            } else {
+                //Complain
+            }
+        }
+    }//GEN-LAST:event_jTextField1KeyPressed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

@@ -1,6 +1,10 @@
 package com.sadoksync.sadoksync;
 
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.Serializable;
+import uk.co.caprica.vlcj.player.MediaMeta;
+import uk.co.caprica.vlcj.player.MediaPlayerFactory;
 
 /**
  *
@@ -10,16 +14,32 @@ class Media implements Serializable {
 
     String name;
     String path;
-    String length;
+    long length;
     String type;
 
-    public Media(String name, String path, String length, String type) {
-        this.name = name;
-        this.path = path;
-        this.length = length;
-        this.type = type;
+    // Handle local media files
+    public Media(File mediaFile) {
+        this.path = mediaFile.getAbsolutePath();
+        
+        // Create a media player
+        MediaPlayerFactory factory = new MediaPlayerFactory();
+
+        // Get the meta data and dump it out
+        MediaMeta mediaMeta = factory.getMediaMeta(this.path, true);
+
+        this.name = mediaMeta.getTitle();
+        this.length = mediaMeta.getLength();
+        this.type = "local file";
+
+        // Orderly clean-up
+        mediaMeta.release();
+        factory.release();
     }
 
+    // Handle youtube links
+    /*public Media(String youtubeUrl) {
+        
+     }*/
     public String getName() {
         return name;
     }
@@ -28,7 +48,7 @@ class Media implements Serializable {
         return path;
     }
 
-    public String getLength() {
+    public long getLength() {
         return length;
     }
 

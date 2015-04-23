@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.AbstractAction;
@@ -440,9 +441,9 @@ public class Client extends javax.swing.JFrame {
         int returnVal = fileChooser.showOpenDialog(this);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             File selectedMedia = fileChooser.getSelectedFile();
-            playlist.addToPlaylist(selectedMedia.getName(), selectedMedia.getAbsolutePath(), "20min lol", "videofil");
+            playlist.addToPlaylist(pr.getNick(), selectedMedia);
             updateRightPanel(getPlaylist());
-            
+
         }
     }//GEN-LAST:event_OpenActionPerformed
 
@@ -545,7 +546,7 @@ public class Client extends javax.swing.JFrame {
             addToChatOutput(msg.getText());
         }
     }
-    
+
     public void addToChatOutput(String text) {
         textChatOutput.append("\r\n" + text);
     }
@@ -663,26 +664,30 @@ public class Client extends javax.swing.JFrame {
         });
     }
 
-    // TODO un-hardcode
     private ArrayList<String> getUsers() {
         ArrayList<String> list = new ArrayList<String>();
         Map map = pr.com.getComunityPeers();
-        
+
         for (Object entry : map.keySet()) {
             String key = entry.toString();
             list.add(key);
         }
-        
+
         return list;
     }
 
-    // TODO : un-hardcode
     public ArrayList<String> getPlaylist() {
         ArrayList<String> list = new ArrayList<String>();
         playlist.getLock().lock();
         try {
             for (Pair entry : playlist.getMediaList()) {
-                list.add("Owner: " + entry.key() + " || " + entry.value().getName());
+                long millis = entry.value().getLength();
+                String length = String.format("%d min, %d sec",
+                        TimeUnit.MILLISECONDS.toMinutes(millis),
+                        TimeUnit.MILLISECONDS.toSeconds(millis)
+                        - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis))
+                );
+                list.add("[" + length + "] || " + entry.value().getName() + " || Owned by " + entry.key());
             }
         } finally {
             playlist.getLock().unlock();
@@ -694,11 +699,11 @@ public class Client extends javax.swing.JFrame {
     public void addtoPlaylist(PublicPlaylist.Pair pair) {
         playlist.addToPlaylist(pair);
     }
-    
-    public PublicPlaylist getPubicPlaylist(){
+
+    public PublicPlaylist getPubicPlaylist() {
         return playlist;
     }
-    
+
     private static String formatRtspStream(String serverAddress, int serverPort, String id) {
         StringBuilder sb = new StringBuilder(60);
         sb.append(":sout=#rtp{sdp=rtsp://@");
@@ -790,7 +795,7 @@ public class Client extends javax.swing.JFrame {
                 }
                 for (File file : data) {
                     if (new FileFilter().accept(file)) {
-                        playlist.addToPlaylist(file.getName(), file.getAbsolutePath(), "20", "local video");
+                        playlist.addToPlaylist(pr.getNick(), file);
                     } else {
                         displayDropLocation("Does only accept media files.");
                     }

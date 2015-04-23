@@ -1,5 +1,6 @@
 package com.sadoksync.sadoksync;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -51,10 +52,9 @@ public class PublicPlaylist implements Serializable {
      Critical section locked with lock.
      Adds an item to the playlists.
      */
-    public void addToPlaylist(String name, String path, String length, String type) {
-        Pair pair = new Pair("Sadok", new Media(name, path, length, type));
+    public void addToPlaylist(String owner, File mediaFile) {
+        Pair pair = new Pair(owner, new Media(mediaFile));
         this.addToPlaylist(pair);
-
     }
 
     public void addToPlaylist(Pair pair) {
