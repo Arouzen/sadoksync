@@ -26,7 +26,6 @@ class PeerClientThread extends Thread {
         this.msg = msg;
 
         try {
-
             clientSocket = new Socket(host, port);
 
         } catch (UnknownHostException e) {
@@ -40,10 +39,11 @@ class PeerClientThread extends Thread {
 
     @Override
     public void run() {
-
+        
         try {
             //in = new BufferedInputStream(clientSocket.getInputStream());
             out = new ObjectOutputStream(clientSocket.getOutputStream());
+           
 
             //Create and send the message
             //byte[] toServer = msg.getBytes(); // convert to byte array

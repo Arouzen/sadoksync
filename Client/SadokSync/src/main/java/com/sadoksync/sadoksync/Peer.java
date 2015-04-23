@@ -66,16 +66,7 @@ public class Peer {
         msg.setName(this.getNick());
         this.sendMsg(rhost, 3333, msg);
     }
-    /*
-     void joinComunity(String cname, String addr, int port) {
-     Message msg = new Message();
-     msg.setipAddr(this.getMyIp());
-     msg.setType("Join Comunity");
-     msg.setName(this.getNick());
-     msg.setText(cname);      
-     }
-     */
-
+ 
     void joinComunity(String cname) {
         ComunityRegistration cr = cMap.get(cname);
 
@@ -88,16 +79,8 @@ public class Peer {
         this.sendMsg(cr.getHost(), 4444, msg);
         this.openClient();
     }
-    /*
-     void setComunityHost(String host) {
-     System.out.println("Peer: setComunityHost");
-
-     this.openClient();
-     com.setHost(host);
-
-     this.joinComunity(com.getComunityName(), host, 4444);
-     }
-     */
+  
+     
 
     void setLobby(Lobby lb) {
         this.lb = lb;

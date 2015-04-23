@@ -9,8 +9,6 @@ package com.sadoksync.sadoksync;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -19,13 +17,13 @@ import java.util.logging.Logger;
 public class Comunity {
 
     String nick;
-    //ClientRemoteInterface mycri;
+    
 
     String topic;
     String cname;
 
     String host;
-    //ClientRemoteInterface host;
+    
 
     Map<String,PeerReg> pMap;
 
@@ -35,23 +33,12 @@ public class Comunity {
  
         this.pMap = Collections.synchronizedMap(new HashMap<String,PeerReg>());
     }
-    /*
-     public void Register(String rhost, String name, int port) {
-     //System.out.println("Comunity: Register: " + name + ", " + port);
-     rc = new RegistryConnecter(rhost, name, port);
-     //rc = new RegistryConnecter();
-
-     //"localhost"
-     if (rc.Connect()) {
-     rc.register(cname, this.host, topic);
-     };
-     }
-     */
+   
 
     public void RegPeer(PeerReg peer) {
         System.out.println("Comunity: RegPeer: " + peer.getNick());
         //TO DO: Send registration of user to all other clients if this should be done. 
-        pMap.put(peer.getNick(), peer);
+        pMap.put(peer.getAddr(), peer);
     }
 
     void create(String cname, String myIP, String topic, String nick) {
@@ -67,28 +54,13 @@ public class Comunity {
     void setHost(String host) {
         this.host = host;
     }
-    /*
-     void find(String cname, ClientRemoteInterface cri, String rhost, String sname, int port) {
-     RegistryConnecter rc = new RegistryConnecter(rhost, sname, port);
+    
 
-     if (rc.Connect()) {
-     rc.getComunity(cname, cri);
-     };
-     }
-     */
 
     void setTopic(String topic) {
         this.topic = topic;
     }
-    /*
-     void findAll(String rhost, String name, int port, ClientRemoteInterface cri) {
-     RegistryConnecter rc = new RegistryConnecter(rhost, name, port);
 
-     if (rc.Connect()) {
-     rc.getAll(cri);
-     };
-     }
-     */
 
     void setNick(String nick) {
         this.nick = nick;
@@ -114,6 +86,6 @@ public class Comunity {
 
     void addPeer(String name, String ipAddr) {
         System.out.println("Comunity: addPeer: Adding " + name + " @" + ipAddr);
-        pMap.put(name, new PeerReg(name, ipAddr));       
+        pMap.put(ipAddr, new PeerReg(name, ipAddr));
     }
 }
