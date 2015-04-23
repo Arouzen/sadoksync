@@ -5,10 +5,12 @@
  */
 package com.sadoksync.sadoksync;
 
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -18,7 +20,10 @@ import java.util.logging.Logger;
  */
 public class Comunity {
 
-    String nick;
+    final Lock lock;
+    final Condition ocupied;
+
+    //String nick;
     //ClientRemoteInterface mycri;
 
     String topic;
@@ -27,13 +32,16 @@ public class Comunity {
     String host;
     //ClientRemoteInterface host;
 
-    Map<String,PeerReg> pMap;
+    Map<String, PeerReg> pMap;
 
     public Comunity() {
+        lock = new ReentrantLock();
+        ocupied = lock.newCondition();
+
         System.out.println("Initializing Comunity View");
         this.topic = "";
- 
-        this.pMap = Collections.synchronizedMap(new HashMap<String,PeerReg>());
+
+        this.pMap = Collections.synchronizedMap(new HashMap<String, PeerReg>());
     }
     /*
      public void Register(String rhost, String name, int port) {
@@ -51,21 +59,45 @@ public class Comunity {
     public void RegPeer(PeerReg peer) {
         System.out.println("Comunity: RegPeer: " + peer.getNick());
         //TO DO: Send registration of user to all other clients if this should be done. 
-        pMap.put(peer.getNick(), peer);
+
+        lock.lock();
+        try {
+            pMap.put(peer.getNick(), peer);
+
+            ocupied.signalAll();
+        } finally {
+            lock.unlock();
+        }
     }
 
     void create(String cname, String myIP, String topic, String nick) {
-        System.out.println("Comunity: create: " + cname + ", " + topic +", @" + myIP);
-        this.cname = cname;
-        this.host = myIP;
-        this.topic = topic;
- 
+        System.out.println("Comunity: create: " + cname + ", " + topic + ", @" + myIP);
+
+        lock.lock();
+        try {
+            this.cname = cname;
+            this.host = myIP;
+            this.topic = topic;
+
+            ocupied.signalAll();
+        } finally {
+            lock.unlock();
+        }
+
         //Now you have to join a comunity that you create.
         //RegPeer(nick, new PeerReg(nick, host));
     }
 
     void setHost(String host) {
-        this.host = host;
+
+        lock.lock();
+        try {
+            this.host = host;
+
+            ocupied.signalAll();
+        } finally {
+            lock.unlock();
+        }
     }
     /*
      void find(String cname, ClientRemoteInterface cri, String rhost, String sname, int port) {
@@ -78,7 +110,15 @@ public class Comunity {
      */
 
     void setTopic(String topic) {
-        this.topic = topic;
+        lock.lock();
+        try {
+            this.topic = topic;
+
+            ocupied.signalAll();
+        } finally {
+            lock.unlock();
+        }
+
     }
     /*
      void findAll(String rhost, String name, int port, ClientRemoteInterface cri) {
@@ -89,31 +129,84 @@ public class Comunity {
      };
      }
      */
-
+/*
     void setNick(String nick) {
-        this.nick = nick;
+        lock.lock();
+        try {
+            this.nick = nick;
+
+            ocupied.signalAll();
+        } finally {
+            lock.unlock();
+        }
+
     }
-
-
-
+*/
     String getComunityName() {
-        return cname;
+
+        String ret;
+        lock.lock();
+        try {
+
+            ret = cname;
+            ocupied.signalAll();
+        } finally {
+            lock.unlock();
+        }
+        return ret;
     }
 
     String getHost() {
-        return host;
+        String ret;
+        lock.lock();
+        try {
+
+            ret = host;
+            ocupied.signalAll();
+        } finally {
+            lock.unlock();
+        }
+        return ret;
     }
 
     String getTopic() {
-        return topic;
+        String ret;
+        lock.lock();
+        try {
+
+            ret = topic;
+            ocupied.signalAll();
+        } finally {
+            lock.unlock();
+        }
+        return ret;
+
     }
 
-    Map getComunityPeers(){
-        return pMap;
+    Map getComunityPeers() {
+        Map ret;
+        lock.lock();
+        try {
+
+            ret = pMap;
+            ocupied.signalAll();
+        } finally {
+            lock.unlock();
+        }
+        return ret;
     }
 
     void addPeer(String name, String ipAddr) {
         System.out.println("Comunity: addPeer: Adding " + name + " @" + ipAddr);
-        pMap.put(name, new PeerReg(name, ipAddr));       
+        lock.lock();
+        try {
+
+            pMap.put(name, new PeerReg(name, ipAddr));
+
+            ocupied.signalAll();
+        } finally {
+            lock.unlock();
+        }
+
     }
 }
