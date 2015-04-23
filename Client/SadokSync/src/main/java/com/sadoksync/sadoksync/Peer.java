@@ -395,6 +395,7 @@ public class Peer {
 
     void setHost(String ipAddr) {
         com.setHost(ipAddr);
+        System.out.println("Host changed to: " + ipAddr);
         if (ipAddr.equals(this.getMyIp())) {
             //send message to all with new host.
             Message msgret = new Message();
