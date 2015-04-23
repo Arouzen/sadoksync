@@ -31,7 +31,7 @@ public class ActionCreateComunity implements Runnable {
         pr.createComunity(cname, topic);
         
         System.out.println("ActionCreateComunity: Registring Comunity " + cname);
-        pr.registerComunity(addr,4444);
+        pr.registerComunity(addr,3333);
 
     }
 }
