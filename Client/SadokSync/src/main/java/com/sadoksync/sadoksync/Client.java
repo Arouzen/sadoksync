@@ -677,7 +677,7 @@ public class Client extends javax.swing.JFrame {
     }
 
     // TODO : un-hardcode
-    private ArrayList<String> getPlaylist() {
+    public ArrayList<String> getPlaylist() {
         ArrayList<String> list = new ArrayList<String>();
         playlist.getLock().lock();
         try {
