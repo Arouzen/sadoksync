@@ -3,6 +3,7 @@ package com.sadoksync.sadoksync;
 import com.sadoksync.sadoksync.PublicPlaylist.Pair;
 import com.sun.jna.NativeLibrary;
 import java.awt.Canvas;
+import java.awt.Color;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.datatransfer.DataFlavor;
@@ -47,7 +48,7 @@ public class Client extends javax.swing.JFrame {
     private final MediaPlayerFactory mediaPlayerFactory;
 
     // Create a new media player instance for the run-time platform
-    public EmbeddedMediaPlayer mediaPlayer;
+    private EmbeddedMediaPlayer mediaPlayer;
 
     // Create the server media player used to stream
     public HeadlessMediaPlayer serverMediaPlayer;
@@ -149,7 +150,7 @@ public class Client extends javax.swing.JFrame {
         } catch (InterruptedException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
-        mediaPlayer.playMedia(getRtspUrl());
+        playMedia(getRtspUrl());
     }
 
     public void setHost(String ip) {
@@ -476,7 +477,7 @@ public class Client extends javax.swing.JFrame {
             } catch (InterruptedException ex) {
                 ex.printStackTrace();
             }
-            mediaPlayer.playMedia(getRtspUrl());
+            playMedia(getRtspUrl());
         }
     }//GEN-LAST:event_buttonStreamActionPerformed
 
@@ -521,7 +522,23 @@ public class Client extends javax.swing.JFrame {
     }//GEN-LAST:event_buttonShowPlaylistActionPerformed
 
     public void connectToRtsp() {
-        mediaPlayer.playMedia(getRtspUrl());
+        playMedia(getRtspUrl());
+    }
+
+    public void playMedia(String url) {
+        String[] s = playlist.getNowPlaying().split("\\.");
+        if (s[s.length - 1].endsWith("mp3")) {
+
+            //Media player init
+            MediaPlayerFactory visualizerFactory = new MediaPlayerFactory("--audio-visual=visual", "--effect-list=spectrum");
+            EmbeddedMediaPlayer visualizerPlayer = visualizerFactory.newEmbeddedMediaPlayer();
+            CanvasVideoSurface visualizerSurface = visualizerFactory.newVideoSurface(canvas);
+            visualizerPlayer.setVideoSurface(visualizerSurface);
+            visualizerPlayer.playMedia(url);
+            System.out.println("visualize");
+        } else {
+            mediaPlayer.playMedia(url);
+        }
     }
 
     public void updateRightPanel(ArrayList<String> elements) {
@@ -586,9 +603,9 @@ public class Client extends javax.swing.JFrame {
                                 }
                             }
 
-                            private void streamNextMedia(MediaPlayer mediaPlayer) {
+                            private void streamNextMedia(MediaPlayer serverMediaPlayer) {
                                 System.out.println("[Server] Media stopped/finished, moving next in list!");
-                                mediaPlayer.playMedia(playlist.getNowPlaying(),
+                                serverMediaPlayer.playMedia(playlist.getNowPlaying(),
                                         options,
                                         ":no-sout-rtp-sap",
                                         ":no-sout-standard-sap",
