@@ -361,6 +361,7 @@ public class Peer {
     }
 
     void Ping(String ipAddr, String why) {
+        System.out.println("Ping from: " + this.getMyIp() + " to " + ipAddr);
         Message msgret = new Message();
         msgret.setipAddr(this.getMyIp());
         msgret.setType("Ping");
@@ -369,6 +370,7 @@ public class Peer {
     }
 
     void Pong(Message msg) {
+        System.out.println("Pong from: " + this.getMyIp() + " to " + msg.getipAddr());
         String ipAddr = msg.getipAddr();
         Message msgret = new Message();
         switch (msg.getText()) {
@@ -382,6 +384,7 @@ public class Peer {
     }
 
     void handlePong(Message msg) {
+        System.out.println("Handling pong from: " + msg.getipAddr());
         Message msgret = new Message();
         switch (msg.getText()) {
             case "Move Host":
