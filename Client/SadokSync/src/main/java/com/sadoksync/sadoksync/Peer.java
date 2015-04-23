@@ -56,7 +56,7 @@ public class Peer {
 
     void registerComunity(String rhost, int port) {
         Message msg = new Message(com);
-        this.sendMsg(rhost, 3333, msg);
+        this.sendMsg(rhost, port, msg);
     }
 
     void findAllComunity(String rhost, int port) {
@@ -409,6 +409,7 @@ public class Peer {
             this.sendMsgToComunity(msgret);
             
             //Reregister comunity. 
+            this.registerComunity(ipAddr,3333);
             
             //clean start of playlist
             System.out.println("Calling cleanStartOfPlaylist");
