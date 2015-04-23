@@ -83,6 +83,8 @@ public class Comunity {
         } finally {
             lock.unlock();
         }
+        System.out.println("comunity.create() host: " + this.host);
+        System.out.println("aayyyy: " + this.getHost());
 
         //Now you have to join a comunity that you create.
         //RegPeer(nick, new PeerReg(nick, host));
