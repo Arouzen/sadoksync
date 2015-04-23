@@ -63,6 +63,7 @@ public class ConnectionHandler extends Thread {
 
                     case "Set Stream":
                         System.out.println("Set Stream");
+                        pr.com.setHost(msg.getipAddr());
                         pr.getClient().setHost(msg.getipAddr());
                         pr.getClient().setPort("5555");
                         pr.getClient().setRtspPath(msg.getName());
