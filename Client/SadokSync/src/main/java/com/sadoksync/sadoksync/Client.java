@@ -684,7 +684,7 @@ public class Client extends javax.swing.JFrame {
     }
 
     public void cleanStartOfPlaylist() {
-        while (pr.getMyIp().equals(pr.com.getPeerIP(playlist.getNowPlayingOwner()))) {
+        while (!pr.getMyIp().equals(pr.com.getPeerIP(playlist.getNowPlayingOwner()))) {
             playlist.removeFirstInQueue();
         }
     }

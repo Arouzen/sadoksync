@@ -410,9 +410,11 @@ public class Peer {
             //Reregister comunity. 
             
             //clean start of playlist
+            System.out.println("Calling cleanStartOfPlaylist");
             this.cli.cleanStartOfPlaylist();
             
             //start stream
+            System.out.println("Calling startStream");
             this.cli.startStream();
         }
     }
