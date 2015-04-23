@@ -50,8 +50,8 @@ public class Peer {
     }
 
     //del?
-    void createComunity(String cname, String topic) {
-        com.create(cname, myIP, topic, nick);
+    void createComunity(String cname, String ip, String topic) {
+        com.create(cname, ip, topic, nick);
     }
 
     void registerComunity(String rhost, int port) {
