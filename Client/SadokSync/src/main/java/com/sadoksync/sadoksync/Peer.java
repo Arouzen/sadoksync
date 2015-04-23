@@ -55,11 +55,14 @@ public class Peer {
     }
 
     void registerComunity(String rhost, int port) {
+        com.setRegistryAddr(rhost);
         Message msg = new Message(com);
         this.sendMsg(rhost, port, msg);
     }
 
     void findAllComunity(String rhost, int port) {
+        com.setRegistryAddr(rhost);
+        
         Message msg = new Message();
         msg.setipAddr(this.getMyIp());
         msg.setType("Find All");
@@ -78,7 +81,7 @@ public class Peer {
 
     void joinComunity(String cname) {
         ComunityRegistration cr = cMap.get(cname);
-
+        
         Message msg = new Message();
         msg.setipAddr(this.getMyIp());
         msg.setType("Join Comunity");
@@ -409,7 +412,7 @@ public class Peer {
             this.sendMsgToComunity(msgret);
             
             //Reregister comunity. 
-            this.registerComunity(ipAddr,3333);
+            this.registerComunity(com.getRegistryAddr(),3333);
             
             //clean start of playlist
             System.out.println("Calling cleanStartOfPlaylist");

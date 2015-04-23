@@ -28,7 +28,7 @@ public class Comunity {
 
     String topic;
     String cname;
-
+    String RegistryAddr;
     String host;
     //ClientRemoteInterface host;
 
@@ -211,5 +211,13 @@ public class Comunity {
 
     String getPeerIP(String nowPlayingOwner) {
         return pMap.get(nowPlayingOwner).getAddr();
+    }
+
+    void setRegistryAddr(String rhost) {
+        this.RegistryAddr = rhost;
+    }
+    
+    String getRegistryAddr(){
+        return RegistryAddr;
     }
 }
