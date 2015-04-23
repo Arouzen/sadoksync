@@ -5,7 +5,6 @@
  */
 package com.sadoksync.sadoksync;
 
-import com.sadoksync.msg.ClientRemoteInterface;
 import java.util.HashMap;
 
 /**
