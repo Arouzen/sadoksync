@@ -60,6 +60,9 @@ public class Client extends javax.swing.JFrame {
     // Create fullscreen player
     private final FullScreenPlayer fullscreenplayer;
 
+    // Create the visualizer player
+    private EmbeddedMediaPlayer visualizerPlayer;
+
     // Create the public playlist
     private PublicPlaylist playlist;
 
@@ -468,7 +471,11 @@ public class Client extends javax.swing.JFrame {
         if (pr.isHost()) {
             serverMediaPlayer.stop();
         }
-        mediaPlayer.stop();
+        if (visualizerPlayer.isPlaying()) {
+            visualizerPlayer.stop();
+        } else if (mediaPlayer.isPlaying()) {
+            mediaPlayer.stop();
+        }
     }//GEN-LAST:event_ButtonStopActionPerformed
 
     private void buttonStreamActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonStreamActionPerformed
@@ -537,7 +544,7 @@ public class Client extends javax.swing.JFrame {
         if (s[s.length - 1].endsWith("mp3")) {
             //Media player init
             MediaPlayerFactory visualizerFactory = new MediaPlayerFactory("--audio-visual=visual", "--effect-list=spectrum");
-            EmbeddedMediaPlayer visualizerPlayer = visualizerFactory.newEmbeddedMediaPlayer();
+            visualizerPlayer = visualizerFactory.newEmbeddedMediaPlayer();
             CanvasVideoSurface visualizerSurface = visualizerFactory.newVideoSurface(canvas);
             visualizerPlayer.setVideoSurface(visualizerSurface);
             visualizerPlayer.playMedia(url);
@@ -709,7 +716,7 @@ public class Client extends javax.swing.JFrame {
                 }
 
                 playMedia(getRtspUrl());
-            }else{
+            } else {
                 pr.Ping(ip, "Move Host");
             }
 
