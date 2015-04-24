@@ -693,7 +693,7 @@ public class Client extends javax.swing.JFrame {
                                 ":sout-all",
                                 ":sout-keep"
                         );
-                        pr.DeliverStreamToComunity(pr.getMyIp(), "demo");
+                        
                     } catch (Exception ex) {
                         ex.printStackTrace();
                     }
@@ -728,6 +728,7 @@ public class Client extends javax.swing.JFrame {
                 }
 
                 playMedia(getRtspUrl());
+                pr.DeliverStreamToComunity(pr.getMyIp(), "demo");
             } else {
                 pr.Ping(ip, "Move Host");
             }
