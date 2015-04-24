@@ -693,6 +693,10 @@ public class Client extends javax.swing.JFrame {
         }
     }
 
+    public boolean isPlaylistEmpty(){
+        return playlist.isEmpty();
+    }
+    
     public void startStream() {
         if (!playlist.isEmpty()) {
             startStreamingServer();

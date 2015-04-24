@@ -53,7 +53,16 @@ public class ConnectionHandler extends Thread {
                             System.out.println("Message: Playlist: Adding: ");
 
                             //Add to playlist and then send the play list to all.
-                            pr.getClient().addtoPlaylist(msg.getPair());
+                            if(pr.getClient().isPlaylistEmpty()){
+                                //add media to playlist
+                                pr.getClient().addtoPlaylist(msg.getPair());
+                                
+                                //play next media
+                                pr.getClient().startStream();
+                            }else{
+                                pr.getClient().addtoPlaylist(msg.getPair());
+                            }
+
                             pr.DeliverPlaylistToComunity();
                         } else if (msg.getText().equals("add") && !pr.isHost()) {
                             //Relay message
