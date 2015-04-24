@@ -80,6 +80,8 @@ public class Client extends javax.swing.JFrame {
     // Socket variables
     private boolean isHost;
     private Peer pr;
+    private MediaPlayerFactory visualizerFactory;
+    private CanvasVideoSurface visualizerSurface;
 
     /**
      * Creates new form Client
@@ -539,15 +541,21 @@ public class Client extends javax.swing.JFrame {
         playMedia(getRtspUrl());
     }
 
+    public void playVisualizer(String url) {
+        if (!visualizerPlayer.isPlaying()) {
+            visualizerFactory = new MediaPlayerFactory("--audio-visual=visual", "--effect-list=spectrum");
+            visualizerPlayer = visualizerFactory.newEmbeddedMediaPlayer();
+            visualizerSurface = visualizerFactory.newVideoSurface(canvas);
+            visualizerPlayer.setVideoSurface(visualizerSurface);
+            visualizerPlayer.playMedia(url);
+        }
+    }
+
     public void playMedia(String url) {
         String[] s = playlist.getNowPlaying().split("\\.");
         if (s[s.length - 1].endsWith("mp3")) {
             //Media player init
-            MediaPlayerFactory visualizerFactory = new MediaPlayerFactory("--audio-visual=visual", "--effect-list=spectrum");
-            visualizerPlayer = visualizerFactory.newEmbeddedMediaPlayer();
-            CanvasVideoSurface visualizerSurface = visualizerFactory.newVideoSurface(canvas);
-            visualizerPlayer.setVideoSurface(visualizerSurface);
-            visualizerPlayer.playMedia(url);
+            playVisualizer(url);
             System.out.println("visualize");
             // Own visualizer stuff. I think this gives us a audiostream to work with
             /*MediaPlayerFactory factory = new MediaPlayerFactory();
