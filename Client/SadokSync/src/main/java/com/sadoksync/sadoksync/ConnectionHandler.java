@@ -72,6 +72,7 @@ public class ConnectionHandler extends Thread {
                         pr.getClient().setHost(msg.getipAddr());
                         pr.getClient().setPort("5555");
                         pr.getClient().setRtspPath(msg.getName());
+                        pr.getClient().setMediaType(msg.getText());
                         pr.getClient().connectToRtsp();
                         break;
                     case "Set Host":

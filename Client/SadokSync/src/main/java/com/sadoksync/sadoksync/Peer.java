@@ -307,6 +307,7 @@ public class Peer {
         msgret.setipAddr(this.getMyIp());
         msgret.setType("Set Stream");
         msgret.setName(path);
+        msgret.setText("video");
         this.sendMsg(ipAddr, 4444, msgret);
     }
 
@@ -316,6 +317,7 @@ public class Peer {
         msgret.setipAddr(this.getMyIp());
         msgret.setType("Set Stream");
         msgret.setName(path);
+        msgret.setText("video");
         this.sendMsgToComunity(msgret);
     }
 

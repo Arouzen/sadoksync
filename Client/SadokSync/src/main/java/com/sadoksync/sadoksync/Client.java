@@ -45,6 +45,8 @@ import uk.co.caprica.vlcj.player.headless.HeadlessMediaPlayer;
  */
 public class Client extends javax.swing.JFrame {
 
+    private String mediaType;
+    
     // Create a media player factory
     private MediaPlayerFactory mediaPlayerFactory;
 
@@ -546,9 +548,10 @@ public class Client extends javax.swing.JFrame {
     }
 
     public void playMedia(String url) {
-        String[] s = playlist.getNowPlaying().split("\\.");
+        //String[] s = playlist.getNowPlaying().split("\\.");
         // media ends with mp3? Then we want a visualizer
-        if (s[s.length - 1].endsWith("mp3")) {
+        //if (s[s.length - 1].endsWith("mp3")) {
+        if (mediaType.equals("mp3")) {
             // Check if visualizemode already set, else we need to set it to visualizemode
             // If not, its already in visualizemode and we can play media without any changes
             if (!visualizeMode) {
@@ -582,6 +585,10 @@ public class Client extends javax.swing.JFrame {
         }
         // lastly, play the media in the mediaplayer with the apropriate options
         mediaPlayer.playMedia(url);
+    }
+
+    void setMediaType(String text) {
+        this.mediaType = text;
     }
 
     private class TestAudioCallbackAdapter extends DefaultAudioCallbackAdapter {
