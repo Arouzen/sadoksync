@@ -1,0 +1,42 @@
+{
+    "media": {
+        "visualize": {
+			"mp3",
+			"ogg",
+			"ogm",
+			"wma",
+			"wav",
+			"dts",
+			"aac",
+			"ac3",
+			"flac",
+			"midi",
+			"smf",
+			"tta",
+			"xa",
+			"ra",
+			"ram",
+			"mka"			
+		}
+		"video": {
+			"pva",
+			"ts",
+			"avi",
+			"es",
+			"ps",
+			"asf",
+			"wmv",
+			"mp4",
+			"mov",
+			"3gp",
+			"mkv",
+			"dv",
+			"flv",
+			"mxf",
+			"nut",
+			"asf",
+			"rm",
+			"rv"           
+        }
+    }
+}
