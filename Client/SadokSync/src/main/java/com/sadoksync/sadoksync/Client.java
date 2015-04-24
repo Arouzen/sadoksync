@@ -46,7 +46,7 @@ import uk.co.caprica.vlcj.player.headless.HeadlessMediaPlayer;
 public class Client extends javax.swing.JFrame {
 
     // Create a media player factory
-    private MediaPlayerFactory mediaPlayerFactory;
+    private final MediaPlayerFactory mediaPlayerFactory;
 
     // Create a new media player instance for the run-time platform
     private EmbeddedMediaPlayer mediaPlayer;
@@ -80,7 +80,8 @@ public class Client extends javax.swing.JFrame {
     // Socket variables
     private boolean isHost;
     private Peer pr;
-    private boolean visualizeMode;
+    private MediaPlayerFactory visualizerFactory;
+    private CanvasVideoSurface visualizerSurface;
 
     /**
      * Creates new form Client
@@ -110,6 +111,10 @@ public class Client extends javax.swing.JFrame {
         fileChooser.setFileFilter(new FileFilter());
         fileChooser.setAcceptAllFileFilterUsed(false);
 
+        //Visualizerplayer init
+        visualizerFactory = new MediaPlayerFactory("--audio-visual=visual", "--effect-list=spectrum");
+        visualizerPlayer = visualizerFactory.newEmbeddedMediaPlayer();
+
         //Fullscreenplayer init
         fullscreenplayer = new FullScreenPlayer();
 
@@ -117,10 +122,8 @@ public class Client extends javax.swing.JFrame {
         mediaPlayerFactory = new MediaPlayerFactory();
         mediaPlayer = mediaPlayerFactory.newEmbeddedMediaPlayer(new Win32FullScreenStrategy(fullscreenplayer.frame));
 
-        //Set mediaplayer to surface
         videoSurface = mediaPlayerFactory.newVideoSurface(canvas);
         mediaPlayer.setVideoSurface(videoSurface);
-        visualizeMode = false;
 
         /*mediaPlayer.addMediaPlayerEventListener(new MediaPlayerEventAdapter() {
          @Override
@@ -141,7 +144,6 @@ public class Client extends javax.swing.JFrame {
 
         // Public playlist init
         playlist = new PublicPlaylist(pr);
-
         /*
          this.isHost = pr.isHost();
          if (!isHost) {
@@ -472,11 +474,13 @@ public class Client extends javax.swing.JFrame {
     }//GEN-LAST:event_ButtonPauseActionPerformed
 
     private void ButtonStopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonStopActionPerformed
-        if (mediaPlayer.isPlaying()) {
-            mediaPlayer.stop();
-        }
         if (pr.isHost()) {
             serverMediaPlayer.stop();
+        }
+        if (visualizerPlayer.isPlaying()) {
+            visualizerPlayer.stop();
+        } else if (mediaPlayer.isPlaying()) {
+            mediaPlayer.stop();
         }
     }//GEN-LAST:event_ButtonStopActionPerformed
 
@@ -499,12 +503,8 @@ public class Client extends javax.swing.JFrame {
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         if (mediaPlayer.isPlaying()) {
-            if (!visualizeMode) {
-                fullscreenplayer.fullscreen(mediaPlayerFactory, mediaPlayer);
-                mediaPlayer.setFullScreen(true);
-            } else {
-                System.out.println("Visualizer in fullscreen not supported :((");
-            }
+            fullscreenplayer.fullscreen();
+            mediaPlayer.setFullScreen(true);
         }
     }//GEN-LAST:event_jButton3ActionPerformed
 
@@ -545,43 +545,27 @@ public class Client extends javax.swing.JFrame {
         playMedia(getRtspUrl());
     }
 
+    public void playVisualizer(String url) {
+        if (!visualizerPlayer.isPlaying()) {
+            visualizerSurface = visualizerFactory.newVideoSurface(canvas);
+            visualizerPlayer.setVideoSurface(visualizerSurface);
+            visualizerPlayer.playMedia(url);
+        }
+    }
+
     public void playMedia(String url) {
         String[] s = playlist.getNowPlaying().split("\\.");
-        // media ends with mp3? Then we want a visualizer
         if (s[s.length - 1].endsWith("mp3")) {
-            // Check if visualizemode already set, else we need to set it to visualizemode
-            // If not, its already in visualizemode and we can play media without any changes
-            if (!visualizeMode) {
-                visualizeMode = true;
-                // To set it to visualize mode we need to:
-                // Recreate the mediaPlayerFactory with visualizer options
-                mediaPlayerFactory = new MediaPlayerFactory("--audio-visual=visual", "--effect-list=spectrum");
-                mediaPlayer = mediaPlayerFactory.newEmbeddedMediaPlayer(new Win32FullScreenStrategy(fullscreenplayer.frame));
-
-                //Set visualizer mediaplayer to surface
-                videoSurface = mediaPlayerFactory.newVideoSurface(canvas);
-                mediaPlayer.setVideoSurface(videoSurface);
-            }
-            // Own visualizer stuff. dont remove pls
-            // I think this gives us a audiostream to work with
+            //Media player init
+            playVisualizer(url);
+            System.out.println("visualize");
+            // Own visualizer stuff. I think this gives us a audiostream to work with
             /*MediaPlayerFactory factory = new MediaPlayerFactory();
              DirectAudioPlayer audioPlayer = factory.newDirectAudioPlayer("S16N", 44100, 2, new TestAudioCallbackAdapter());
              audioPlayer.playMedia(url);*/
         } else {
-            // Check if in visualizemode, if it is we need to recreate the mediaplayer
-            if (visualizeMode) {
-                visualizeMode = false;
-                // Recreate the mediaplayerfactory without visualizer options
-                mediaPlayerFactory = new MediaPlayerFactory();
-                mediaPlayer = mediaPlayerFactory.newEmbeddedMediaPlayer(new Win32FullScreenStrategy(fullscreenplayer.frame));
-
-                //Set mediaplayer without visualize options to surface
-                videoSurface = mediaPlayerFactory.newVideoSurface(canvas);
-                mediaPlayer.setVideoSurface(videoSurface);
-            }
+            mediaPlayer.playMedia(url);
         }
-        // lastly, play the media in the mediaplayer with the apropriate options
-        mediaPlayer.playMedia(url);
     }
 
     private class TestAudioCallbackAdapter extends DefaultAudioCallbackAdapter {
@@ -709,7 +693,7 @@ public class Client extends javax.swing.JFrame {
                                 ":sout-all",
                                 ":sout-keep"
                         );
-
+                        
                     } catch (Exception ex) {
                         ex.printStackTrace();
                     }
@@ -948,7 +932,6 @@ public class Client extends javax.swing.JFrame {
         public Canvas canvas;
         public JFrame frame;
         public CanvasVideoSurface videoSurface;
-        public EmbeddedMediaPlayer fullscreenMediaPlayer;
 
         private final KeyStroke escapeKeyStroke;
         private final Action escapeAction;
@@ -974,34 +957,33 @@ public class Client extends javax.swing.JFrame {
             frame.getRootPane().getActionMap().put("ESCAPE", escapeAction);
         }
 
-        private void fullscreen(MediaPlayerFactory fullscreenMediaPlayerFactory, EmbeddedMediaPlayer mediaPlayer) {
-            this.videoSurface = fullscreenMediaPlayerFactory.newVideoSurface(this.canvas);
-            this.fullscreenMediaPlayer = mediaPlayer;
+        private void fullscreen() {
+            this.videoSurface = mediaPlayerFactory.newVideoSurface(this.canvas);
             frame.setVisible(true);
             canvas.setVisible(true);
 
             // Workaround, disable videotrack while swapping surface
-            int vid = this.fullscreenMediaPlayer.getVideoTrack();
-            this.fullscreenMediaPlayer.setVideoTrack(-1);
+            int vid = mediaPlayer.getVideoTrack();
+            mediaPlayer.setVideoTrack(-1);
 
-            this.fullscreenMediaPlayer.setVideoSurface(this.videoSurface);
-            this.fullscreenMediaPlayer.attachVideoSurface();
+            mediaPlayer.setVideoSurface(this.videoSurface);
+            mediaPlayer.attachVideoSurface();
 
             // Put videotrack back
-            this.fullscreenMediaPlayer.setVideoTrack(vid);
+            mediaPlayer.setVideoTrack(vid);
 
         }
 
         private void stopFullscreen() {
             // Workaround, disable videotrack while swapping surface
-            int vid = fullscreenMediaPlayer.getVideoTrack();
-            fullscreenMediaPlayer.setVideoTrack(-1);
+            int vid = mediaPlayer.getVideoTrack();
+            mediaPlayer.setVideoTrack(-1);
 
-            fullscreenMediaPlayer.setVideoSurface(Client.this.videoSurface);
-            fullscreenMediaPlayer.attachVideoSurface();
+            mediaPlayer.setVideoSurface(Client.this.videoSurface);
+            mediaPlayer.attachVideoSurface();
 
             // Put videotrack back
-            fullscreenMediaPlayer.setVideoTrack(vid);
+            mediaPlayer.setVideoTrack(vid);
 
             frame.setVisible(false);
             canvas.setVisible(false);
