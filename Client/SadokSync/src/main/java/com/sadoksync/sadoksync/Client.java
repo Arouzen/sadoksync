@@ -111,6 +111,10 @@ public class Client extends javax.swing.JFrame {
         fileChooser.setFileFilter(new FileFilter());
         fileChooser.setAcceptAllFileFilterUsed(false);
 
+        //Visualizerplayer init
+        visualizerFactory = new MediaPlayerFactory("--audio-visual=visual", "--effect-list=spectrum");
+        visualizerPlayer = visualizerFactory.newEmbeddedMediaPlayer();
+
         //Fullscreenplayer init
         fullscreenplayer = new FullScreenPlayer();
 
@@ -543,8 +547,6 @@ public class Client extends javax.swing.JFrame {
 
     public void playVisualizer(String url) {
         if (!visualizerPlayer.isPlaying()) {
-            visualizerFactory = new MediaPlayerFactory("--audio-visual=visual", "--effect-list=spectrum");
-            visualizerPlayer = visualizerFactory.newEmbeddedMediaPlayer();
             visualizerSurface = visualizerFactory.newVideoSurface(canvas);
             visualizerPlayer.setVideoSurface(visualizerSurface);
             visualizerPlayer.playMedia(url);
