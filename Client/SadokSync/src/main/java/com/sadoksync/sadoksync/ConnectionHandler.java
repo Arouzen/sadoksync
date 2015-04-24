@@ -46,6 +46,7 @@ public class ConnectionHandler extends Thread {
                         PublicPlaylist pl = new PublicPlaylist(pr, msg.getList());
                         pr.getClient().setPlayList(pl);
                         pr.getClient().updateRightPanel(pr.getClient().getPlaylist());
+                        pr.getClient().rightPanelMode = "playlist";
                         break;
                     case "Playlist":
                         System.out.println("Message: Playlist");

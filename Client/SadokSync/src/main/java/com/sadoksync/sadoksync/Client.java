@@ -70,7 +70,7 @@ public class Client extends javax.swing.JFrame {
     private JFileChooser fileChooser;
 
     // Right panel mode
-    private String rightPanelMode;
+    public String rightPanelMode;
 
     // Rtsp variables
     private String server;
