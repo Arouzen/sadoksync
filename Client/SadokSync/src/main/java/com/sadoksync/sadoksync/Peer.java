@@ -62,7 +62,7 @@ public class Peer {
 
     void findAllComunity(String rhost, int port) {
         com.setRegistryAddr(rhost);
-        
+
         Message msg = new Message();
         msg.setipAddr(this.getMyIp());
         msg.setType("Find All");
@@ -81,7 +81,7 @@ public class Peer {
 
     void joinComunity(String cname) {
         ComunityRegistration cr = cMap.get(cname);
-        
+
         Message msg = new Message();
         msg.setipAddr(this.getMyIp());
         msg.setType("Join Comunity");
@@ -251,7 +251,11 @@ public class Peer {
         msg.setType("Register Client");
         if (this.isHost()) {
             System.out.println("I am host and I am addinging: " + msg.getName() + " @" + msg.getipAddr());
-            this.DeliverStream(msg.getipAddr(), "demo");
+            
+            if (!this.cli.isPlaylistEmpty()) {
+                this.DeliverStream(msg.getipAddr(), "demo");    
+            }
+            
 
             Message sethostmsg = new Message();
             sethostmsg.setipAddr(this.getMyIp());
@@ -401,9 +405,10 @@ public class Peer {
 
     }
 
-    void setComunityName(String name){
+    void setComunityName(String name) {
         com.setComunityName(name);
     }
+
     void setHost(String ipAddr) {
         com.setHost(ipAddr);
         System.out.println("Host changed to: " + ipAddr);
@@ -415,17 +420,20 @@ public class Peer {
             msgret.setType("Set Host");
 
             this.sendMsgToComunity(msgret);
-            
+
             //Reregister comunity. 
-            this.registerComunity(com.getRegistryAddr(),3333);
-            
-            //clean start of playlist
-            System.out.println("Calling cleanStartOfPlaylist");
-            this.cli.cleanStartOfPlaylist();
-            
-            //start stream
-            System.out.println("Calling startStream");
-            this.cli.startStream();
+            this.registerComunity(com.getRegistryAddr(), 3333);
+
+            if (!this.cli.isPlaylistEmpty()) {
+                //clean start of playlist
+                System.out.println("Calling cleanStartOfPlaylist");
+                this.cli.cleanStartOfPlaylist();
+
+                //start stream
+                System.out.println("Calling startStream");
+                this.cli.startStream();
+            }
+
         }
     }
 }
