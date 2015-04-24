@@ -26,14 +26,13 @@ public class PublicPlaylist implements Serializable {
         this.pr = pr;
     }
 
-    public PublicPlaylist(Peer pr , List li) {
-        playlist = (ArrayList)li;
+    public PublicPlaylist(Peer pr, List li) {
+        playlist = (ArrayList) li;
         lock = new ReentrantLock();
         ocupied = lock.newCondition();
         this.pr = pr;
     }
-    
-    
+
     /*
      Returns the Lock used by the playlist
      */
@@ -59,11 +58,24 @@ public class PublicPlaylist implements Serializable {
 
     public void addToPlaylist(Pair pair) {
         System.out.println("Adding " + pair.value().getName() + " owned by " + pair.key());
-        
+
         lock.lock();
         try {
             if (pr.isHost()) {
-                playlist.add(pair);
+
+                //if playlist was empty start stream
+                //Add to playlist and then send the play list to all.
+                if (this.isEmpty()) {
+                    //add media to playlist
+                    playlist.add(pair);
+                    //pr.getClient().addtoPlaylist(msg.getPair());
+
+                    //play next media
+                    pr.getClient().startStream();
+                } else {
+                    playlist.add(pair);
+                }
+
                 pr.DeliverPlaylistToComunity();
             } else {
                 Message msg = new Message();
@@ -108,7 +120,7 @@ public class PublicPlaylist implements Serializable {
         return Value.getPath();
     }
 
-        public String getNowPlayingOwner() {
+    public String getNowPlayingOwner() {
         Pair pair;
         String key;
         lock.lock();
@@ -123,7 +135,7 @@ public class PublicPlaylist implements Serializable {
 
         return key;
     }
-    
+
     /*
      Lock the plalist and remove the first pair
      */

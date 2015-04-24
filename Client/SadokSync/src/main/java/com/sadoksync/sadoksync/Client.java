@@ -693,7 +693,8 @@ public class Client extends javax.swing.JFrame {
                                 ":sout-all",
                                 ":sout-keep"
                         );
-                        
+                        //test
+
                     } catch (Exception ex) {
                         ex.printStackTrace();
                     }
@@ -721,14 +722,17 @@ public class Client extends javax.swing.JFrame {
 
             if (pr.getMyIp().equals(ip)) {
                 startStreamingServer();
+
                 try {
                     Thread.sleep(2000);
                 } catch (InterruptedException ex) {
-                    ex.printStackTrace();
+                    Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
                 }
-
+                
                 playMedia(getRtspUrl());
                 pr.DeliverStreamToComunity(pr.getMyIp(), "demo");
+                
+                //pr.DeliverStreamToComunity(pr.getMyIp(), "demo");
             } else {
                 pr.Ping(ip, "Move Host");
             }
