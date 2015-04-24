@@ -117,19 +117,18 @@ public class Client extends javax.swing.JFrame {
         mediaPlayer.setVideoSurface(videoSurface);
 
         /*mediaPlayer.addMediaPlayerEventListener(new MediaPlayerEventAdapter() {
-            @Override
-            public void finished(MediaPlayer mediaPlayer) {
-                if (!playlist.isEmpty()) {
-                }
-            }
+         @Override
+         public void finished(MediaPlayer mediaPlayer) {
+         if (!playlist.isEmpty()) {
+         }
+         }
 
-            @Override
-            public void stopped(MediaPlayer mediaPlayer) {
-                if (!playlist.isEmpty()) {
-                }
-            }
-        });*/
-
+         @Override
+         public void stopped(MediaPlayer mediaPlayer) {
+         if (!playlist.isEmpty()) {
+         }
+         }
+         });*/
         // Split panel inits
         jSplitPane1.setDividerLocation(0.7);
         rightPanelMode = "chat";
@@ -693,19 +692,27 @@ public class Client extends javax.swing.JFrame {
         }
     }
 
-    public boolean isPlaylistEmpty(){
+    public boolean isPlaylistEmpty() {
         return playlist.isEmpty();
     }
-    
+
     public void startStream() {
         if (!playlist.isEmpty()) {
-            startStreamingServer();
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException ex) {
-                ex.printStackTrace();
+            String ip = pr.com.getPeerIP(playlist.getNowPlayingOwner());
+
+            if (pr.getMyIp().equals(ip)) {
+                startStreamingServer();
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException ex) {
+                    ex.printStackTrace();
+                }
+
+                playMedia(getRtspUrl());
+            }else{
+                pr.Ping(ip, "Move Host");
             }
-            playMedia(getRtspUrl());
+
         }
     }
 
