@@ -674,7 +674,7 @@ public class Client extends javax.swing.JFrame {
                                 } else {
                                     System.out.println("[Server] No more media in list");
                                     mediaPlayer.release();
-                                    serverMediaPlayerFactory.release();
+                                    //serverMediaPlayerFactory.release();
                                 }
                             }
 
@@ -688,7 +688,7 @@ public class Client extends javax.swing.JFrame {
                                 } else {
                                     System.out.println("[Server] No more media in list");
                                     mediaPlayer.release();
-                                    serverMediaPlayerFactory.release();
+                                    //serverMediaPlayerFactory.release();
                                 }
                             }
 
@@ -736,7 +736,7 @@ public class Client extends javax.swing.JFrame {
 
                                 } else {
                                     mediaPlayer.release();
-                                    serverMediaPlayerFactory.release();
+                                    //serverMediaPlayerFactory.release();
                                     pr.Ping(ip, "Move Host");
                                 }
                             }
