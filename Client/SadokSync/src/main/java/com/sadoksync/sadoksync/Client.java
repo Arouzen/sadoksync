@@ -717,7 +717,11 @@ public class Client extends javax.swing.JFrame {
                             ex.printStackTrace();
                         }
                         
+                        setHost(pr.getMyIp());
+                        setPort("5555");
+                        setRtspPath("demo");
                         playMedia(getRtspUrl());
+                        
                         pr.DeliverStreamToComunity(pr.getMyIp(), "demo");
                         pr.DeliverPlaylistToComunity();
                         

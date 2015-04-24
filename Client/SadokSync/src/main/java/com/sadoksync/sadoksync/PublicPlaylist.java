@@ -127,10 +127,10 @@ public class PublicPlaylist implements Serializable {
         String key = null;
         lock.lock();
         try {
-            if (!this.isEmpty()) {
+            
                 pair = playlist.get(0);
                 key = pair.key();
-            }
+            
             ocupied.signalAll();
         } finally {
             lock.unlock();
