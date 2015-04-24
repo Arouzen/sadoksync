@@ -672,7 +672,7 @@ public class Client extends javax.swing.JFrame {
                                             ":sout-keep"
                                     );
                                     try {
-                                        Thread.sleep(2000);
+                                        Thread.sleep(4000);
                                     } catch (InterruptedException ex) {
                                         Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
                                     }
@@ -693,6 +693,16 @@ public class Client extends javax.swing.JFrame {
                                 ":sout-all",
                                 ":sout-keep"
                         );
+
+                        try {
+                            Thread.sleep(2000);
+                        } catch (InterruptedException ex) {
+                            ex.printStackTrace();
+                        }
+                        
+                        playMedia(getRtspUrl());
+                        pr.DeliverStreamToComunity(pr.getMyIp(), "demo");
+                        pr.DeliverPlaylistToComunity();
                         
                     } catch (Exception ex) {
                         ex.printStackTrace();
@@ -721,14 +731,11 @@ public class Client extends javax.swing.JFrame {
 
             if (pr.getMyIp().equals(ip)) {
                 startStreamingServer();
-                try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException ex) {
-                    ex.printStackTrace();
-                }
 
-                playMedia(getRtspUrl());
-                pr.DeliverStreamToComunity(pr.getMyIp(), "demo");
+                /*
+                 playMedia(getRtspUrl());
+                 pr.DeliverStreamToComunity(pr.getMyIp(), "demo");
+                 */
             } else {
                 pr.Ping(ip, "Move Host");
             }
