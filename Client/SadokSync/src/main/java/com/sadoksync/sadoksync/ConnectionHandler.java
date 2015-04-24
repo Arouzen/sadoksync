@@ -74,7 +74,9 @@ public class ConnectionHandler extends Thread {
                         pr.getClient().connectToRtsp();
                         break;
                     case "Set Host":
+                        System.out.println("Setting comunity name");
                         pr.setComunityName(msg.getName());
+                        System.out.println("Setting host");
                         pr.setHost(msg.getipAddr());
                         break;
                     case "Register Client":
