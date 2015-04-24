@@ -63,9 +63,6 @@ public class Client extends javax.swing.JFrame {
     // Create fullscreen player
     private final FullScreenPlayer fullscreenplayer;
 
-    // Create the visualizer player
-    private EmbeddedMediaPlayer visualizerPlayer;
-
     // Create the public playlist
     private PublicPlaylist playlist;
 
@@ -730,7 +727,7 @@ public class Client extends javax.swing.JFrame {
                             ex.printStackTrace();
                         }
 
-                        setHost(pr.getMyIp());
+                        setHost("localhost");
                         setPort("5555");
                         setRtspPath("demo");
                         setMediaType("video");
