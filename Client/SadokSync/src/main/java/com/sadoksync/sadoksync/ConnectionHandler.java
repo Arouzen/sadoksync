@@ -59,7 +59,7 @@ public class ConnectionHandler extends Thread {
                         break;
                     case "Set Stream":
                         System.out.println("Set Stream");
-                        pr.getClient().setHost(msg.getName());
+                        pr.getClient().setHost(clientSocket.getInetAddress().toString().substring(1));
                         pr.getClient().setPort("5555");
                         pr.getClient().setRtspPath(msg.getName());
                         pr.getClient().connectToRtsp();
