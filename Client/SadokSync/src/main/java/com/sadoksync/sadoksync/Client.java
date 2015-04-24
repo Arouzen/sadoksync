@@ -46,7 +46,7 @@ import uk.co.caprica.vlcj.player.headless.HeadlessMediaPlayer;
 public class Client extends javax.swing.JFrame {
 
     private String mediaType;
-    
+
     // Create a media player factory
     private MediaPlayerFactory mediaPlayerFactory;
 
@@ -587,7 +587,7 @@ public class Client extends javax.swing.JFrame {
         mediaPlayer.playMedia(url);
     }
 
-    void setMediaType(String text) {
+    public void setMediaType(String text) {
         this.mediaType = text;
     }
 
@@ -699,8 +699,14 @@ public class Client extends javax.swing.JFrame {
                                     } catch (InterruptedException ex) {
                                         Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
                                     }
+
+                                    setHost(pr.getMyIp());
+                                    setPort("5555");
+                                    setRtspPath("demo");
+                                    setMediaType("video");
+                                    
                                     connectToRtsp();
-                                    pr.DeliverStreamToComunity(pr.getMyIp(), "demo");
+                                    pr.DeliverStreamToComunity(pr.getMyIp(), "demo", "video");
                                     pr.DeliverPlaylistToComunity();
 
                                 } else {
@@ -717,21 +723,21 @@ public class Client extends javax.swing.JFrame {
                                 ":sout-keep"
                         );
 
-
                         try {
                             Thread.sleep(2000);
                         } catch (InterruptedException ex) {
                             ex.printStackTrace();
                         }
-                        
+
                         setHost(pr.getMyIp());
                         setPort("5555");
                         setRtspPath("demo");
+                        setMediaType("video");
                         playMedia(getRtspUrl());
-                        
-                        pr.DeliverStreamToComunity(pr.getMyIp(), "demo");
+
+                        pr.DeliverStreamToComunity(pr.getMyIp(), "demo", "video");
                         pr.DeliverPlaylistToComunity();
-                        
+
                     } catch (Exception ex) {
                         ex.printStackTrace();
                     }

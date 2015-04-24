@@ -311,13 +311,13 @@ public class Peer {
         this.sendMsg(ipAddr, 4444, msgret);
     }
 
-    void DeliverStreamToComunity(String ipAddr, String path) {
+    void DeliverStreamToComunity(String ipAddr, String path, String mediaType) {
         //Delives a message that set where the stream is currently.
         Message msgret = new Message();
         msgret.setipAddr(this.getMyIp());
         msgret.setType("Set Stream");
         msgret.setName(path);
-        msgret.setText("video");
+        msgret.setText(mediaType);
         this.sendMsgToComunity(msgret);
     }
 
