@@ -449,7 +449,7 @@ public class Client extends javax.swing.JFrame {
             File selectedMedia = fileChooser.getSelectedFile();
             playlist.addToPlaylist(pr.getNick(), selectedMedia);
             updateRightPanel(getPlaylist());
-
+            rightPanelMode = "playlist";
         }
     }//GEN-LAST:event_OpenActionPerformed
 
@@ -635,6 +635,7 @@ public class Client extends javax.swing.JFrame {
                             public void finished(MediaPlayer mediaPlayer) {
                                 playlist.removeFirstInQueue();
                                 updateRightPanel(getPlaylist());
+                                rightPanelMode = "playlist";
                                 if (!playlist.isEmpty()) {
                                     streamNextMedia(mediaPlayer);
                                 } else {
@@ -646,6 +647,7 @@ public class Client extends javax.swing.JFrame {
                             public void stopped(MediaPlayer mediaPlayer) {
                                 playlist.removeFirstInQueue();
                                 updateRightPanel(getPlaylist());
+                                rightPanelMode = "playlist";
                                 if (!playlist.isEmpty()) {
                                     streamNextMedia(mediaPlayer);
                                 } else {
