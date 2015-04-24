@@ -29,6 +29,7 @@ import javax.swing.LookAndFeel;
 import javax.swing.TransferHandler;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import org.json.simple.parser.ParseException;
 import uk.co.caprica.vlcj.player.MediaPlayer;
 import uk.co.caprica.vlcj.player.MediaPlayerEventAdapter;
 import uk.co.caprica.vlcj.player.MediaPlayerFactory;
@@ -80,7 +81,12 @@ public class Client extends javax.swing.JFrame {
     // Socket variables
     private boolean isHost;
     private Peer pr;
+
+    // Mode
     private boolean visualizeMode;
+
+    // File filter
+    public FileFilter filefilter;
 
     /**
      * Creates new form Client
@@ -141,6 +147,9 @@ public class Client extends javax.swing.JFrame {
 
         // Public playlist init
         playlist = new PublicPlaylist(pr);
+
+        // FileFilter init
+        filefilter = new FileFilter();
 
         /*
          this.isHost = pr.isHost();
@@ -549,7 +558,8 @@ public class Client extends javax.swing.JFrame {
         //String[] s = playlist.getNowPlaying().split("\\.");
         // media ends with mp3? Then we want a visualizer
         //if (s[s.length - 1].endsWith("mp3")) {
-        if (mediaType.equals("mp3")) {
+        System.out.println("[Client.PlayMedia] mediaType: " + mediaType);
+        if (mediaType.equals("visualize")) {
             // Check if visualizemode already set, else we need to set it to visualizemode
             // If not, its already in visualizemode and we can play media without any changes
             if (!visualizeMode) {
@@ -701,10 +711,23 @@ public class Client extends javax.swing.JFrame {
                                     setHost(pr.getMyIp());
                                     setPort("5555");
                                     setRtspPath("demo");
-                                    setMediaType("video");
-                                    
+
+                                    String extension = playlist.getNowPlaying().split("\\.")[playlist.getNowPlaying().split("\\.").length - 1];
+                                    String mediaType = "";
+                                    try {
+                                        if (filefilter.acceptMediaFile(extension, "visualize")) {
+                                            setMediaType("visualize");
+                                        } else if (filefilter.acceptMediaFile(extension, "video")) {
+                                            setMediaType("video");
+                                        }
+                                    } catch (ParseException ex) {
+                                        Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+                                    } catch (IOException ex) {
+                                        Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+                                    }
+
                                     connectToRtsp();
-                                    pr.DeliverStreamToComunity(pr.getMyIp(), "demo", "video");
+                                    pr.DeliverStreamToComunity(pr.getMyIp(), "demo", mediaType);
                                     pr.DeliverPlaylistToComunity();
 
                                 } else {
@@ -944,7 +967,7 @@ public class Client extends javax.swing.JFrame {
                     return false;
                 }
                 for (File file : data) {
-                    if (new FileFilter().accept(file)) {
+                    if (filefilter.accept(file)) {
                         playlist.addToPlaylist(pr.getNick(), file);
                     } else {
                         displayDropLocation("Does only accept media files.");
