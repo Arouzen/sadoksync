@@ -64,7 +64,7 @@ public class PublicPlaylist implements Serializable {
                 playlist.add(pair);
             } else {
                 Message msg = new Message();
-                msg.setipAddr(pr.getMyIp());
+                //msg.setipAddr(pr.getMyIp());
                 msg.setType("Playlist");
                 msg.setText("add");
                 msg.setPair(pair);

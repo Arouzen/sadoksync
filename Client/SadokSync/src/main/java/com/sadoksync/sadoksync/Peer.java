@@ -63,22 +63,22 @@ public class Peer {
     void findAllComunity(String rhost, int port) {
         Message msg = new Message();
         System.out.print("Find Community: " +rhost);
-        msg.setipAddr(this.getMyIp());
+        //msg.setipAddr(this.getMyIp());
         msg.setType("Find All");
         msg.setName(this.getNick());
         this.sendMsg(rhost, 3333, msg);
     }
  
-    void joinComunity(String cname) {
+    void joinComunity(String cname, String addr) {
         ComunityRegistration cr = cMap.get(cname);
 
         Message msg = new Message();
-        msg.setipAddr(this.getMyIp());
+        //msg.setipAddr(this.getMyIp());
         msg.setType("Join Comunity");
         msg.setName(this.getMyIp());
         //msg.setText(cname);
         System.out.println("joinComunity");
-        this.sendMsg(cr.getHost(), 4444, msg);
+        this.sendMsg(addr, 4444, msg);
         this.openClient();
     }
   
@@ -187,7 +187,7 @@ public class Peer {
     }
 
     void sendMsg(String host, int port, Message msg) {
-        System.out.println("sendMsg" + host);
+        System.out.println("sendMsg: " + host);
         executor.execute(new PeerClientThread(host, port, msg));
     }
 
@@ -204,6 +204,7 @@ public class Peer {
                 key = (String) i.next();
                 opr = (PeerReg) m.get(key);
                 System.out.println(this.getMyIp() + " ? " + opr.getAddr());
+                //Work is needed here
                 if (!this.getMyIp().equals(opr.getAddr())) {
                     System.out.println("Trigger");
                     this.sendMsg(opr.getAddr(), 4444, msg);
@@ -225,8 +226,9 @@ public class Peer {
         cMap.put(cm.getName(), cm);
     }
 
-    void PeerToJoin(Message msg) {
-        com.addPeer(msg.getName(), msg.getName());
+    //Add ip here   
+    void PeerToJoin(Message msg, String ipAdr) {
+        com.addPeer(ipAdr, msg.getName());
         msg.setType("Register Client");
         if (this.isHost()) {
             System.out.println("This is host");
@@ -234,6 +236,7 @@ public class Peer {
 
             //send cMap to list to msg.getipAddr()
             this.SendPMap(msg.getName());
+            System.out.println("Sending to community");
             this.sendMsgToComunity(msg);
 
             //When a new client joins the Comunity it neads to know where the stream is currently
@@ -260,11 +263,11 @@ public class Peer {
                 opr = (PeerReg) m.get(key);
                 Message msg = new Message();
 
-                msg.setipAddr(opr.getAddr());
+                //msg.setipAddr(opr.getAddr());
                 msg.setType("Register Client");
                 msg.setName(opr.getNick());
                 System.out.println(opr.getNick() + "adding");
-
+                //Work is needed here
                  if (!this.getMyIp().equals(ipAddr)) {
                    this.sendMsg(ipAddr, 4444, msg);
                  }
@@ -275,7 +278,7 @@ public class Peer {
     void DeliverStream(String ipAddr, String path) {
         //Delives a message that set where the stream is currently.
         Message msgret = new Message();
-        msgret.setipAddr(this.getMyIp());
+        //msgret.setipAddr(this.getMyIp());
         msgret.setType("Set Stream");
         msgret.setName(path);
         this.sendMsg(ipAddr, 4444, msgret);
@@ -284,7 +287,7 @@ public class Peer {
     void DeliverStreamToComunity(String ipAddr, String path) {
         //Delives a message that set where the stream is currently.
         Message msgret = new Message();
-        msgret.setipAddr(this.getMyIp());
+       // msgret.setipAddr(this.getMyIp());
         msgret.setType("Set Stream");
         msgret.setName(path);
         this.sendMsgToComunity(msgret);
@@ -313,7 +316,7 @@ public class Peer {
             pli.getLock().unlock();
         }
         Message msgret = new Message();
-        msgret.setipAddr(this.getMyIp());
+        //msgret.setipAddr(this.getMyIp());
         msgret.setType("Set Playlist");
         msgret.setList(li);
         this.sendMsg(ipAddr, 4444, msgret);

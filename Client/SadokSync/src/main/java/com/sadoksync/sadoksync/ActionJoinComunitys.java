@@ -23,6 +23,6 @@ class ActionJoinComunitys implements Runnable {
 
     @Override
     public void run() {
-       pr.joinComunity(cname);
+       pr.joinComunity(cname, addr);
     }
 }

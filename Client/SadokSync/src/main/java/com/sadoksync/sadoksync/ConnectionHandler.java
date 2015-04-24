@@ -62,13 +62,13 @@ public class ConnectionHandler extends Thread {
                         pr.getClient().connectToRtsp();
                         break;
                     case "Register Client":
-                        System.out.println("Register Client");
+                        System.out.println("Register Client " + clientSocket.getInetAddress().toString().substring(1) + " end.");
                         System.out.println(msg.getName());
-                        pr.PeerToJoin(msg);
+                        pr.PeerToJoin(msg, clientSocket.getInetAddress().toString().substring(1));
                         break;
                     case "Join Comunity":
-                        System.out.println("Join Comunity");
-                        pr.PeerToJoin(msg);
+                        System.out.println("Join Comunity " + clientSocket.getInetAddress().toString().substring(1) + " end.");
+                        pr.PeerToJoin(msg, clientSocket.getInetAddress().toString().substring(1));
                         //If comunity Host register the peer
                         //If not comunity Host, send this to comunity Host
                         break;

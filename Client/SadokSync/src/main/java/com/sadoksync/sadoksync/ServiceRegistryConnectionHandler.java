@@ -74,7 +74,7 @@ class ServiceRegistryConnectionHandler extends Thread {
                         }
                         //String retIP = clientSocket.getRemoteSocketAddress().toString().substring(1);
                         String retIP = clientSocket.getInetAddress().toString().substring(1);
-                        System.out.println("Find all retIP:" + retIP);
+                        //System.out.println("Find all retIP:" + retIP);
                         /////////////////// ALOT OF SHIT HERER //// TESTING!!!!!!!!!!!!!!!!!!!!!!!!
                         //Create return message
                         msg = new Message();

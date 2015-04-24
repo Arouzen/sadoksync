@@ -23,7 +23,7 @@ public class Message implements Serializable {
     PublicPlaylist playlist;
     
     public Message() {
-
+        
     }
 
     Message(Comunity com) {
@@ -41,9 +41,9 @@ public class Message implements Serializable {
         return this.type;
     }
 
-    public void setipAddr(String ipAddr) {
+    //public void setipAddr(String ipAddr) {
         //this.ipAddr = ipAddr;
-    }
+    //}
 
     //public String getipAddr() {
     //    return this.ipAddr;

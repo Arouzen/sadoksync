@@ -536,7 +536,7 @@ public class Client extends javax.swing.JFrame {
     public void addToChat(String text) {
         if (!text.isEmpty()) {
             Message msg = new Message();
-            msg.setipAddr(pr.getMyIp());
+            //msg.setipAddr(pr.getMyIp());
             // TODO - validate IP with nick for security
             msg.setType("chat message");
             msg.setText(pr.getNick() + ": " + text);
