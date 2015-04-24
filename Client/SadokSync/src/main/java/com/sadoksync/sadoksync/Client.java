@@ -55,6 +55,7 @@ public class Client extends javax.swing.JFrame {
 
     // Create the server media player used to stream
     public HeadlessMediaPlayer serverMediaPlayer;
+    public MediaPlayerFactory serverMediaPlayerFactory;
 
     // Create video surface
     public CanvasVideoSurface videoSurface;
@@ -652,8 +653,8 @@ public class Client extends javax.swing.JFrame {
                         //No ip address here, only an @. 
                         final String options = formatRtspStream("@", 5555, "demo");
                         System.out.println("Streaming '" + media + "' to '" + options + "'");
-                        MediaPlayerFactory mediaPlayerFactory = new MediaPlayerFactory();
-                        serverMediaPlayer = mediaPlayerFactory.newHeadlessMediaPlayer();
+                        serverMediaPlayerFactory = new MediaPlayerFactory();
+                        serverMediaPlayer = serverMediaPlayerFactory.newHeadlessMediaPlayer();
 
                         serverMediaPlayer.addMediaPlayerEventListener(new MediaPlayerEventAdapter() {
                             @Override
