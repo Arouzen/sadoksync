@@ -84,7 +84,7 @@ public class Comunity {
         return pMap;
     }
 
-    void addPeer(String nick, String ipAddr) {
+    void addPeer(String ipAddr, String nick) {
         System.out.println("Comunity: addPeer: Adding " + nick + " @" + ipAddr);
         pMap.put(ipAddr, new PeerReg(nick, ipAddr));
     }

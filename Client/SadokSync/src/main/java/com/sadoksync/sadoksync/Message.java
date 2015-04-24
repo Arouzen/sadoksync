@@ -86,6 +86,5 @@ public class Message implements Serializable {
     }
     PublicPlaylist getPlaylist(){
         return this.playlist;
-    }
-    
+    }    
 }

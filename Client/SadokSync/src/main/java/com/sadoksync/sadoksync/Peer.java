@@ -69,13 +69,13 @@ public class Peer {
         this.sendMsg(rhost, 3333, msg);
     }
  
-    void joinComunity(String cname, String addr) {
+    void joinComunity(String cname, String addr, String nick) {
         ComunityRegistration cr = cMap.get(cname);
 
         Message msg = new Message();
         //msg.setipAddr(this.getMyIp());
         msg.setType("Join Comunity");
-        msg.setName(this.getMyIp());
+        msg.setName(nick);
         //msg.setText(cname);
         System.out.println("joinComunity");
         this.sendMsg(addr, 4444, msg);
@@ -137,9 +137,9 @@ public class Peer {
         final Client fcli = cli;
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                flb.setVisible(false);
+                flb.setVisible(true);
                 fcli.setVisible(false);
-                fprop.setVisible(true);
+                fprop.setVisible(false);
             }
         });
     }
@@ -232,7 +232,7 @@ public class Peer {
         msg.setType("Register Client");
         if (this.isHost()) {
             System.out.println("This is host");
-            this.DeliverStream(msg.getName(), "demo");
+            this.DeliverStream(ipAdr, "demo");
 
             //send cMap to list to msg.getipAddr()
             this.SendPMap(msg.getName());
@@ -294,7 +294,7 @@ public class Peer {
     }
 
     boolean isHost() {
-        System.out.println("IsHost" + com.getHost() + " ? " + this.getMyIp() + " " + this.getMyIp().equals(com.getHost()));
+        System.out.println("IsHost" + com.getHost() +  " Compare: " + this.getMyIp().equals(com.getHost()));
         return this.getMyIp().equals(com.getHost());
     }
 

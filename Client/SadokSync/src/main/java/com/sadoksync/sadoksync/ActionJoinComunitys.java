@@ -13,16 +13,18 @@ class ActionJoinComunitys implements Runnable {
     Peer pr;
     String addr;
     String cname;
-    public ActionJoinComunitys(Peer pr, String addr, String cname) {
+    String nick;
+    public ActionJoinComunitys(Peer pr, String addr, String cname, String nick) {
         this.pr = pr;
         this.addr = addr;
         this.cname = cname;
+        this.nick = nick;
     }
     
     
 
     @Override
     public void run() {
-       pr.joinComunity(cname, addr);
+       pr.joinComunity(cname, addr, nick);
     }
 }

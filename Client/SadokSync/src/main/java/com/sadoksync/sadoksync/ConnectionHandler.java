@@ -53,7 +53,10 @@ public class ConnectionHandler extends Thread {
                             pr.getClient().addtoPlaylist(msg.getPair());
                         }
                         break;
-
+                        
+                    case "IP Feedback":
+                        pr.setMyIP(msg.getName());
+                        break;
                     case "Set Stream":
                         System.out.println("Set Stream");
                         pr.getClient().setHost(msg.getName());
