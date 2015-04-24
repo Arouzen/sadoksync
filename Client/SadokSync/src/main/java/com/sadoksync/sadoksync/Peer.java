@@ -26,7 +26,7 @@ public class Peer {
     String nick;
     String myVlcPath;
     String myIP;
-
+    Boolean isHost;
     Comunity com;
 
     //ClientInterface cri;
@@ -39,6 +39,7 @@ public class Peer {
     Map<String, ComunityRegistration> cMap;
 
     public Peer() {
+        isHost = false;
         executor = Executors.newFixedThreadPool(50);
         this.cMap = Collections.synchronizedMap(new HashMap<String, ComunityRegistration>());
     }
@@ -57,7 +58,9 @@ public class Peer {
 
     void registerComunity(String rhost, int port) {
         Message msg = new Message(com);
+        
         this.sendMsg(rhost, 3333, msg);
+        
     }
 
     void findAllComunity(String rhost, int port) {
@@ -203,9 +206,9 @@ public class Peer {
             while (i.hasNext()) {
                 key = (String) i.next();
                 opr = (PeerReg) m.get(key);
-                System.out.println(this.getMyIp() + " ? " + opr.getAddr());
+                System.out.println(" ? " + opr.getAddr());
                 //Work is needed here
-                if (!this.getMyIp().equals(opr.getAddr())) {
+                if (!isHost()) {
                     System.out.println("Trigger");
                     this.sendMsg(opr.getAddr(), 4444, msg);
                 }
@@ -244,7 +247,6 @@ public class Peer {
         } else {
 
         }
-
         //If comunity Host register the peer
         //If not comunity Host, send this to comunity Host
     }
@@ -268,7 +270,7 @@ public class Peer {
                 msg.setName(opr.getNick());
                 System.out.println(opr.getNick() + "adding");
                 //Work is needed here
-                 if (!this.getMyIp().equals(ipAddr)) {
+                 if (!isHost()) {
                    this.sendMsg(ipAddr, 4444, msg);
                  }
             }
@@ -294,14 +296,19 @@ public class Peer {
     }
 
     boolean isHost() {
-        System.out.println("IsHost" + com.getHost() +  " Compare: " + this.getMyIp().equals(com.getHost()));
-        return this.getMyIp().equals(com.getHost());
+        System.out.println(isHost);
+        return this.isHost;
     }
-
+    void setHost(Boolean isHost){
+        this.isHost = isHost;
+    }
+    
     String getHost() {
         return com.getHost();
     }
 
+   
+    
     void DeliverPlaylist(String ipAddr) {
         //Deliver the playlist... how?
         List li = null;

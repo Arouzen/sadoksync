@@ -16,12 +16,14 @@ public class ActionCreateComunity implements Runnable {
     String addr; 
     String cname;
     String topic; 
+    String nick;
     
-    public ActionCreateComunity(Peer pr, String addr, String cname, String topic){
+    public ActionCreateComunity(Peer pr, String addr, String cname, String topic, String nick){
         this.pr = pr;
         this.addr = addr;
         this.cname = cname;
         this.topic = topic;
+        this.nick = nick;
     }
     
     @Override
@@ -31,7 +33,8 @@ public class ActionCreateComunity implements Runnable {
         
         System.out.println("ActionCreateComunity: Registring Comunity " + cname);
         pr.registerComunity(addr,4444);
-
+        pr.setHost(true);
+        pr.joinComunity(cname, addr, nick);
     }
 }
     

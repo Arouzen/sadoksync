@@ -194,7 +194,7 @@ public class Lobby extends javax.swing.JFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         String cname = jTextField1.getText();
         if (!cname.equals("")) {
-            ActionCreateComunity acc = new ActionCreateComunity(pr, jTextFieldRegistryAddr.getText(), cname, "Comunity Topic");
+            ActionCreateComunity acc = new ActionCreateComunity(pr, jTextFieldRegistryAddr.getText(), cname, "Comunity Topic" , jTextFieldNick.getText());
             new Thread(acc).start();
         } else {
             //Complain

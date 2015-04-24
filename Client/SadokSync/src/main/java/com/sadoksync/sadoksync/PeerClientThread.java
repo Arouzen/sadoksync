@@ -43,7 +43,6 @@ class PeerClientThread extends Thread {
         try {
             //in = new BufferedInputStream(clientSocket.getInputStream());
             out = new ObjectOutputStream(clientSocket.getOutputStream());
-           
 
             //Create and send the message
             //byte[] toServer = msg.getBytes(); // convert to byte array

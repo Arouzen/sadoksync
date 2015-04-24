@@ -41,14 +41,6 @@ public class Message implements Serializable {
         return this.type;
     }
 
-    //public void setipAddr(String ipAddr) {
-        //this.ipAddr = ipAddr;
-    //}
-
-    //public String getipAddr() {
-    //    return this.ipAddr;
-    //}
-
     public void setName(String name) {
         this.name = name;
     }

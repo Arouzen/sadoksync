@@ -17,11 +17,8 @@ import java.util.Map;
 public class Comunity {
 
     String nick;
-    
-
     String topic;
     String cname;
-
     String host;
     
 
@@ -33,7 +30,6 @@ public class Comunity {
  
         this.pMap = Collections.synchronizedMap(new HashMap<String,PeerReg>());
     }
-   
 
     public void RegPeer(PeerReg peer) {
         System.out.println("Comunity: RegPeer: " + peer.getNick());
@@ -54,19 +50,14 @@ public class Comunity {
     void setHost(String host) {
         this.host = host;
     }
-    
-
 
     void setTopic(String topic) {
         this.topic = topic;
     }
 
-
     void setNick(String nick) {
         this.nick = nick;
     }
-
-
 
     String getComunityName() {
         return cname;
@@ -85,7 +76,7 @@ public class Comunity {
     }
 
     void addPeer(String ipAddr, String nick) {
-        System.out.println("Comunity: addPeer: Adding " + nick + " @" + ipAddr);
+        System.out.println("Comunity: Adding " + nick + " @" + ipAddr);
         pMap.put(ipAddr, new PeerReg(nick, ipAddr));
     }
 }

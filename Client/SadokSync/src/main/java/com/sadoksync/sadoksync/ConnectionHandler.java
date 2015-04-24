@@ -67,8 +67,10 @@ public class ConnectionHandler extends Thread {
                     case "Register Client":
                         System.out.println("Register Client " + clientSocket.getInetAddress().toString().substring(1) + " end.");
                         System.out.println(msg.getName());
-                        pr.PeerToJoin(msg, clientSocket.getInetAddress().toString().substring(1));
+                        //pr.PeerToJoin(msg, clientSocket.getInetAddress().toString().substring(1));
+                        
                         break;
+                        
                     case "Join Comunity":
                         System.out.println("Join Comunity " + clientSocket.getInetAddress().toString().substring(1) + " end.");
                         pr.PeerToJoin(msg, clientSocket.getInetAddress().toString().substring(1));
@@ -77,6 +79,7 @@ public class ConnectionHandler extends Thread {
                         break;
                     case "Comunity List":
                         System.out.println("Comunity List");
+                        pr.setMyIP(msg.getName());
                         List<ComunityRegistration> li = (List<ComunityRegistration>) msg.getList();
 
                         DefaultListModel lm = new DefaultListModel();

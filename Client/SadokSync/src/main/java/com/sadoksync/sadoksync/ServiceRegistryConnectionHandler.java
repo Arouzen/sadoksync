@@ -78,6 +78,7 @@ class ServiceRegistryConnectionHandler extends Thread {
                         /////////////////// ALOT OF SHIT HERER //// TESTING!!!!!!!!!!!!!!!!!!!!!!!!
                         //Create return message
                         msg = new Message();
+                        msg.setName(retIP);
                         msg.setType("Comunity List");
                         msg.setList(retList);
                         pr.sendMsg(retIP, 4444, msg);
