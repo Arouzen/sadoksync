@@ -105,12 +105,14 @@ public class PublicPlaylist implements Serializable {
      lås och läs vad som spelas nu.
      */
     public String getNowPlaying() {
-        Pair pair;
-        Media Value;
+        Pair pair = null;
+        Media Value = null;
         lock.lock();
         try {
-            pair = playlist.get(0);
-            Value = pair.value();
+            if (!this.isEmpty()) {
+                pair = playlist.get(0);
+                Value = pair.value();
+            }
 
             ocupied.signalAll();
         } finally {
@@ -121,13 +123,14 @@ public class PublicPlaylist implements Serializable {
     }
 
     public String getNowPlayingOwner() {
-        Pair pair;
-        String key;
+        Pair pair = null;
+        String key = null;
         lock.lock();
         try {
-            pair = playlist.get(0);
-            key = pair.key();
-
+            if (!this.isEmpty()) {
+                pair = playlist.get(0);
+                key = pair.key();
+            }
             ocupied.signalAll();
         } finally {
             lock.unlock();

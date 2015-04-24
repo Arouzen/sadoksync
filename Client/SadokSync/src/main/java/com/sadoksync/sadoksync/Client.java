@@ -710,7 +710,7 @@ public class Client extends javax.swing.JFrame {
                                 ":sout-keep"
                         );
 
-<<<<<<< HEAD
+
                         try {
                             Thread.sleep(2000);
                         } catch (InterruptedException ex) {
@@ -721,8 +721,6 @@ public class Client extends javax.swing.JFrame {
                         pr.DeliverStreamToComunity(pr.getMyIp(), "demo");
                         pr.DeliverPlaylistToComunity();
                         
-=======
->>>>>>> origin/Sprint-2
                     } catch (Exception ex) {
                         ex.printStackTrace();
                     }
