@@ -545,6 +545,11 @@ public class Client extends javax.swing.JFrame {
         this.mediaType = text;
     }
 
+    void releaseSMP() {
+        //Test
+        serverMediaPlayer.release();
+    }
+
     private class TestAudioCallbackAdapter extends DefaultAudioCallbackAdapter {
 
         /**
@@ -682,7 +687,7 @@ public class Client extends javax.swing.JFrame {
                                     pr.DeliverPlaylistToComunity();
 
                                 } else {
-                                    mediaPlayer.release();
+                                    //mediaPlayer.release();
                                     //serverMediaPlayerFactory.release();
                                     pr.Ping(ip, "Move Host");
                                 }

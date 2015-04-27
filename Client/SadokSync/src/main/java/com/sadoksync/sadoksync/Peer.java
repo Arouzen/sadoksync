@@ -398,6 +398,7 @@ public class Peer {
         Message msgret = new Message();
         switch (msg.getText()) {
             case "Move Host":
+                cli.releaseSMP();
                 msgret.setipAddr(msg.getipAddr());
                 msgret.setName(this.com.getComunityName());
                 msgret.setType("Set Host");
