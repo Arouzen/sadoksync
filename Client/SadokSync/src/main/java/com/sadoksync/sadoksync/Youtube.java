@@ -28,7 +28,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.List;
-
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -37,12 +36,12 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
-
 import uk.co.caprica.vlcj.binding.internal.libvlc_media_t;
 import uk.co.caprica.vlcj.player.MediaPlayer;
 import uk.co.caprica.vlcj.player.MediaPlayerEventAdapter;
 import uk.co.caprica.vlcj.player.MediaPlayerFactory;
 import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
+import uk.co.caprica.vlcj.player.headless.HeadlessMediaPlayer;
 
 /**
  * A minimal YouTube player.
@@ -72,7 +71,7 @@ import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
 public class Youtube {
 
     private final MediaPlayerFactory factory;
-    private final EmbeddedMediaPlayer mediaPlayer;
+    private final HeadlessMediaPlayer mediaPlayer;
     private final Frame mainFrame;
 
     private final JLabel urlLabel;
@@ -151,8 +150,7 @@ public class Youtube {
 
         factory = new MediaPlayerFactory();
 
-        mediaPlayer = factory.newEmbeddedMediaPlayer();
-        mediaPlayer.setVideoSurface(factory.newVideoSurface(vs));
+        mediaPlayer = factory.newHeadlessMediaPlayer();
 
         mediaPlayer.setPlaySubItems(true); // <--- This is very important for YouTube media
 
@@ -165,10 +163,28 @@ public class Youtube {
             @Override
             public void mediaSubItemAdded(MediaPlayer mediaPlayer, libvlc_media_t subItem) {
                 List<String> items = mediaPlayer.subItems();
-                System.out.println("Ayy lmao: " + items.get(1));
-                mediaPlayer.playSubItem(1);
+                String options = formatRtspStream("@", 5555, "demo");
+                mediaPlayer.playMedia(items.get(0),
+                        options,
+                        ":no-sout-rtp-sap",
+                        ":no-sout-standard-sap",
+                        ":sout-all",
+                        ":sout-keep"
+                );
             }
         });
+    }
+
+    private static String formatRtspStream(String serverAddress, int serverPort, String id) {
+        StringBuilder sb = new StringBuilder(60);
+        sb.append(":sout=#rtp{sdp=rtsp://@");
+        sb.append(serverAddress);
+        sb.append(':');
+        sb.append(serverPort);
+        sb.append('/');
+        sb.append(id);
+        sb.append("}");
+        return sb.toString();
     }
 
     private void start() {

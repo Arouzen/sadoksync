@@ -52,7 +52,12 @@ public class PublicPlaylist implements Serializable {
      Adds an item to the playlists.
      */
     public void addToPlaylist(String owner, File mediaFile) {
-        Pair pair = new Pair(owner, new Media(mediaFile));
+        Pair pair = new Pair(owner, new Media(mediaFile, "local file"));
+        this.addToPlaylist(pair);
+    }
+
+    public void addToPlaylist(String owner, String url, String type) {
+        Pair pair = new Pair(owner, new Media(url, type));
         this.addToPlaylist(pair);
     }
 
@@ -104,8 +109,8 @@ public class PublicPlaylist implements Serializable {
     /*
      lås och läs vad som spelas nu.
      */
-    public String getNowPlaying() {
-        Pair pair = null;
+    public Media getFirstInList() {
+        Pair pair;
         Media Value = null;
         lock.lock();
         try {
@@ -113,29 +118,24 @@ public class PublicPlaylist implements Serializable {
                 pair = playlist.get(0);
                 Value = pair.value();
             }
-
             ocupied.signalAll();
         } finally {
             lock.unlock();
         }
-
-        return Value.getPath();
+        return Value;
     }
 
-    public String getNowPlayingOwner() {
-        Pair pair = null;
+    public String getFirstInListOwner() {
+        Pair pair;
         String key = null;
         lock.lock();
         try {
-            
-                pair = playlist.get(0);
-                key = pair.key();
-            
+            pair = playlist.get(0);
+            key = pair.key();
             ocupied.signalAll();
         } finally {
             lock.unlock();
         }
-
         return key;
     }
 
