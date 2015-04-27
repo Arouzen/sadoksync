@@ -142,7 +142,7 @@ public class Client extends javax.swing.JFrame {
             public void stopped(MediaPlayer mediaPlayer) {
                 if (playlist.isEmpty()) {
                     jSplitPane1.setLeftComponent(new EmptyCanvas());
-                } 
+                }
             }
         });
         // Split panel inits
@@ -573,8 +573,8 @@ public class Client extends javax.swing.JFrame {
             }
         }
         // lastly, play the media in the mediaplayer with the apropriate options
-        mediaPlayer.playMedia(url);
         jSplitPane1.setLeftComponent(canvas);
+        mediaPlayer.playMedia(url);
     }
 
     public void setMediaType(String text) {
@@ -648,6 +648,9 @@ public class Client extends javax.swing.JFrame {
                         serverMediaPlayer.addMediaPlayerEventListener(new MediaPlayerEventAdapter() {
                             @Override
                             public void finished(MediaPlayer mediaPlayer) {
+                                if (mediaPlayer.subItemCount() > 0) {
+                                    System.out.println(mediaPlayer.subItems());
+                                }
                                 playlist.removeFirstInQueue();
                                 updateRightPanel(getPlaylist());
                                 rightPanelMode = "playlist";
