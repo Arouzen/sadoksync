@@ -648,7 +648,7 @@ public class Client extends javax.swing.JFrame {
                                 updateRightPanel(getPlaylist());
                                 rightPanelMode = "playlist";
                                 
-                                String ip = pr.com.getPeerIP(playlist.getNowPlayingOwner());
+                                String ip = pr.com.getPeerIP(playlist.getFirstInListOwner());
 
                                 if (!playlist.isEmpty() && pr.getMyIp().equals(ip)) {
                                     streamNextMedia(mediaPlayer);
