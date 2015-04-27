@@ -617,9 +617,15 @@ public class Client extends javax.swing.JFrame {
                                 playlist.removeFirstInQueue();
                                 updateRightPanel(getPlaylist());
                                 rightPanelMode = "playlist";
-                                if (!playlist.isEmpty()) {
+                                
+                                String ip = pr.com.getPeerIP(playlist.getNowPlayingOwner());
+
+                                if (!playlist.isEmpty() && pr.getMyIp().equals(ip)) {
                                     streamNextMedia(mediaPlayer);
-                                } else {
+                                } else if (!playlist.isEmpty() && !pr.getMyIp().equals(ip)) {
+                                    mediaPlayer.release();
+                                    streamNextMedia(mediaPlayer);
+                                }else {
                                     System.out.println("[Server] No more media in list");
                                     mediaPlayer.release();
                                     //serverMediaPlayerFactory.release();
@@ -684,7 +690,7 @@ public class Client extends javax.swing.JFrame {
                                     pr.DeliverPlaylistToComunity();
 
                                 } else {
-                                    mediaPlayer.release();
+                                    //mediaPlayer.release();
                                     //serverMediaPlayerFactory.release();
                                     pr.Ping(ip, "Move Host");
                                 }
