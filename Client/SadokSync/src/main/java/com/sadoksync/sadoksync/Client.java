@@ -684,7 +684,7 @@ public class Client extends javax.swing.JFrame {
                                     pr.DeliverPlaylistToComunity();
 
                                 } else {
-                                    //mediaPlayer.release();
+                                    mediaPlayer.release();
                                     //serverMediaPlayerFactory.release();
                                     pr.Ping(ip, "Move Host");
                                 }
