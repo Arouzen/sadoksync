@@ -142,7 +142,7 @@ public class Client extends javax.swing.JFrame {
             public void stopped(MediaPlayer mediaPlayer) {
                 if (playlist.isEmpty()) {
                     jSplitPane1.setLeftComponent(new EmptyCanvas());
-                }
+                } 
             }
         });
         // Split panel inits
@@ -536,9 +536,7 @@ public class Client extends javax.swing.JFrame {
     }
 
     public void playMedia(String url) {
-
-        jSplitPane1.setLeftComponent(canvas);
-//String[] s = playlist.getNowPlaying().split("\\.");
+        //String[] s = playlist.getNowPlaying().split("\\.");
         // media ends with mp3? Then we want a visualizer
         //if (s[s.length - 1].endsWith("mp3")) {
         System.out.println("[Client.PlayMedia] mediaType: " + mediaType + ", url: " + url);
@@ -575,8 +573,8 @@ public class Client extends javax.swing.JFrame {
             }
         }
         // lastly, play the media in the mediaplayer with the apropriate options
-
         mediaPlayer.playMedia(url);
+        jSplitPane1.setLeftComponent(canvas);
     }
 
     public void setMediaType(String text) {
@@ -648,45 +646,37 @@ public class Client extends javax.swing.JFrame {
                         serverMediaPlayer = serverMediaPlayerFactory.newHeadlessMediaPlayer();
 
                         serverMediaPlayer.addMediaPlayerEventListener(new MediaPlayerEventAdapter() {
-                            private boolean buffering = false;
-
                             @Override
                             public void finished(MediaPlayer mediaPlayer) {
-                                if (!buffering) {
-                                    System.out.println("REMOVE");
-                                    playlist.removeFirstInQueue();
-                                    updateRightPanel(getPlaylist());
-                                    rightPanelMode = "playlist";
+                                playlist.removeFirstInQueue();
+                                updateRightPanel(getPlaylist());
+                                rightPanelMode = "playlist";
 
-                                    String ip = pr.com.getPeerIP(playlist.getFirstInListOwner());
+                                String ip = pr.com.getPeerIP(playlist.getFirstInListOwner());
 
-                                    if (!playlist.isEmpty() && pr.getMyIp().equals(ip)) {
-                                        streamNextMedia(mediaPlayer);
-                                    } else if (!playlist.isEmpty() && !pr.getMyIp().equals(ip)) {
-                                        mediaPlayer.release();
-                                        streamNextMedia(mediaPlayer);
-                                    } else {
-                                        System.out.println("[Server] No more media in list");
-                                        mediaPlayer.release();
-                                        //serverMediaPlayerFactory.release();
-                                    }
+                                if (!playlist.isEmpty() && pr.getMyIp().equals(ip)) {
+                                    streamNextMedia(mediaPlayer);
+                                } else if (!playlist.isEmpty() && !pr.getMyIp().equals(ip)) {
+                                    mediaPlayer.release();
+                                    streamNextMedia(mediaPlayer);
+                                } else {
+                                    System.out.println("[Server] No more media in list");
+                                    mediaPlayer.release();
+                                    //serverMediaPlayerFactory.release();
                                 }
                             }
 
                             @Override
                             public void stopped(MediaPlayer mediaPlayer) {
-                                if (!buffering) {
-                                    System.out.println("675 REMOVE");
-                                    playlist.removeFirstInQueue();
-                                    updateRightPanel(getPlaylist());
-                                    rightPanelMode = "playlist";
-                                    if (!playlist.isEmpty()) {
-                                        streamNextMedia(mediaPlayer);
-                                    } else {
-                                        System.out.println("[Server] No more media in list");
+                                playlist.removeFirstInQueue();
+                                updateRightPanel(getPlaylist());
+                                rightPanelMode = "playlist";
+                                if (!playlist.isEmpty()) {
+                                    streamNextMedia(mediaPlayer);
+                                } else {
+                                    System.out.println("[Server] No more media in list");
                                     //mediaPlayer.release();
-                                        //serverMediaPlayerFactory.release();
-                                    }
+                                    //serverMediaPlayerFactory.release();
                                 }
                             }
 
@@ -704,13 +694,7 @@ public class Client extends javax.swing.JFrame {
 
                             @Override
                             public void buffering(MediaPlayer mediaPlayer, float newCache) {
-                                buffering = true;
                                 System.out.println("Buffering " + newCache);
-                            }
-
-                            @Override
-                            public void mediaStateChanged(MediaPlayer mediaPlayer, int subItemIndex) {
-                                buffering = false;
                             }
 
                             private void streamNextMedia(MediaPlayer serverMediaPlayer) {
@@ -827,7 +811,6 @@ public class Client extends javax.swing.JFrame {
     public void cleanStartOfPlaylist() {
         while (!pr.getMyIp().equals(pr.com.getPeerIP(playlist.getFirstInListOwner()))) {
             playlist.removeFirstInQueue();
-            System.out.println("818 REMOVE");
         }
     }
 
