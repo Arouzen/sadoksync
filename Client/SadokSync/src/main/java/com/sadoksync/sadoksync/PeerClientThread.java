@@ -58,6 +58,7 @@ class PeerClientThread extends Thread {
 
         } catch (IOException e) {
             System.out.println(e.toString());
+            System.out.println("Could not send " + msg.getType() + " to " + clientSocket.getInetAddress().toString() );
             //System.exit(1);
         }
 
