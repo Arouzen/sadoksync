@@ -545,10 +545,7 @@ public class Client extends javax.swing.JFrame {
         this.mediaType = text;
     }
 
-    void releaseSMP() {
-        //Test
-        serverMediaPlayer.release();
-    }
+
 
     private class TestAudioCallbackAdapter extends DefaultAudioCallbackAdapter {
 
