@@ -619,7 +619,7 @@ public class Client extends javax.swing.JFrame {
                                     streamNextMedia(mediaPlayer);
                                 } else {
                                     System.out.println("[Server] No more media in list");
-                                    //mediaPlayer.release();
+                                    mediaPlayer.release();
                                     //serverMediaPlayerFactory.release();
                                 }
                             }
@@ -682,7 +682,7 @@ public class Client extends javax.swing.JFrame {
                                     pr.DeliverPlaylistToComunity();
 
                                 } else {
-                                    //mediaPlayer.release();
+                                    mediaPlayer.release();
                                     //serverMediaPlayerFactory.release();
                                     pr.Ping(ip, "Move Host");
                                 }
