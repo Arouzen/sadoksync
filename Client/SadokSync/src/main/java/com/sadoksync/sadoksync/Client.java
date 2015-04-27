@@ -877,6 +877,7 @@ public class Client extends javax.swing.JFrame {
 
     public void addtoPlaylist(PublicPlaylist.Pair pair) {
         playlist.addToPlaylist(pair);
+        updateRightPanel(getPlaylist());
     }
 
     public PublicPlaylist getPubicPlaylist() {
