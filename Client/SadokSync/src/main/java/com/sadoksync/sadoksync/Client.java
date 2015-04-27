@@ -522,6 +522,8 @@ public class Client extends javax.swing.JFrame {
             }
             if (!id.isEmpty()) {
                 playlist.addToPlaylist(pr.getNick(), id, "youtube");
+                updateRightPanel(getPlaylist());
+                rightPanelMode = "playlist";
             }
         }
     }//GEN-LAST:event_jMenuItem3ActionPerformed
@@ -574,8 +576,6 @@ public class Client extends javax.swing.JFrame {
     public void setMediaType(String text) {
         this.mediaType = text;
     }
-
-
 
     private class TestAudioCallbackAdapter extends DefaultAudioCallbackAdapter {
 
@@ -647,7 +647,7 @@ public class Client extends javax.swing.JFrame {
                                 playlist.removeFirstInQueue();
                                 updateRightPanel(getPlaylist());
                                 rightPanelMode = "playlist";
-                                
+
                                 String ip = pr.com.getPeerIP(playlist.getFirstInListOwner());
 
                                 if (!playlist.isEmpty() && pr.getMyIp().equals(ip)) {
@@ -655,7 +655,7 @@ public class Client extends javax.swing.JFrame {
                                 } else if (!playlist.isEmpty() && !pr.getMyIp().equals(ip)) {
                                     mediaPlayer.release();
                                     streamNextMedia(mediaPlayer);
-                                }else {
+                                } else {
                                     System.out.println("[Server] No more media in list");
                                     mediaPlayer.release();
                                     //serverMediaPlayerFactory.release();
