@@ -702,7 +702,7 @@ public class Client extends javax.swing.JFrame {
                                 //get the ip of the owner of the next media.
                                 String ip = pr.com.getPeerIP(playlist.getFirstInListOwner());
 
-                                if (pr.getMyIp().equals(ip) || !media.getType().equals("local file")) {
+                                if (pr.getMyIp().equals(ip) /*|| !media.getType().equals("local file")*/) {
                                     serverMediaPlayer.playMedia(media.getPath(),
                                             options,
                                             ":no-sout-rtp-sap",
