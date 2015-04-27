@@ -706,10 +706,25 @@ public class Client extends javax.swing.JFrame {
                         setHost("localhost");
                         setPort("5555");
                         setRtspPath("demo");
-                        setMediaType("video");
+
+                        String extension = playlist.getNowPlaying().split("\\.")[playlist.getNowPlaying().split("\\.").length - 1];
+                        String mediaType = "";
+                        try {
+                            if (filefilter.acceptMediaFile(extension, "visualize")) {
+                                mediaType = "visualize";
+                            } else if (filefilter.acceptMediaFile(extension, "video")) {
+                                mediaType = "video";
+                            }
+                            setMediaType(mediaType);
+                        } catch (ParseException ex) {
+                            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+                        } catch (IOException ex) {
+                            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+
                         playMedia(getRtspUrl());
 
-                        pr.DeliverStreamToComunity(pr.getMyIp(), "demo", "video");
+                        pr.DeliverStreamToComunity(pr.getMyIp(), "demo", mediaType);
                         pr.DeliverPlaylistToComunity();
 
                     } catch (Exception ex) {
