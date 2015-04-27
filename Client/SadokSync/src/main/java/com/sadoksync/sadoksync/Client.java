@@ -130,21 +130,23 @@ public class Client extends javax.swing.JFrame {
         mediaPlayer.setVideoSurface(videoSurface);
         visualizeMode = false;
 
-        /*mediaPlayer.addMediaPlayerEventListener(new MediaPlayerEventAdapter() {
-         @Override
-         public void finished(MediaPlayer mediaPlayer) {
-         if (!playlist.isEmpty()) {
-         }
-         }
+        mediaPlayer.addMediaPlayerEventListener(new MediaPlayerEventAdapter() {
+            @Override
+            public void finished(MediaPlayer mediaPlayer) {
+                if (playlist.isEmpty()) {
+                    jSplitPane1.setLeftComponent(new EmptyCanvas());
+                }
+            }
 
-         @Override
-         public void stopped(MediaPlayer mediaPlayer) {
-         if (!playlist.isEmpty()) {
-         }
-         }
-         });*/
+            @Override
+            public void stopped(MediaPlayer mediaPlayer) {
+                if (playlist.isEmpty()) {
+                    jSplitPane1.setLeftComponent(new EmptyCanvas());
+                } 
+            }
+        });
         // Split panel inits
-        jSplitPane1.setDividerLocation(0.7);
+        //jSplitPane1.setDividerLocation(0.7);
         rightPanelMode = "chat";
 
         // Public playlist init
@@ -153,6 +155,7 @@ public class Client extends javax.swing.JFrame {
         // FileFilter init
         filefilter = new FileFilter();
 
+        jSplitPane1.setLeftComponent(new EmptyCanvas());
         /*
          this.isHost = pr.isHost();
          if (!isHost) {
@@ -571,6 +574,7 @@ public class Client extends javax.swing.JFrame {
         }
         // lastly, play the media in the mediaplayer with the apropriate options
         mediaPlayer.playMedia(url);
+        jSplitPane1.setLeftComponent(canvas);
     }
 
     public void setMediaType(String text) {
