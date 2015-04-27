@@ -238,12 +238,12 @@ public class Peer {
             this.DeliverStream(ipAdr, "demo");
 
             //send cMap to list to msg.getipAddr()
-            this.SendPMap(msg.getName());
+            this.SendPMap(ipAdr);
             System.out.println("Sending to community");
             this.sendMsgToComunity(msg);
 
             //When a new client joins the Comunity it neads to know where the stream is currently
-            this.DeliverPlaylist(msg.getName());
+            this.DeliverPlaylist(ipAdr);
         } else {
 
         }
@@ -286,7 +286,7 @@ public class Peer {
         this.sendMsg(ipAddr, 4444, msgret);
     }
 
-    void DeliverStreamToComunity(String ipAddr, String path) {
+    void DeliverStreamToComunity(String path) {
         //Delives a message that set where the stream is currently.
         Message msgret = new Message();
        // msgret.setipAddr(this.getMyIp());

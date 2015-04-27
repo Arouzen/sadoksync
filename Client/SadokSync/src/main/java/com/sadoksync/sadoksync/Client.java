@@ -598,7 +598,7 @@ public class Client extends javax.swing.JFrame {
                                 } catch (InterruptedException ex) {
                                     Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
                                 }
-                                pr.DeliverStreamToComunity(pr.getMyIp(), "demo");
+                                pr.DeliverStreamToComunity("demo");
                                 connectToRtsp();
                             }
                         });
@@ -610,7 +610,7 @@ public class Client extends javax.swing.JFrame {
                                 ":sout-all",
                                 ":sout-keep"
                         );
-                        pr.DeliverStreamToComunity(pr.getMyIp(), "demo");
+                        pr.DeliverStreamToComunity("demo");
                     } catch (Exception ex) {
                         ex.printStackTrace();
                     }
