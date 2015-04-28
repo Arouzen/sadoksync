@@ -54,9 +54,7 @@ public class ConnectionHandler extends Thread {
                         }
                         break;
 
-                    case "IP Feedback":
-                        pr.setMyIP(msg.getName());
-                        break;
+
                     case "Set Stream":
                         System.out.println("Set Stream");
                         pr.getClient().setHost(clientSocket.getInetAddress().toString().substring(1));
@@ -79,7 +77,7 @@ public class ConnectionHandler extends Thread {
                         break;
                     case "Comunity List":
                         System.out.println("Comunity List");
-                        pr.setMyIP(msg.getName());
+                        
                         List<ComunityRegistration> li = (List<ComunityRegistration>) msg.getList();
 
                         DefaultListModel lm = new DefaultListModel();
