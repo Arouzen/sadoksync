@@ -134,7 +134,7 @@ public class Lobby extends javax.swing.JFrame {
 
         jLabel4.setText("Comunity Name:");
 
-        jLabel5.setText("Force connect: ");
+        jLabel5.setText("Direct Connect");
 
         jButton5.setText("Connect");
         jButton5.addActionListener(new java.awt.event.ActionListener() {

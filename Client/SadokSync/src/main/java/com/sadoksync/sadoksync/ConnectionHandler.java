@@ -87,7 +87,12 @@ public class ConnectionHandler extends Thread {
                         break;
                     case "Join Comunity":
                         System.out.println("Join Comunity");
-                        pr.PeerToJoin(msg);
+                        if(pr.isHost()){
+                            pr.PeerToJoin(msg);  
+                        }else{
+                            pr.sendToHost(msg);
+                        }
+                        
                         //If comunity Host register the peer
                         //If not comunity Host, send this to comunity Host
                         break;

@@ -239,7 +239,13 @@ public class Peer {
                 }
             }
         }
+    }   
+    
+    void sendToHost(Message msg) {
+        this.sendMsg(this.com.getHost(), 4444, msg);
     }
+    
+    
     /*
      public SynchReg getSynchReg() {
      return synchMap;
@@ -449,5 +455,7 @@ public class Peer {
 
         }
     }
+
+
 
 }

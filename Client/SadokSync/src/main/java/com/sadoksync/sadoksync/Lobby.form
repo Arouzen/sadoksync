@@ -235,7 +235,7 @@
     </Component>
     <Component class="javax.swing.JLabel" name="jLabel5">
       <Properties>
-        <Property name="text" type="java.lang.String" value="Force connect: "/>
+        <Property name="text" type="java.lang.String" value="Direct Connect"/>
       </Properties>
     </Component>
     <Component class="javax.swing.JTextField" name="jTdc">
