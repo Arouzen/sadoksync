@@ -49,12 +49,19 @@ class Media implements Serializable {
     public Media(String url, String type) {
         this.path = "http://www.youtube.com/watch?v=" + url;
         this.type = type;
-        if (type.equals("youtube")) {
-            initYoutube(url);
-        } else if (type.equals("vine")) {
-            // Vine stuff here
-        } else if (type.equals("myspace")) {
-            // Ayyy lmao
+        switch (type) {
+            case "youtube":
+                initYoutube(url);
+                break;
+            case "vine":
+                // vine stuff here
+                break;
+            case "myspace":
+                // myspace stuff here - ayyyy lmaooo
+                break;
+            case "default":
+                // pls no
+                break;
         }
     }
 

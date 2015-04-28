@@ -27,7 +27,7 @@ public class EmptyCanvas extends JComponent {
     private static Font monoFont = new Font("Monospaced", Font.BOLD
             | Font.ITALIC, 36);
 
-    private static Font sanSerifFont = new Font("SanSerif", Font.PLAIN, 12);
+    private static Font sanSerifFont = new Font("SanSerif", Font.PLAIN, 30);
 
     private static Font serifFont = new Font("Serif", Font.BOLD, 24);
 
