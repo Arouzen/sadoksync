@@ -260,6 +260,8 @@ public class Client extends javax.swing.JFrame {
         jLabel1.setText("S A D O K S Y N C !");
 
         buttonPlay.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Reconnect_button_default.png"))); // NOI18N
+        buttonPlay.setBorderPainted(false);
+        buttonPlay.setContentAreaFilled(false);
         buttonPlay.setMaximumSize(new java.awt.Dimension(85, 40));
         buttonPlay.setMinimumSize(new java.awt.Dimension(85, 40));
         buttonPlay.setPreferredSize(new java.awt.Dimension(85, 40));
@@ -270,6 +272,8 @@ public class Client extends javax.swing.JFrame {
         });
 
         jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/fullscreen_Button_default.png"))); // NOI18N
+        jButton3.setBorderPainted(false);
+        jButton3.setContentAreaFilled(false);
         jButton3.setMaximumSize(new java.awt.Dimension(85, 40));
         jButton3.setMinimumSize(new java.awt.Dimension(85, 40));
         jButton3.addActionListener(new java.awt.event.ActionListener() {
@@ -279,6 +283,8 @@ public class Client extends javax.swing.JFrame {
         });
 
         ButtonStop.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Stop_Button_default.png"))); // NOI18N
+        ButtonStop.setBorderPainted(false);
+        ButtonStop.setContentAreaFilled(false);
         ButtonStop.setMaximumSize(new java.awt.Dimension(85, 40));
         ButtonStop.setMinimumSize(new java.awt.Dimension(85, 40));
         ButtonStop.setPreferredSize(new java.awt.Dimension(85, 40));
@@ -289,6 +295,8 @@ public class Client extends javax.swing.JFrame {
         });
 
         buttonShowUsers.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Users_Button_default.png"))); // NOI18N
+        buttonShowUsers.setBorderPainted(false);
+        buttonShowUsers.setContentAreaFilled(false);
         buttonShowUsers.setMaximumSize(new java.awt.Dimension(85, 40));
         buttonShowUsers.setMinimumSize(new java.awt.Dimension(85, 40));
         buttonShowUsers.addActionListener(new java.awt.event.ActionListener() {
@@ -298,6 +306,8 @@ public class Client extends javax.swing.JFrame {
         });
 
         buttonShowChat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Chat_button_default.png"))); // NOI18N
+        buttonShowChat.setBorderPainted(false);
+        buttonShowChat.setContentAreaFilled(false);
         buttonShowChat.setMaximumSize(new java.awt.Dimension(85, 40));
         buttonShowChat.setMinimumSize(new java.awt.Dimension(85, 40));
         buttonShowChat.addActionListener(new java.awt.event.ActionListener() {
@@ -320,6 +330,8 @@ public class Client extends javax.swing.JFrame {
         jSplitPane1.setRightComponent(scrollPaneChatt);
 
         buttonShowPlaylist.setIcon(new javax.swing.ImageIcon(getClass().getResource("/playlist_Button_default.png"))); // NOI18N
+        buttonShowPlaylist.setBorderPainted(false);
+        buttonShowPlaylist.setContentAreaFilled(false);
         buttonShowPlaylist.setMaximumSize(new java.awt.Dimension(85, 40));
         buttonShowPlaylist.setMinimumSize(new java.awt.Dimension(85, 40));
         buttonShowPlaylist.addActionListener(new java.awt.event.ActionListener() {
@@ -339,6 +351,8 @@ public class Client extends javax.swing.JFrame {
         labelVolume.setText("100 %");
 
         buttonSendChat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/send_button_default _ off.png"))); // NOI18N
+        buttonSendChat.setBorderPainted(false);
+        buttonSendChat.setContentAreaFilled(false);
         buttonSendChat.setMaximumSize(new java.awt.Dimension(85, 40));
         buttonSendChat.setMinimumSize(new java.awt.Dimension(85, 40));
         buttonSendChat.setPreferredSize(new java.awt.Dimension(85, 40));
@@ -430,7 +444,7 @@ public class Client extends javax.swing.JFrame {
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(0, 0, Short.MAX_VALUE)
                                 .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(buttonShowChat, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(buttonShowUsers, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -447,11 +461,12 @@ public class Client extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(buttonShowChat, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(buttonShowUsers, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(buttonShowPlaylist, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(buttonShowChat, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(buttonShowUsers, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jSplitPane1)
