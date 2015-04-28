@@ -549,6 +549,11 @@ public class Client extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jMenuItem3ActionPerformed
 
+    private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
+        // TODO add your handling code here:
+        playlist.removefromPlaylist(pr.getNick());
+        
+    }//GEN-LAST:event_jMenuItem4ActionPerformed
     private void jSlider1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlider1StateChanged
         Object source = evt.getSource();
         if (source instanceof JSlider) {
@@ -570,11 +575,6 @@ public class Client extends javax.swing.JFrame {
         addToChat(textChatInput.getText());
         textChatInput.setText("");
     }//GEN-LAST:event_buttonSendChatActionPerformed
-    private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
-        // TODO add your handling code here:
-        playlist.removefromPlaylist(pr.getNick());
-        
-    }//GEN-LAST:event_jMenuItem4ActionPerformed
 
     public void connectToRtsp() {
         playMedia(getRtspUrl());
