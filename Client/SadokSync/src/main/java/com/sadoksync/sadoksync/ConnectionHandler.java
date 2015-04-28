@@ -48,6 +48,7 @@ public class ConnectionHandler extends Thread {
                         pr.getClient().updateRightPanel(pr.getClient().getPlaylist());
                         pr.getClient().rightPanelMode = "playlist";
                         break;
+                        
                     case "Playlist":
                         System.out.println("Message: Playlist");
                         if (msg.getText().equals("add") && pr.isHost()) {
@@ -125,6 +126,10 @@ public class ConnectionHandler extends Thread {
                     case "chat message":
                         pr.getClient().addToChatOutput(msg.getText());
                         break;
+                        
+                    case "removefromlist":
+                        pr.getClient().getPublicPlaylist().removefromPlaylist(msg.getName());
+                        
                 }
             }
 

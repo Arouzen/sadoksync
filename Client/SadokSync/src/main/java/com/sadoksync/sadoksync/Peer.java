@@ -350,7 +350,7 @@ public class Peer {
     void DeliverPlaylist(String ipAddr) {
         //Deliver the playlist... how?
         List li = null;
-        PublicPlaylist pli = cli.getPubicPlaylist();
+        PublicPlaylist pli = cli.getPublicPlaylist();
         pli.getLock().lock();
         try {
             //get media from li and put into a list.
@@ -370,7 +370,7 @@ public class Peer {
     void DeliverPlaylistToComunity() {
         //Deliver the playlist... how?
         List li = null;
-        PublicPlaylist pli = cli.getPubicPlaylist();
+        PublicPlaylist pli = cli.getPublicPlaylist();
         pli.getLock().lock();
         try {
             //get media from li and put into a list.

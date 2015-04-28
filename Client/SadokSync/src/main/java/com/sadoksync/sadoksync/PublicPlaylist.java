@@ -96,6 +96,28 @@ public class PublicPlaylist implements Serializable {
             lock.unlock();
         }
     }
+
+    // Remove all elements from the arraylist (playlist) containing the key (user).
+    public void removefromPlaylist(String name) {
+        lock.lock();
+        try {
+            if (pr.isHost()) {
+                for (Pair element : playlist) {
+                    if (element.key().equals(name)) {
+                        playlist.remove(element);
+                    }
+                }
+                pr.DeliverPlaylistToComunity();
+            }else {
+                Message msg = new Message();
+               msg.setType("removefromlist");
+               msg.setName(name);
+            }
+            
+        } finally {
+            lock.unlock();
+        }
+    }
     /*
      Returnerar playlisten. Är inte syncronizerad. 
      Ett lock måste sättas kring denna användning.
