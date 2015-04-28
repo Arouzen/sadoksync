@@ -25,17 +25,20 @@ class PeerClientThread extends Thread {
 
     PeerClientThread(String host, int port, Message msg) {
         this.msg = msg;
-
+        System.err.println("Initializing msg sender");
+        
         try {
 
             clientSocket = new Socket(host, port);
             connected = true;
         } catch (UnknownHostException e) {
             System.err.println("Don't know about host: " + host + ".");
+            System.err.println(e.getMessage());
             //System.exit(1);
             connected = false;
         } catch (IOException e) {
             System.err.println("Couldn't get I/O for " + "the connection to: " + host + "");
+            System.err.println(e.getMessage());
             //System.exit(1);
             connected = false;
         }
@@ -43,6 +46,8 @@ class PeerClientThread extends Thread {
 
     @Override
     public void run() {
+        System.err.println("msg sender: Sender");
+        
         if (connected) {
             try {
                 //in = new BufferedInputStream(clientSocket.getInputStream());
