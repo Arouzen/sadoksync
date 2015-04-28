@@ -204,9 +204,9 @@ public class Peer {
             while (i.hasNext()) {
                 key = (String) i.next();
                 opr = (PeerReg) m.get(key);
-                System.out.println(" ? " + opr.getAddr());
+                System.out.println("sendMsgToComunity(loop):  " + opr.getAddr());
                 //Work is needed here
-                if (!isHost()) {
+                if (!this.getMyIp().equals(opr.getAddr())) {
                     System.out.println("Trigger");
                     this.sendMsg(opr.getAddr(), 4444, msg);
                 }
@@ -349,7 +349,6 @@ public class Peer {
     }
 
     boolean isHost() {
-        System.out.println(isHost);
         return this.isHost;
     }
 

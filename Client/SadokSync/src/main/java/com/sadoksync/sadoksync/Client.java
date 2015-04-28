@@ -824,7 +824,6 @@ public class Client extends javax.swing.JFrame {
 
     public void startStream() {
         if (!playlist.isEmpty()) {
-            System.out.println();
             String ip = playlist.getFirstInListOwner();
             System.out.println("starting stream on ip: " + ip + " from " + pr.getMyIp());
             if (pr.getMyIp().equals(ip)) {
