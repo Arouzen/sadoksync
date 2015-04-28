@@ -51,13 +51,13 @@ public class PublicPlaylist implements Serializable {
      Critical section locked with lock.
      Adds an item to the playlists.
      */
-    public void addToPlaylist(String owner, File mediaFile) {
-        Pair pair = new Pair(owner, new Media(mediaFile, "local file"));
+    public void addToPlaylist(String ip, File mediaFile) {
+        Pair pair = new Pair(ip, new Media(mediaFile, "local file"));
         this.addToPlaylist(pair);
     }
 
-    public void addToPlaylist(String owner, String url, String type) {
-        Pair pair = new Pair(owner, new Media(url, type));
+    public void addToPlaylist(String ip, String url, String type) {
+        Pair pair = new Pair(ip, new Media(url, type));
         this.addToPlaylist(pair);
     }
 

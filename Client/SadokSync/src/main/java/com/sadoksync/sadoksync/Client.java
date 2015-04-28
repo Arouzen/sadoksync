@@ -444,7 +444,7 @@ public class Client extends javax.swing.JFrame {
         int returnVal = fileChooser.showOpenDialog(this);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             File selectedMedia = fileChooser.getSelectedFile();
-            playlist.addToPlaylist(pr.getNick(), selectedMedia);
+            playlist.addToPlaylist(pr.getMyIp(), selectedMedia);
             updateRightPanel(getPlaylist());
             rightPanelMode = "playlist";
         }
@@ -524,7 +524,7 @@ public class Client extends javax.swing.JFrame {
                 id = url.substring(0, end_of_id);
             }
             if (!id.isEmpty()) {
-                playlist.addToPlaylist(pr.getNick(), id, "youtube");
+                playlist.addToPlaylist(pr.getMyIp(), id, "youtube");
                 updateRightPanel(getPlaylist());
                 rightPanelMode = "playlist";
             }
@@ -709,7 +709,8 @@ public class Client extends javax.swing.JFrame {
                                 //get the ip of the owner of the next media.
                                 String ip = playlist.getFirstInListOwner();
 
-                                if (pr.getMyIp().equals(ip) /*|| !media.getType().equals("local file")*/) {
+                                if (pr.isHost()) {
+                                    System.out.println("(stream) this is host");
                                     serverMediaPlayer.playMedia(media.getPath(),
                                             options,
                                             ":no-sout-rtp-sap",
@@ -823,15 +824,12 @@ public class Client extends javax.swing.JFrame {
 
     public void startStream() {
         if (!playlist.isEmpty()) {
+            System.out.println();
             String ip = playlist.getFirstInListOwner();
-
+            System.out.println("starting stream on ip: " + ip + " from " + pr.getMyIp());
             if (pr.getMyIp().equals(ip)) {
                 startStreamingServer();
 
-                /*
-                 playMedia(getRtspUrl());
-                 pr.DeliverStreamToComunity(pr.getMyIp(), "demo");
-                 */
             } else {
                 pr.ping(ip, "Move Host");
             }
@@ -1010,7 +1008,7 @@ public class Client extends javax.swing.JFrame {
                 }
                 for (File file : data) {
                     if (filefilter.accept(file)) {
-                        playlist.addToPlaylist(pr.getNick(), file);
+                        playlist.addToPlaylist(pr.getMyIp(), file);
                     } else {
                         displayDropLocation("Does only accept media files.");
                     }

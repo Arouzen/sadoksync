@@ -228,6 +228,7 @@ public class Peer {
     //Add ip here   
     void peerToJoin(Message msg, String ipAdr) {
         com.addPeer(ipAdr, msg.getName());
+        this.setMyIP(ipAdr);
         msg.setType("Register Client");
         if (this.isHost()) {
             System.out.println("This is host");
@@ -318,6 +319,7 @@ public class Peer {
 
     void deliverStreamToComunity(String path) {
         //Delives a message that set where the stream is currently.
+        System.out.println("deliverPlaylistToComunity()");
         Message msgret = new Message();
         // msgret.setipAddr(this.getMyIp());
         msgret.setType("Set Stream");
@@ -326,6 +328,7 @@ public class Peer {
     }
 
     void deliverPlaylistToComunity() {
+        System.out.println("deliverPlaylistToComunity()");
         //Deliver the playlist... how?
         List li = null;
         PublicPlaylist pli = cli.getPubicPlaylist();
