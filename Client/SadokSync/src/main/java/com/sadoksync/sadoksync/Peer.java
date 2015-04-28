@@ -91,6 +91,18 @@ public class Peer {
         this.sendMsg(cr.getHost(), 4444, msg);
         this.openClient();
     }
+
+    void directConnect(String ip) {
+
+        Message msg = new Message();
+        msg.setipAddr(this.getMyIp());
+        msg.setType("Join Comunity");
+        msg.setName(this.getNick());
+        //msg.setText(cname);
+
+        this.sendMsg(ip, 4444, msg);
+        this.openClient();
+    }
     /*
      void setComunityHost(String host) {
      System.out.println("Peer: setComunityHost");
@@ -251,11 +263,10 @@ public class Peer {
         msg.setType("Register Client");
         if (this.isHost()) {
             System.out.println("I am host and I am addinging: " + msg.getName() + " @" + msg.getipAddr());
-            
+
             if (!this.cli.isPlaylistEmpty()) {
-                this.DeliverStream(msg.getipAddr(), "demo");    
+                this.DeliverStream(msg.getipAddr(), "demo");
             }
-            
 
             Message sethostmsg = new Message();
             sethostmsg.setipAddr(this.getMyIp());
@@ -438,4 +449,5 @@ public class Peer {
 
         }
     }
+
 }
