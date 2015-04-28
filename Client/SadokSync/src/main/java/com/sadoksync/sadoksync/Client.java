@@ -881,8 +881,7 @@ public class Client extends javax.swing.JFrame {
         Map map = pr.com.getComunityPeers();
 
         for (Object entry : map.keySet()) {
-            String key = entry.toString();
-            list.add(key);
+            list.add(((PeerReg)map.get(entry)).getNick());
         }
 
         return list;

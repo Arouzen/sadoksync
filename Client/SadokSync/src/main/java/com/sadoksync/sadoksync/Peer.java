@@ -132,6 +132,7 @@ public class Peer {
     }
 
     void openProperties() {
+        //Kill stuff here
         final Lobby flb = lb;
         final Properties fprop = prop;
         final Client fcli = cli;
