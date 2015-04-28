@@ -239,19 +239,17 @@ public class Peer {
                 }
             }
         }
-    }   
-    
+    }
+
     void sendToHost(Message msg) {
         this.sendMsg(this.com.getHost(), 4444, msg);
     }
-    
-    
+
     /*
      public SynchReg getSynchReg() {
      return synchMap;
      }
      */
-
     Lobby getLobby() {
         return lb;
     }
@@ -457,27 +455,25 @@ public class Peer {
     }
 
     void connectionEvent(String ipAddr, String ce) {
-        if(ce.equals("Connection refused: connect")){
-            if(this.isHost()){
-                //remove ipAddr from comunity. 
+        if (ce.equals("Connection refused: connect")) {
+            if (this.isHost()) {
+
                 String nick = com.getNickByIp(ipAddr);
-                
-                if(!nick.equals("")){
+
+                if (!nick.equals("")) {
+                    //remove ipAddr from comunity.
                     com.removePeerByName(nick);
-                }else{
+                    //Remove ipAdd/nick from playlist
+                    cli.getPublicPlaylist().removefromPlaylist(nick);
+                } else {
                     System.out.println("Tried to remove someone who did not exist");
                 }
-                
-                //Remove ipAdd/nick from playlist
-                
+
                 //com.removePeerByIp(ipAddr);
-                
-            }else{
+            } else {
                 //Check with other peers if the host is lost
             }
         }
     }
-
-
 
 }
