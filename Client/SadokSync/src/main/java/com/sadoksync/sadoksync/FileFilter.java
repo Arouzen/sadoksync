@@ -1,12 +1,14 @@
 package com.sadoksync.sadoksync;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 /**
  *
@@ -14,37 +16,52 @@ import java.util.logging.Logger;
  */
 class FileFilter extends javax.swing.filechooser.FileFilter {
 
-    @Override
-    public boolean accept(File file) {
-        FileReader fileReader = null;
-        boolean allowed = false;
-        try {
-            // Allow only extentions within the AllowedVLCExtensions.txt
-            StringBuilder location = new StringBuilder(Client.class.getProtectionDomain().getCodeSource().getLocation().toString());
-            location.delete(0, 6);
-            File f = new File(location.toString() + "/AllowedVLCExtensions.txt");
-            fileReader = new FileReader(f);
-            BufferedReader br = new BufferedReader(fileReader);
-            String line = null;
-            // if no more lines the readLine() returns null
-            while ((line = br.readLine()) != null) {
-                if (file.getAbsolutePath().endsWith("." + line) || file.isDirectory()) {
-                    allowed = true;
-                    break;
+    StringBuilder location;
+
+    public FileFilter() {
+        location = new StringBuilder(Client.class.getProtectionDomain().getCodeSource().getLocation().toString());
+        location.delete(0, 6);
+    }
+
+    public boolean acceptMediaFile(String mediaExtension, String type) throws ParseException, IOException {
+        File f = new File(location.toString() + "/VLCExtensions.json");
+
+        JSONParser JSONParser = new JSONParser();
+        JSONObject jsonObject = (JSONObject) JSONParser.parse(new FileReader(f));
+        JSONObject jsonMediaObject = (JSONObject) jsonObject.get("media");
+        JSONArray jsonVisualizeArray = (JSONArray) jsonMediaObject.get("visualize");
+        JSONArray jsonVideoArray = (JSONArray) jsonMediaObject.get("video");
+
+        if (type.equals("visualize") || type.equals("both")) {
+            for (Object acceptedExtension : jsonVisualizeArray) {
+                if (mediaExtension.toLowerCase().equals(acceptedExtension)) {
+                    return true;
                 }
             }
-        } catch (FileNotFoundException ex) {
-            System.out.println("AllowedVLCExtensions.txt file not found");
-        } catch (IOException ex) {
-            System.out.println("AllowedVLCExtensions.txt file interrupted");
-        } finally {
-            try {
-                fileReader.close();
-            } catch (IOException ex) {
-                Logger.getLogger(FileFilter.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        if (type.equals("video") || type.equals("both")) {
+            for (Object acceptedExtension : jsonVideoArray) {
+                if (mediaExtension.toLowerCase().equals(acceptedExtension)) {
+                    return true;
+                }
             }
         }
-        return allowed;
+        return false;
+    }
+
+    @Override
+    public boolean accept(File file) {
+        try {
+            if (file.isDirectory()) {
+                return true;
+            }
+            if (acceptMediaFile(file.getAbsolutePath().split("\\.")[file.getAbsolutePath().split("\\.").length - 1], "both")) {
+                return true;
+            }
+        } catch (IOException | ParseException ex) {
+            Logger.getLogger(FileFilter.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
     }
 
     @Override

@@ -5,10 +5,12 @@
  */
 package com.sadoksync.sadoksync;
 
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  *
@@ -20,15 +22,19 @@ public class Comunity {
     String topic;
     String cname;
     String host;
-    
 
-    Map<String,PeerReg> pMap;
+    final Lock lock;
+    final Condition ocupied;
+    Map<String, PeerReg> pMap;
 
     public Comunity() {
         System.out.println("Initializing Comunity View");
+
+        lock = new ReentrantLock();
+        ocupied = lock.newCondition();
         this.topic = "";
- 
-        this.pMap = Collections.synchronizedMap(new HashMap<String,PeerReg>());
+
+        this.pMap = Collections.synchronizedMap(new HashMap<String, PeerReg>());
     }
 
     public void RegPeer(PeerReg peer) {
@@ -38,11 +44,18 @@ public class Comunity {
     }
 
     void create(String cname, String myIP, String topic, String nick) {
-        System.out.println("Comunity: create: " + cname + ", " + topic +", @" + myIP);
-        this.cname = cname;
-        this.host = myIP;
-        this.topic = topic;
- 
+        System.out.println("Comunity: create: " + cname + ", " + topic + ", @" + myIP);
+
+        lock.lock();
+        try {
+            this.cname = cname;
+            this.host = myIP;
+            this.topic = topic;
+
+            ocupied.signalAll();
+        } finally {
+            lock.unlock();
+        }
         //Now you have to join a comunity that you create.
         //RegPeer(nick, new PeerReg(nick, host));
     }
@@ -52,7 +65,14 @@ public class Comunity {
     }
 
     void setTopic(String topic) {
-        this.topic = topic;
+        lock.lock();
+        try {
+            this.topic = topic;
+
+            ocupied.signalAll();
+        } finally {
+            lock.unlock();
+        }
     }
 
     void setNick(String nick) {
@@ -71,7 +91,7 @@ public class Comunity {
         return topic;
     }
 
-    Map getComunityPeers(){
+    Map getComunityPeers() {
         return pMap;
     }
 

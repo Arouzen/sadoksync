@@ -9,12 +9,13 @@ import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.AbstractAction;
@@ -23,14 +24,19 @@ import javax.swing.DefaultListModel;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 import javax.swing.LookAndFeel;
 import javax.swing.TransferHandler;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import org.json.simple.parser.ParseException;
+import uk.co.caprica.vlcj.binding.internal.libvlc_media_t;
 import uk.co.caprica.vlcj.player.MediaPlayer;
 import uk.co.caprica.vlcj.player.MediaPlayerEventAdapter;
 import uk.co.caprica.vlcj.player.MediaPlayerFactory;
+import uk.co.caprica.vlcj.player.directaudio.DefaultAudioCallbackAdapter;
+import uk.co.caprica.vlcj.player.directaudio.DirectAudioPlayer;
 import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
 import uk.co.caprica.vlcj.player.embedded.videosurface.CanvasVideoSurface;
 import uk.co.caprica.vlcj.player.embedded.windows.Win32FullScreenStrategy;
@@ -42,14 +48,17 @@ import uk.co.caprica.vlcj.player.headless.HeadlessMediaPlayer;
  */
 public class Client extends javax.swing.JFrame {
 
+    private String mediaType;
+
     // Create a media player factory
-    private final MediaPlayerFactory mediaPlayerFactory;
+    private MediaPlayerFactory mediaPlayerFactory;
 
     // Create a new media player instance for the run-time platform
-    public EmbeddedMediaPlayer mediaPlayer;
+    private EmbeddedMediaPlayer mediaPlayer;
 
     // Create the server media player used to stream
     public HeadlessMediaPlayer serverMediaPlayer;
+    public MediaPlayerFactory serverMediaPlayerFactory;
 
     // Create video surface
     public CanvasVideoSurface videoSurface;
@@ -64,7 +73,7 @@ public class Client extends javax.swing.JFrame {
     private JFileChooser fileChooser;
 
     // Right panel mode
-    private String rightPanelMode;
+    public String rightPanelMode;
 
     // Rtsp variables
     private String server;
@@ -74,6 +83,12 @@ public class Client extends javax.swing.JFrame {
     // Socket variables
     private boolean isHost;
     private Peer pr;
+
+    // Mode
+    private boolean visualizeMode;
+
+    // File filter
+    public FileFilter filefilter;
 
     /**
      * Creates new form Client
@@ -110,29 +125,37 @@ public class Client extends javax.swing.JFrame {
         mediaPlayerFactory = new MediaPlayerFactory();
         mediaPlayer = mediaPlayerFactory.newEmbeddedMediaPlayer(new Win32FullScreenStrategy(fullscreenplayer.frame));
 
+        //Set mediaplayer to surface
         videoSurface = mediaPlayerFactory.newVideoSurface(canvas);
         mediaPlayer.setVideoSurface(videoSurface);
+        visualizeMode = false;
 
         mediaPlayer.addMediaPlayerEventListener(new MediaPlayerEventAdapter() {
             @Override
             public void finished(MediaPlayer mediaPlayer) {
-                if (!playlist.isEmpty()) {
+                if (playlist.isEmpty()) {
+                    jSplitPane1.setLeftComponent(new EmptyCanvas());
                 }
             }
 
             @Override
             public void stopped(MediaPlayer mediaPlayer) {
-                if (!playlist.isEmpty()) {
+                if (playlist.isEmpty()) {
+                    jSplitPane1.setLeftComponent(new EmptyCanvas());
                 }
             }
         });
-
         // Split panel inits
-        jSplitPane1.setDividerLocation(0.7);
+        //jSplitPane1.setDividerLocation(0.7);
         rightPanelMode = "chat";
 
         // Public playlist init
         playlist = new PublicPlaylist(pr);
+
+        // FileFilter init
+        filefilter = new FileFilter();
+
+        jSplitPane1.setLeftComponent(new EmptyCanvas());
         /*
          this.isHost = pr.isHost();
          if (!isHost) {
@@ -148,7 +171,7 @@ public class Client extends javax.swing.JFrame {
         } catch (InterruptedException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
-        mediaPlayer.playMedia(getRtspUrl());
+        playMedia(getRtspUrl());
     }
 
     public void setHost(String ip) {
@@ -183,11 +206,8 @@ public class Client extends javax.swing.JFrame {
         textChatInput = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
         buttonPlay = new javax.swing.JButton();
-        textFileLocation = new javax.swing.JTextField();
         jButton3 = new javax.swing.JButton();
-        ButtonPause = new javax.swing.JButton();
         ButtonStop = new javax.swing.JButton();
-        buttonStream = new javax.swing.JButton();
         buttonShowUsers = new javax.swing.JButton();
         buttonShowChat = new javax.swing.JButton();
         jSplitPane1 = new javax.swing.JSplitPane();
@@ -195,9 +215,11 @@ public class Client extends javax.swing.JFrame {
         scrollPaneChatt = new javax.swing.JScrollPane();
         textChatOutput = new javax.swing.JTextArea();
         buttonShowPlaylist = new javax.swing.JButton();
+        jSlider1 = new javax.swing.JSlider();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         Open = new javax.swing.JMenuItem();
+        jMenuItem3 = new javax.swing.JMenuItem();
         Exit = new javax.swing.JMenuItem();
         jSeparator2 = new javax.swing.JPopupMenu.Separator();
         jMenu2 = new javax.swing.JMenu();
@@ -235,16 +257,14 @@ public class Client extends javax.swing.JFrame {
         panelChattLayout.setHorizontalGroup(
             panelChattLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelChattLayout.createSequentialGroup()
-                .addComponent(textChatInput, javax.swing.GroupLayout.DEFAULT_SIZE, 375, Short.MAX_VALUE)
+                .addComponent(textChatInput)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(buttonSendChat, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         panelChattLayout.setVerticalGroup(
             panelChattLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panelChattLayout.createSequentialGroup()
-                .addComponent(textChatInput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
-            .addComponent(buttonSendChat, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(buttonSendChat, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(textChatInput, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 0, 24)); // NOI18N
@@ -270,18 +290,6 @@ public class Client extends javax.swing.JFrame {
             }
         });
 
-        ButtonPause.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Button_Default.png"))); // NOI18N
-        ButtonPause.setMaximumSize(new java.awt.Dimension(85, 40));
-        ButtonPause.setMinimumSize(new java.awt.Dimension(85, 40));
-        ButtonPause.setPreferredSize(new java.awt.Dimension(85, 40));
-        ButtonPause.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/copy.png"))); // NOI18N
-        ButtonPause.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/Button_Hover.png"))); // NOI18N
-        ButtonPause.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ButtonPauseActionPerformed(evt);
-            }
-        });
-
         ButtonStop.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Button_Stop_default.png"))); // NOI18N
         ButtonStop.setMaximumSize(new java.awt.Dimension(85, 40));
         ButtonStop.setMinimumSize(new java.awt.Dimension(85, 40));
@@ -291,13 +299,6 @@ public class Client extends javax.swing.JFrame {
         ButtonStop.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 ButtonStopActionPerformed(evt);
-            }
-        });
-
-        buttonStream.setText("Start Streaming");
-        buttonStream.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                buttonStreamActionPerformed(evt);
             }
         });
 
@@ -346,6 +347,15 @@ public class Client extends javax.swing.JFrame {
         });
         jMenu1.add(Open);
 
+        jMenuItem3.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_U, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItem3.setText("Add url");
+        jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem3ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem3);
+
         Exit.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Q, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.CTRL_MASK));
         Exit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/GeoGebra_icon_exit.png"))); // NOI18N
         Exit.setText("Exit");
@@ -380,26 +390,23 @@ public class Client extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 963, Short.MAX_VALUE)
+                    .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 980, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(textFileLocation)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(buttonStream)
-                                .addGap(9, 9, 9))
-                            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(ButtonStop, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(ButtonPause, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(buttonPlay, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jSlider1, javax.swing.GroupLayout.PREFERRED_SIZE, 278, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(11, 11, 11)
                                 .addComponent(panelChatt, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addGap(0, 39, Short.MAX_VALUE)
                                 .addComponent(jButton3)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(buttonShowChat)
@@ -422,14 +429,11 @@ public class Client extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jSplitPane1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(panelChatt, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(textFileLocation, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(buttonStream))
-                    .addComponent(buttonPlay, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(ButtonPause, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(ButtonStop, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(panelChatt, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(buttonPlay, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(ButtonStop, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jSlider1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -440,8 +444,9 @@ public class Client extends javax.swing.JFrame {
         int returnVal = fileChooser.showOpenDialog(this);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             File selectedMedia = fileChooser.getSelectedFile();
-            playlist.addToPlaylist(selectedMedia.getName(), selectedMedia.getAbsolutePath(), "20min lol", "videofil");
+            playlist.addToPlaylist(pr.getNick(), selectedMedia);
             updateRightPanel(getPlaylist());
+            rightPanelMode = "playlist";
         }
     }//GEN-LAST:event_OpenActionPerformed
 
@@ -453,35 +458,23 @@ public class Client extends javax.swing.JFrame {
         connectToRtsp();
     }//GEN-LAST:event_buttonPlayActionPerformed
 
-    private void ButtonPauseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonPauseActionPerformed
-        /*        if (mediaPlayer.isPlaying()) {
-         mediaPlayer.pause();
-         } else {
-         mediaPlayer.play();
-         }*/
-    }//GEN-LAST:event_ButtonPauseActionPerformed
-
     private void ButtonStopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonStopActionPerformed
-        serverMediaPlayer.stop();
-        mediaPlayer.stop();
-    }//GEN-LAST:event_ButtonStopActionPerformed
-
-    private void buttonStreamActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonStreamActionPerformed
-        if (!playlist.isEmpty()) {
-            startStreamingServer();
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException ex) {
-                ex.printStackTrace();
-            }
-            mediaPlayer.playMedia(getRtspUrl());
+        if (mediaPlayer.isPlaying()) {
+            mediaPlayer.stop();
         }
-    }//GEN-LAST:event_buttonStreamActionPerformed
+        if (pr.isHost()) {
+            serverMediaPlayer.stop();
+        }
+    }//GEN-LAST:event_ButtonStopActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         if (mediaPlayer.isPlaying()) {
-            fullscreenplayer.fullscreen();
-            mediaPlayer.setFullScreen(true);
+            if (!visualizeMode) {
+                fullscreenplayer.fullscreen(mediaPlayerFactory, mediaPlayer);
+                mediaPlayer.setFullScreen(true);
+            } else {
+                System.out.println("Visualizer in fullscreen not supported :((");
+            }
         }
     }//GEN-LAST:event_jButton3ActionPerformed
 
@@ -518,8 +511,99 @@ public class Client extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_buttonShowPlaylistActionPerformed
 
+    private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
+        String url = JOptionPane.showInputDialog(this, "Enter a Youtube URL");
+        //String url = "https://www.youtube.com/watch?v=wZZ7oFKsKzY";
+        if (!url.contains("v=")) //there's no video id
+        {
+            JOptionPane.showMessageDialog(this, "No Youtube-ID in URL");
+        } else {
+            String id = url.split("v=")[1]; // we want everything after 'v='
+            int end_of_id = id.indexOf("&"); // if there are other parameters in the url, get only the id's value
+            if (end_of_id != -1) {
+                id = url.substring(0, end_of_id);
+            }
+            if (!id.isEmpty()) {
+                playlist.addToPlaylist(pr.getNick(), id, "youtube");
+                updateRightPanel(getPlaylist());
+                rightPanelMode = "playlist";
+            }
+        }
+    }//GEN-LAST:event_jMenuItem3ActionPerformed
+
     public void connectToRtsp() {
-        mediaPlayer.playMedia(getRtspUrl());
+        playMedia(getRtspUrl());
+    }
+
+    public void playMedia(String url) {
+        //String[] s = playlist.getNowPlaying().split("\\.");
+        // media ends with mp3? Then we want a visualizer
+        //if (s[s.length - 1].endsWith("mp3")) {
+        System.out.println("[Client.PlayMedia] mediaType: " + mediaType + ", url: " + url);
+        if (mediaType.equals("visualize")) {
+            // Check if visualizemode already set, else we need to set it to visualizemode
+            // If not, its already in visualizemode and we can play media without any changes
+            if (!visualizeMode) {
+                visualizeMode = true;
+                // To set it to visualize mode we need to:
+                // Recreate the mediaPlayerFactory with visualizer options
+                mediaPlayerFactory = new MediaPlayerFactory("--audio-visual=visual", "--effect-list=spectrum");
+                mediaPlayer = mediaPlayerFactory.newEmbeddedMediaPlayer(new Win32FullScreenStrategy(fullscreenplayer.frame));
+
+                //Set visualizer mediaplayer to surface
+                videoSurface = mediaPlayerFactory.newVideoSurface(canvas);
+                mediaPlayer.setVideoSurface(videoSurface);
+            }
+            // Own visualizer stuff. dont remove pls
+            // I think this gives us a audiostream to work with
+            /*MediaPlayerFactory factory = new MediaPlayerFactory();
+             DirectAudioPlayer audioPlayer = factory.newDirectAudioPlayer("S16N", 44100, 2, new TestAudioCallbackAdapter());
+             audioPlayer.playMedia(url);*/
+        } else {
+            // Check if in visualizemode, if it is we need to recreate the mediaplayer
+            if (visualizeMode) {
+                visualizeMode = false;
+                // Recreate the mediaplayerfactory without visualizer options
+                mediaPlayerFactory = new MediaPlayerFactory();
+                mediaPlayer = mediaPlayerFactory.newEmbeddedMediaPlayer(new Win32FullScreenStrategy(fullscreenplayer.frame));
+
+                //Set mediaplayer without visualize options to surface
+                videoSurface = mediaPlayerFactory.newVideoSurface(canvas);
+                mediaPlayer.setVideoSurface(videoSurface);
+            }
+        }
+        // lastly, play the media in the mediaplayer with the apropriate options
+        jSplitPane1.setLeftComponent(canvas);
+        mediaPlayer.playMedia(url);
+    }
+
+    public void setMediaType(String text) {
+        this.mediaType = text;
+    }
+
+    private class TestAudioCallbackAdapter extends DefaultAudioCallbackAdapter {
+
+        /**
+         * Output stream.
+         */
+        private final BufferedOutputStream out;
+
+        /**
+         * Create an audio callback.
+         */
+        public TestAudioCallbackAdapter() {
+            super(4); // 4 is the block size for the audio samples
+            out = new BufferedOutputStream(System.out);
+        }
+
+        @Override
+        protected void onPlay(DirectAudioPlayer mediaPlayer, byte[] data, int sampleCount, long pts) {
+            try {
+                out.write(data);
+            } catch (IOException ex) {
+                Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }
 
     public void updateRightPanel(ArrayList<String> elements) {
@@ -536,7 +620,7 @@ public class Client extends javax.swing.JFrame {
     public void addToChat(String text) {
         if (!text.isEmpty()) {
             Message msg = new Message();
-            //msg.setipAddr(pr.getMyIp());
+            
             // TODO - validate IP with nick for security
             msg.setType("chat message");
             msg.setText(pr.getNick() + ": " + text);
@@ -544,7 +628,7 @@ public class Client extends javax.swing.JFrame {
             addToChatOutput(msg.getText());
         }
     }
-    
+
     public void addToChatOutput(String text) {
         textChatOutput.append("\r\n" + text);
     }
@@ -554,22 +638,34 @@ public class Client extends javax.swing.JFrame {
             Thread streamingServer = new Thread() {
                 public void run() {
                     try {
-                        String media = playlist.getNowPlaying();
+                        Media media = playlist.getFirstInList();
                         //No ip address here, only an @. 
                         final String options = formatRtspStream("@", 5555, "demo");
-                        System.out.println("Streaming '" + media + "' to '" + options + "'");
-                        MediaPlayerFactory mediaPlayerFactory = new MediaPlayerFactory();
-                        serverMediaPlayer = mediaPlayerFactory.newHeadlessMediaPlayer();
+                        System.out.println("Streaming '" + media.getPath() + "' to '" + options + "'");
+                        serverMediaPlayerFactory = new MediaPlayerFactory();
+                        serverMediaPlayer = serverMediaPlayerFactory.newHeadlessMediaPlayer();
 
                         serverMediaPlayer.addMediaPlayerEventListener(new MediaPlayerEventAdapter() {
                             @Override
                             public void finished(MediaPlayer mediaPlayer) {
+                                if (mediaPlayer.subItemCount() > 0) {
+                                    System.out.println(mediaPlayer.subItems());
+                                }
                                 playlist.removeFirstInQueue();
                                 updateRightPanel(getPlaylist());
-                                if (!playlist.isEmpty()) {
+                                rightPanelMode = "playlist";
+
+                                String ip = playlist.getFirstInListOwner();
+
+                                if (!playlist.isEmpty() && pr.getMyIp().equals(ip)) {
+                                    streamNextMedia(mediaPlayer);
+                                } else if (!playlist.isEmpty() && !pr.getMyIp().equals(ip)) {
+                                    mediaPlayer.release();
                                     streamNextMedia(mediaPlayer);
                                 } else {
                                     System.out.println("[Server] No more media in list");
+                                    mediaPlayer.release();
+                                    //serverMediaPlayerFactory.release();
                                 }
                             }
 
@@ -577,40 +673,133 @@ public class Client extends javax.swing.JFrame {
                             public void stopped(MediaPlayer mediaPlayer) {
                                 playlist.removeFirstInQueue();
                                 updateRightPanel(getPlaylist());
+                                rightPanelMode = "playlist";
                                 if (!playlist.isEmpty()) {
                                     streamNextMedia(mediaPlayer);
                                 } else {
                                     System.out.println("[Server] No more media in list");
+                                    //mediaPlayer.release();
+                                    //serverMediaPlayerFactory.release();
                                 }
                             }
 
-                            private void streamNextMedia(MediaPlayer mediaPlayer) {
-                                System.out.println("[Server] Media stopped/finished, moving next in list!");
-                                mediaPlayer.playMedia(playlist.getNowPlaying(),
+                            @Override
+                            public void mediaSubItemAdded(MediaPlayer serverMediaPlayer, libvlc_media_t subItem) {
+                                List<String> items = serverMediaPlayer.subItems();
+                                serverMediaPlayer.playMedia(items.get(0),
                                         options,
                                         ":no-sout-rtp-sap",
                                         ":no-sout-standard-sap",
                                         ":sout-all",
                                         ":sout-keep"
                                 );
-                                try {
-                                    Thread.sleep(2000);
-                                } catch (InterruptedException ex) {
-                                    Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+
+                            @Override
+                            public void buffering(MediaPlayer mediaPlayer, float newCache) {
+                                System.out.println("Buffering " + newCache);
+                            }
+
+                            private void streamNextMedia(MediaPlayer serverMediaPlayer) {
+                                System.out.println("[Server] Media stopped/finished, moving next in list!");
+
+                                //get the next media object in list
+                                Media media = playlist.getFirstInList();
+
+                                //get the ip of the owner of the next media.
+                                String ip = playlist.getFirstInListOwner();
+
+                                if (pr.getMyIp().equals(ip) /*|| !media.getType().equals("local file")*/) {
+                                    serverMediaPlayer.playMedia(media.getPath(),
+                                            options,
+                                            ":no-sout-rtp-sap",
+                                            ":no-sout-standard-sap",
+                                            ":sout-all",
+                                            ":sout-keep"
+                                    );
+                                    try {
+                                        Thread.sleep(4000);
+                                    } catch (InterruptedException ex) {
+                                        Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+                                    }
+
+                                    setHost(pr.getMyIp());
+                                    setPort("5555");
+                                    setRtspPath("demo");
+
+                                    String mediaType = "";
+                                    if (media.getType().equals("local file")) {
+                                        String extension = media.getPath().split("\\.")[media.getPath().split("\\.").length - 1];
+                                        try {
+                                            if (filefilter.acceptMediaFile(extension, "visualize")) {
+                                                mediaType = "visualize";
+                                            } else if (filefilter.acceptMediaFile(extension, "video")) {
+                                                mediaType = "video";
+                                            }
+                                            setMediaType(mediaType);
+                                        } catch (ParseException ex) {
+                                            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+                                        } catch (IOException ex) {
+                                            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+                                        }
+                                    } else {
+                                        setMediaType(media.getType());
+                                    }
+
+                                    connectToRtsp();
+                                    pr.deliverStreamToComunity(mediaType);
+                                    pr.deliverPlaylistToComunity();
+                                } else {
+                                    //mediaPlayer.release();
+                                    //serverMediaPlayerFactory.release();
+                                    pr.ping(ip, "Move Host");
                                 }
-                                pr.DeliverStreamToComunity("demo");
-                                connectToRtsp();
                             }
                         });
 
-                        serverMediaPlayer.playMedia(media,
+                        serverMediaPlayer.setPlaySubItems(true);
+                        serverMediaPlayer.playMedia(media.getPath(),
                                 options,
                                 ":no-sout-rtp-sap",
                                 ":no-sout-standard-sap",
                                 ":sout-all",
                                 ":sout-keep"
                         );
-                        pr.DeliverStreamToComunity("demo");
+
+                        try {
+                            Thread.sleep(2000);
+                        } catch (InterruptedException ex) {
+                            ex.printStackTrace();
+                        }
+
+                        setHost("localhost");
+                        setPort("5555");
+                        setRtspPath("demo");
+
+                        String mediaType = "";
+                        if (media.getType().equals("local file")) {
+                            String extension = media.getPath().split("\\.")[media.getPath().split("\\.").length - 1];
+                            try {
+                                if (filefilter.acceptMediaFile(extension, "visualize")) {
+                                    mediaType = "visualize";
+                                } else if (filefilter.acceptMediaFile(extension, "video")) {
+                                    mediaType = "video";
+                                }
+                                setMediaType(mediaType);
+                            } catch (ParseException ex) {
+                                Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+                            } catch (IOException ex) {
+                                Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                        } else {
+                            setMediaType(media.getType());
+                        }
+
+                        playMedia(getRtspUrl());
+
+                        pr.deliverStreamToComunity(mediaType);
+                        pr.deliverPlaylistToComunity();
+
                     } catch (Exception ex) {
                         ex.printStackTrace();
                     }
@@ -619,6 +808,34 @@ public class Client extends javax.swing.JFrame {
             streamingServer.start();
         } catch (Exception ex) {
             System.out.println("No please");
+        }
+    }
+
+    public void cleanStartOfPlaylist() {
+        while (!pr.getMyIp().equals(playlist.getFirstInListOwner())) {
+            playlist.removeFirstInQueue();
+        }
+    }
+
+    public boolean isPlaylistEmpty() {
+        return playlist.isEmpty();
+    }
+
+    public void startStream() {
+        if (!playlist.isEmpty()) {
+            String ip = playlist.getFirstInListOwner();
+
+            if (pr.getMyIp().equals(ip)) {
+                startStreamingServer();
+
+                /*
+                 playMedia(getRtspUrl());
+                 pr.DeliverStreamToComunity(pr.getMyIp(), "demo");
+                 */
+            } else {
+                pr.ping(ip, "Move Host");
+            }
+
         }
     }
 
@@ -661,26 +878,30 @@ public class Client extends javax.swing.JFrame {
         });
     }
 
-    // TODO un-hardcode
     private ArrayList<String> getUsers() {
         ArrayList<String> list = new ArrayList<String>();
         Map map = pr.com.getComunityPeers();
-        
+
         for (Object entry : map.keySet()) {
             String key = entry.toString();
             list.add(key);
         }
-        
+
         return list;
     }
 
-    // TODO : un-hardcode
-    private ArrayList<String> getPlaylist() {
+    public ArrayList<String> getPlaylist() {
         ArrayList<String> list = new ArrayList<String>();
         playlist.getLock().lock();
         try {
             for (Pair entry : playlist.getMediaList()) {
-                list.add("Owner: " + entry.key() + " || " + entry.value().getName());
+                long millis = entry.value().getLength();
+                String length = String.format("%d min, %d sec",
+                        TimeUnit.MILLISECONDS.toMinutes(millis),
+                        TimeUnit.MILLISECONDS.toSeconds(millis)
+                        - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis))
+                );
+                list.add("[" + length + "] || " + entry.value().getName() + " || Owned by " + entry.key());
             }
         } finally {
             playlist.getLock().unlock();
@@ -691,12 +912,13 @@ public class Client extends javax.swing.JFrame {
 
     public void addtoPlaylist(PublicPlaylist.Pair pair) {
         playlist.addToPlaylist(pair);
+        updateRightPanel(getPlaylist());
     }
-    
-    public PublicPlaylist getPubicPlaylist(){
+
+    public PublicPlaylist getPubicPlaylist() {
         return playlist;
     }
-    
+
     private static String formatRtspStream(String serverAddress, int serverPort, String id) {
         StringBuilder sb = new StringBuilder(60);
         sb.append(":sout=#rtp{sdp=rtsp://@");
@@ -787,8 +1009,8 @@ public class Client extends javax.swing.JFrame {
                     return false;
                 }
                 for (File file : data) {
-                    if (new FileFilter().accept(file)) {
-                        playlist.addToPlaylist(file.getName(), file.getAbsolutePath(), "20", "local video");
+                    if (filefilter.accept(file)) {
+                        playlist.addToPlaylist(pr.getNick(), file);
                     } else {
                         displayDropLocation("Does only accept media files.");
                     }
@@ -814,6 +1036,7 @@ public class Client extends javax.swing.JFrame {
         public Canvas canvas;
         public JFrame frame;
         public CanvasVideoSurface videoSurface;
+        public EmbeddedMediaPlayer fullscreenMediaPlayer;
 
         private final KeyStroke escapeKeyStroke;
         private final Action escapeAction;
@@ -839,33 +1062,34 @@ public class Client extends javax.swing.JFrame {
             frame.getRootPane().getActionMap().put("ESCAPE", escapeAction);
         }
 
-        private void fullscreen() {
-            this.videoSurface = mediaPlayerFactory.newVideoSurface(this.canvas);
+        private void fullscreen(MediaPlayerFactory fullscreenMediaPlayerFactory, EmbeddedMediaPlayer mediaPlayer) {
+            this.videoSurface = fullscreenMediaPlayerFactory.newVideoSurface(this.canvas);
+            this.fullscreenMediaPlayer = mediaPlayer;
             frame.setVisible(true);
             canvas.setVisible(true);
 
             // Workaround, disable videotrack while swapping surface
-            int vid = mediaPlayer.getVideoTrack();
-            mediaPlayer.setVideoTrack(-1);
+            int vid = this.fullscreenMediaPlayer.getVideoTrack();
+            this.fullscreenMediaPlayer.setVideoTrack(-1);
 
-            mediaPlayer.setVideoSurface(this.videoSurface);
-            mediaPlayer.attachVideoSurface();
+            this.fullscreenMediaPlayer.setVideoSurface(this.videoSurface);
+            this.fullscreenMediaPlayer.attachVideoSurface();
 
             // Put videotrack back
-            mediaPlayer.setVideoTrack(vid);
+            this.fullscreenMediaPlayer.setVideoTrack(vid);
 
         }
 
         private void stopFullscreen() {
             // Workaround, disable videotrack while swapping surface
-            int vid = mediaPlayer.getVideoTrack();
-            mediaPlayer.setVideoTrack(-1);
+            int vid = fullscreenMediaPlayer.getVideoTrack();
+            fullscreenMediaPlayer.setVideoTrack(-1);
 
-            mediaPlayer.setVideoSurface(Client.this.videoSurface);
-            mediaPlayer.attachVideoSurface();
+            fullscreenMediaPlayer.setVideoSurface(Client.this.videoSurface);
+            fullscreenMediaPlayer.attachVideoSurface();
 
             // Put videotrack back
-            mediaPlayer.setVideoTrack(vid);
+            fullscreenMediaPlayer.setVideoTrack(vid);
 
             frame.setVisible(false);
             canvas.setVisible(false);
@@ -873,7 +1097,6 @@ public class Client extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton ButtonPause;
     private javax.swing.JButton ButtonStop;
     private javax.swing.JMenuItem Exit;
     private javax.swing.JMenuItem Open;
@@ -882,7 +1105,6 @@ public class Client extends javax.swing.JFrame {
     private javax.swing.JButton buttonShowChat;
     private javax.swing.JButton buttonShowPlaylist;
     private javax.swing.JButton buttonShowUsers;
-    private javax.swing.JButton buttonStream;
     private java.awt.Canvas canvas;
     private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
@@ -891,8 +1113,10 @@ public class Client extends javax.swing.JFrame {
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
+    private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator2;
+    private javax.swing.JSlider jSlider1;
     private javax.swing.JSplitPane jSplitPane1;
     private javax.swing.JList listInScrollpane;
     private javax.swing.JPanel panelChatt;
@@ -900,6 +1124,5 @@ public class Client extends javax.swing.JFrame {
     private javax.swing.JScrollPane scrollPaneChatt;
     private javax.swing.JTextField textChatInput;
     private javax.swing.JTextArea textChatOutput;
-    private javax.swing.JTextField textFileLocation;
     // End of variables declaration//GEN-END:variables
 }

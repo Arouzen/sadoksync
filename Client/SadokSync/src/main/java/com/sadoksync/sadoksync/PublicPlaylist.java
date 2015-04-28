@@ -1,5 +1,6 @@
 package com.sadoksync.sadoksync;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,14 +26,13 @@ public class PublicPlaylist implements Serializable {
         this.pr = pr;
     }
 
-    public PublicPlaylist(Peer pr , List li) {
-        playlist = (ArrayList)li;
+    public PublicPlaylist(Peer pr, List li) {
+        playlist = (ArrayList) li;
         lock = new ReentrantLock();
         ocupied = lock.newCondition();
         this.pr = pr;
     }
-    
-    
+
     /*
      Returns the Lock used by the playlist
      */
@@ -51,20 +51,39 @@ public class PublicPlaylist implements Serializable {
      Critical section locked with lock.
      Adds an item to the playlists.
      */
-    public void addToPlaylist(String name, String path, String length, String type) {
-        Pair pair = new Pair("Sadok", new Media(name, path, length, type));
+    public void addToPlaylist(String owner, File mediaFile) {
+        Pair pair = new Pair(owner, new Media(mediaFile, "local file"));
         this.addToPlaylist(pair);
+    }
 
+    public void addToPlaylist(String owner, String url, String type) {
+        Pair pair = new Pair(owner, new Media(url, type));
+        this.addToPlaylist(pair);
     }
 
     public void addToPlaylist(Pair pair) {
+        System.out.println("Adding " + pair.value().getName() + " owned by " + pair.key());
+
         lock.lock();
         try {
             if (pr.isHost()) {
-                playlist.add(pair);
+
+                //if playlist was empty start stream
+                //Add to playlist and then send the play list to all.
+                if (this.isEmpty()) {
+                    //add media to playlist
+                    playlist.add(pair);
+                    //pr.getClient().addtoPlaylist(msg.getPair());
+
+                    //play next media
+                    pr.getClient().startStream();
+                } else {
+                    playlist.add(pair);
+                }
+
+                pr.deliverPlaylistToComunity();
             } else {
                 Message msg = new Message();
-                //msg.setipAddr(pr.getMyIp());
                 msg.setType("Playlist");
                 msg.setText("add");
                 msg.setPair(pair);
@@ -89,20 +108,34 @@ public class PublicPlaylist implements Serializable {
     /*
      lås och läs vad som spelas nu.
      */
-    public String getNowPlaying() {
+    public Media getFirstInList() {
         Pair pair;
-        Media Value;
+        Media Value = null;
         lock.lock();
         try {
-            pair = playlist.get(0);
-            Value = pair.value();
-
+            if (!this.isEmpty()) {
+                pair = playlist.get(0);
+                Value = pair.value();
+            }
             ocupied.signalAll();
         } finally {
             lock.unlock();
         }
+        return Value;
+    }
 
-        return Value.getPath();
+    public String getFirstInListOwner() {
+        Pair pair;
+        String key = null;
+        lock.lock();
+        try {
+            pair = playlist.get(0);
+            key = pair.key();
+            ocupied.signalAll();
+        } finally {
+            lock.unlock();
+        }
+        return key;
     }
 
     /*

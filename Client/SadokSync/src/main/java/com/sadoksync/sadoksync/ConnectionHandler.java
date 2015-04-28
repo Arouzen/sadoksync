@@ -45,7 +45,7 @@ public class ConnectionHandler extends Thread {
                         System.out.println("Message: Set Playlist");
                         PublicPlaylist pl = new PublicPlaylist(pr, msg.getList());
                         pr.getClient().setPlayList(pl);
-                        
+
                         break;
                     case "Playlist":
                         System.out.println("Message: Playlist");
@@ -53,7 +53,7 @@ public class ConnectionHandler extends Thread {
                             pr.getClient().addtoPlaylist(msg.getPair());
                         }
                         break;
-                        
+
                     case "IP Feedback":
                         pr.setMyIP(msg.getName());
                         break;
@@ -68,12 +68,12 @@ public class ConnectionHandler extends Thread {
                         System.out.println("Register Client " + clientSocket.getInetAddress().toString().substring(1) + " end.");
                         System.out.println(msg.getName());
                         //pr.PeerToJoin(msg, clientSocket.getInetAddress().toString().substring(1));
-                        
+
                         break;
-                        
+
                     case "Join Comunity":
                         System.out.println("Join Comunity " + clientSocket.getInetAddress().toString().substring(1) + " end.");
-                        pr.PeerToJoin(msg, clientSocket.getInetAddress().toString().substring(1));
+                        pr.peerToJoin(msg, clientSocket.getInetAddress().toString().substring(1));
                         //If comunity Host register the peer
                         //If not comunity Host, send this to comunity Host
                         break;
@@ -97,6 +97,12 @@ public class ConnectionHandler extends Thread {
                                 pr.getLobby().jList1.setModel(flm);
                             }
                         });
+                        break;
+                    case "Ping":
+                        pr.Pong(msg, clientSocket.getInetAddress().toString().substring(1));
+                        break;
+                    case "Pong":
+                        pr.handlePong(msg, clientSocket.getInetAddress().toString().substring(1));
                         break;
                     case "Find All":
                         System.out.println("Find All: ERROR. Wrong handler");

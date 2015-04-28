@@ -58,20 +58,20 @@ public class Peer {
 
     void registerComunity(String rhost, int port) {
         Message msg = new Message(com);
-        
+
         this.sendMsg(rhost, 3333, msg);
-        
+
     }
 
     void findAllComunity(String rhost, int port) {
         Message msg = new Message();
-        System.out.print("Find Community: " +rhost);
+        System.out.print("Find Community: " + rhost);
         //msg.setipAddr(this.getMyIp());
         msg.setType("Find All");
         msg.setName(this.getNick());
         this.sendMsg(rhost, 3333, msg);
     }
- 
+
     void joinComunity(String cname, String addr, String nick) {
         ComunityRegistration cr = cMap.get(cname);
 
@@ -84,8 +84,6 @@ public class Peer {
         this.sendMsg(addr, 4444, msg);
         this.openClient();
     }
-  
-     
 
     void setLobby(Lobby lb) {
         this.lb = lb;
@@ -119,7 +117,6 @@ public class Peer {
     void setMyVlcPath(String vlcpath) {
         this.myVlcPath = vlcpath;
     }
-
 
     void openLobby() {
         final Lobby flb = lb;
@@ -174,7 +171,7 @@ public class Peer {
         this.openProperties();
     }
 
-    void RegPeer(PeerReg peerReg) {
+    void regPeer(PeerReg peerReg) {
         System.out.println("Peer: RegPeer: Registering " + peerReg.getNick() + " with comunity");
         com.RegPeer(peerReg);
     }
@@ -200,7 +197,7 @@ public class Peer {
         Set s = m.keySet(); // Needn't be in synchronized block
         String key;
         PeerReg opr;
-        
+
         synchronized (m) {  // Synchronizing on m, not s!
             Iterator i = s.iterator(); // Must be in synchronized block
             while (i.hasNext()) {
@@ -216,7 +213,6 @@ public class Peer {
         }
     }
 
-
     Lobby getLobby() {
         return lb;
     }
@@ -230,20 +226,20 @@ public class Peer {
     }
 
     //Add ip here   
-    void PeerToJoin(Message msg, String ipAdr) {
+    void peerToJoin(Message msg, String ipAdr) {
         com.addPeer(ipAdr, msg.getName());
         msg.setType("Register Client");
         if (this.isHost()) {
             System.out.println("This is host");
-            this.DeliverStream(ipAdr, "demo");
+            this.deliverStream(ipAdr, "demo");
 
             //send cMap to list to msg.getipAddr()
-            this.SendPMap(ipAdr);
+            this.sendPMap(ipAdr);
             System.out.println("Sending to community");
             this.sendMsgToComunity(msg);
 
             //When a new client joins the Comunity it neads to know where the stream is currently
-            this.DeliverPlaylist(ipAdr);
+            this.deliverPlaylist(ipAdr);
         } else {
 
         }
@@ -251,7 +247,41 @@ public class Peer {
         //If not comunity Host, send this to comunity Host
     }
 
-    void SendPMap(String ipAddr) {
+    void ping(String ipAddr, String why) {
+        System.out.println("Ping from: " + this.getMyIp() + " to " + ipAddr);
+        Message msgret = new Message();
+        msgret.setType("Ping");
+        msgret.setText(why);
+        this.sendMsg(ipAddr, 4444, msgret);
+    }
+
+    void Pong(Message msg, String ip) {
+        System.out.println("Pong from: " + this.getMyIp() + " to " + ip);
+        Message msgret = new Message();
+        switch (msg.getText()) {
+            case "Move Host":
+
+                msgret.setType("Pong");
+                msgret.setText("Move Host");
+                break;
+        }
+        this.sendMsg(ip, 4444, msgret);
+    }
+
+    void handlePong(Message msg, String ip) {
+        System.out.println("Handling pong from: " + ip);
+        Message msgret = new Message();
+        switch (msg.getText()) {
+            case "Move Host":
+                msgret.setName(this.com.getComunityName());
+                msgret.setType("Set Host");
+                this.sendMsg(ip, 4444, msgret);
+                break;
+        }
+
+    }
+
+    void sendPMap(String ipAddr) {
         Map m = com.getComunityPeers();
         System.out.println("SendPMap");
         Set s = m.keySet(); // Needn't be in synchronized block
@@ -260,7 +290,7 @@ public class Peer {
         synchronized (m) {  // Synchronizing on m, not s!
             Iterator i = s.iterator(); // Must be in synchronized block
             while (i.hasNext()) {
-                
+
                 key = (String) i.next();
                 opr = (PeerReg) m.get(key);
                 Message msg = new Message();
@@ -270,14 +300,14 @@ public class Peer {
                 msg.setName(opr.getNick());
                 System.out.println(opr.getNick() + "adding");
                 //Work is needed here
-                 if (!isHost()) {
-                   this.sendMsg(ipAddr, 4444, msg);
-                 }
+                if (!isHost()) {
+                    this.sendMsg(ipAddr, 4444, msg);
+                }
             }
         }
     }
 
-    void DeliverStream(String ipAddr, String path) {
+    void deliverStream(String ipAddr, String path) {
         //Delives a message that set where the stream is currently.
         Message msgret = new Message();
         //msgret.setipAddr(this.getMyIp());
@@ -286,12 +316,31 @@ public class Peer {
         this.sendMsg(ipAddr, 4444, msgret);
     }
 
-    void DeliverStreamToComunity(String path) {
+    void deliverStreamToComunity(String path) {
         //Delives a message that set where the stream is currently.
         Message msgret = new Message();
-       // msgret.setipAddr(this.getMyIp());
+        // msgret.setipAddr(this.getMyIp());
         msgret.setType("Set Stream");
-        msgret.setName(path);
+        msgret.setName("demo");
+        this.sendMsgToComunity(msgret);
+    }
+
+    void deliverPlaylistToComunity() {
+        //Deliver the playlist... how?
+        List li = null;
+        PublicPlaylist pli = cli.getPubicPlaylist();
+        pli.getLock().lock();
+        try {
+            //get media from li and put into a list.
+            li = pli.getMediaList();
+
+            pli.getCV().signalAll();
+        } finally {
+            pli.getLock().unlock();
+        }
+        Message msgret = new Message();
+        msgret.setType("Set Playlist");
+        msgret.setList(li);
         this.sendMsgToComunity(msgret);
     }
 
@@ -299,27 +348,26 @@ public class Peer {
         System.out.println(isHost);
         return this.isHost;
     }
-    void setHost(Boolean isHost){
+
+    void setHost(Boolean isHost) {
         this.isHost = isHost;
     }
-    
+
     String getHost() {
         return com.getHost();
     }
 
-   
-    
-    void DeliverPlaylist(String ipAddr) {
+    void deliverPlaylist(String ipAddr) {
         //Deliver the playlist... how?
         List li = null;
         PublicPlaylist pli = cli.getPubicPlaylist();
         pli.getLock().lock();
-        try{
+        try {
             //get media from li and put into a list.
             li = pli.getMediaList();
-            
+
             pli.getCV().signalAll();
-        }finally{
+        } finally {
             pli.getLock().unlock();
         }
         Message msgret = new Message();
