@@ -220,7 +220,7 @@ public class Peer {
     }
 
     void sendMsg(String host, int port, Message msg) {
-        executor.execute(new PeerClientThread(host, port, msg));
+        executor.execute(new PeerClientThread(host, port, msg, this));
     }
 
     void sendMsgToComunity(Message msg) {
@@ -453,6 +453,16 @@ public class Peer {
                 this.cli.startStream();
             }
 
+        }
+    }
+
+    void connectionEvent(String ipAddr, String ce) {
+        if(ce.equals("Connection refused: connect")){
+            if(this.isHost()){
+                //remove ipAddr from comunity and playlist. 
+            }else{
+                //Check with other peers if the host is lost
+            }
         }
     }
 

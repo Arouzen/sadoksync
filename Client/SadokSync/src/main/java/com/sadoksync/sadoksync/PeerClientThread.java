@@ -22,9 +22,11 @@ class PeerClientThread extends Thread {
     ObjectOutputStream out = null;
     Message msg;
     Boolean connected;
-
-    PeerClientThread(String host, int port, Message msg) {
+    Peer pr;
+    
+    PeerClientThread(String host, int port, Message msg, Peer pr) {
         this.msg = msg;
+        this.pr = pr;
         System.err.println("Initializing msg sender");
         
         try {
@@ -32,13 +34,18 @@ class PeerClientThread extends Thread {
             clientSocket = new Socket(host, port);
             connected = true;
         } catch (UnknownHostException e) {
-            System.err.println("Don't know about host: " + host + ".");
-            System.err.println(e.getMessage());
+            System.out.println("Don't know about host: " + host + ".");
+            System.out.println(e.getMessage());
             //System.exit(1);
             connected = false;
         } catch (IOException e) {
-            System.err.println("Couldn't get I/O for " + "the connection to: " + host + "");
-            System.err.println(e.getMessage());
+            System.out.println("Couldn't get I/O for " + "the connection to: " + host + "");
+            System.out.println(e.getMessage());
+            
+            if(e.getMessage().equals("Connection refused: connect")){
+                System.out.println("Yea!!!!!!!!!!!!!!!!!!");
+                pr.connectionEvent(msg.getipAddr(),"Connection refused: connect");
+            }
             //System.exit(1);
             connected = false;
         }
