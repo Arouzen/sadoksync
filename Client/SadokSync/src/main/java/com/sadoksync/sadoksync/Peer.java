@@ -460,6 +460,7 @@ public class Peer {
         if(ce.equals("Connection refused: connect")){
             if(this.isHost()){
                 //remove ipAddr from comunity and playlist. 
+                com.removePeerByIp(ipAddr);
             }else{
                 //Check with other peers if the host is lost
             }
