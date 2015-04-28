@@ -102,18 +102,29 @@ public class PublicPlaylist implements Serializable {
         lock.lock();
         try {
             if (pr.isHost()) {
-                for (Pair element : playlist) {
-                    if (element.key().equals(name)) {
-                        playlist.remove(element);
+
+                //Temporary list containing indexes to remove. 
+                ArrayList<Integer> save = new ArrayList<Integer>();
+                
+                //find indexes for all objects belonging to one person. 
+                for (int i = 0; i < playlist.size(); i++) {
+                    if (playlist.get(i).key().equals(name)) {
+                        save.add(i);
                     }
                 }
+
+                for (int i = save.size(); i > 0; i--) {
+                    int j = save.get(i - 1);
+                    playlist.remove(j);
+                }
+
                 pr.DeliverPlaylistToComunity();
-            }else {
+            } else {
                 Message msg = new Message();
-               msg.setType("removefromlist");
-               msg.setName(name);
+                msg.setType("removefromlist");
+                msg.setName(name);
             }
-            
+
         } finally {
             lock.unlock();
         }
