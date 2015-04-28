@@ -7,6 +7,7 @@ package com.sadoksync.sadoksync;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
@@ -25,7 +26,6 @@ public class Comunity {
 
     //String nick;
     //ClientRemoteInterface mycri;
-
     String topic;
     String cname;
     String RegistryAddr;
@@ -128,19 +128,20 @@ public class Comunity {
      };
      }
      */
-/*
-    void setNick(String nick) {
-        lock.lock();
-        try {
-            this.nick = nick;
+    /*
+     void setNick(String nick) {
+     lock.lock();
+     try {
+     this.nick = nick;
 
-            ocupied.signalAll();
-        } finally {
-            lock.unlock();
-        }
+     ocupied.signalAll();
+     } finally {
+     lock.unlock();
+     }
 
-    }
-*/
+     }
+     */
+
     String getComunityName() {
 
         String ret;
@@ -216,12 +217,34 @@ public class Comunity {
     void setRegistryAddr(String rhost) {
         this.RegistryAddr = rhost;
     }
-    
-    String getRegistryAddr(){
+
+    String getRegistryAddr() {
         return RegistryAddr;
     }
 
     void setComunityName(String name) {
         this.cname = name;
+    }
+
+    void removePeerByIp(String ip) {
+        Iterator it = pMap.entrySet().iterator();
+
+        lock.lock();
+        try {
+
+            while (it.hasNext()) {
+                Map.Entry pair = (Map.Entry) it.next();
+
+                PeerReg p = (PeerReg) pair.getValue();
+                if (p.getAddr().equals(ip)) {
+                    pMap.remove(pair.getKey());
+                }
+                it.remove();
+            }
+            
+            ocupied.signalAll();
+        } finally {
+            lock.unlock();
+        }
     }
 }
