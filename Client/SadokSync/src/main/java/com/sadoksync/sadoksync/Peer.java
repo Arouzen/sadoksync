@@ -223,6 +223,7 @@ public class Peer {
         executor.execute(new PeerClientThread(host, port, msg, this));
     }
 
+    //java.util.ConcurrentModificationException line 236?
     void sendMsgToComunity(Message msg) {
         //Sends a message to all other members of a comunity
         Map m = com.getComunityPeers();
@@ -461,8 +462,9 @@ public class Peer {
                 String nick = com.getNickByIp(ipAddr);
 
                 if (!nick.equals("")) {
-                    //remove ipAddr from comunity.
-                    com.removePeerByName(nick);
+                    //remove nick from comunity.
+                    //com.removePeerByName(nick);
+                    
                     //Remove ipAdd/nick from playlist
                     cli.getPublicPlaylist().removefromPlaylist(nick);
                 } else {
