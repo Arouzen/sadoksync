@@ -241,7 +241,43 @@ public class Comunity {
                 }
                 it.remove();
             }
-            
+
+            ocupied.signalAll();
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    String getNickByIp(String ipAddr) {
+        Iterator it = pMap.entrySet().iterator();
+        String ret = "";
+
+        lock.lock();
+        try {
+
+            while (it.hasNext()) {
+                Map.Entry pair = (Map.Entry) it.next();
+
+                PeerReg p = (PeerReg) pair.getValue();
+                if (p.getAddr().equals(ipAddr)) {
+                    ret = pMap.get(pair.getKey()).getNick();
+                }
+                it.remove();
+            }
+
+            ocupied.signalAll();
+        } finally {
+            lock.unlock();
+        }
+        return ret;
+    }
+
+    void removePeerByName(String nick) {
+        lock.lock();
+        try {
+
+            pMap.remove(nick);
+
             ocupied.signalAll();
         } finally {
             lock.unlock();

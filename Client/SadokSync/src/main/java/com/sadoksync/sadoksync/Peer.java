@@ -459,8 +459,19 @@ public class Peer {
     void connectionEvent(String ipAddr, String ce) {
         if(ce.equals("Connection refused: connect")){
             if(this.isHost()){
-                //remove ipAddr from comunity and playlist. 
-                com.removePeerByIp(ipAddr);
+                //remove ipAddr from comunity. 
+                String nick = com.getNickByIp(ipAddr);
+                
+                if(!nick.equals("")){
+                    com.removePeerByName(nick);
+                }else{
+                    System.out.println("Tried to remove someone who did not exist");
+                }
+                
+                //Remove ipAdd/nick from playlist
+                
+                //com.removePeerByIp(ipAddr);
+                
             }else{
                 //Check with other peers if the host is lost
             }
