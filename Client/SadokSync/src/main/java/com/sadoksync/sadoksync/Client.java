@@ -648,22 +648,39 @@ public class Client extends javax.swing.JFrame {
                         serverMediaPlayer.addMediaPlayerEventListener(new MediaPlayerEventAdapter() {
                             @Override
                             public void finished(MediaPlayer mediaPlayer) {
+                                System.out.println("Event: Finished");
                                 if (mediaPlayer.subItemCount() > 0) {
                                     System.out.println(mediaPlayer.subItems());
                                 }
+                                System.out.println("1");
+
                                 playlist.removeFirstInQueue();
+
+                                System.out.println("2");
+
                                 updateRightPanel(getPlaylist());
+
+                                System.out.println("3");
+
                                 rightPanelMode = "playlist";
 
-                                String ip = pr.com.getPeerIP(playlist.getFirstInListOwner());
+                                System.out.println("4");
 
-                                if (!playlist.isEmpty() && pr.getMyIp().equals(ip)) {
+                                System.out.println("5");
+
+                                if (!playlist.isEmpty()) {
+                                    String ip = pr.com.getPeerIP(playlist.getFirstInListOwner());
+                                    if (!pr.getMyIp().equals(ip)) {
+                                        mediaPlayer.release();
+                                    } else {
+
+                                    }
+
                                     streamNextMedia(mediaPlayer);
-                                } else if (!playlist.isEmpty() && !pr.getMyIp().equals(ip)) {
-                                    mediaPlayer.release();
-                                    streamNextMedia(mediaPlayer);
+
                                 } else {
                                     System.out.println("[Server] No more media in list");
+
                                     mediaPlayer.release();
                                     //serverMediaPlayerFactory.release();
                                 }
@@ -671,14 +688,23 @@ public class Client extends javax.swing.JFrame {
 
                             @Override
                             public void stopped(MediaPlayer mediaPlayer) {
+                                System.out.println("Event: Stopped");
                                 playlist.removeFirstInQueue();
                                 updateRightPanel(getPlaylist());
                                 rightPanelMode = "playlist";
+
                                 if (!playlist.isEmpty()) {
                                     streamNextMedia(mediaPlayer);
                                 } else {
                                     System.out.println("[Server] No more media in list");
-                                    //mediaPlayer.release();
+
+                                    try {
+                                        Thread.sleep(1000);
+                                    } catch (InterruptedException ex) {
+                                        Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+                                    }
+
+                                    mediaPlayer.release();
                                     //serverMediaPlayerFactory.release();
                                 }
                             }
