@@ -456,25 +456,42 @@ public class Peer {
     }
 
     void connectionEvent(String ipAddr, String ce) {
+        System.out.println("Peer.connectionEvent: Starting");
+        
         if (ce.equals("Connection refused: connect")) {
+            System.out.println("Peer.connectionEvent: Connection refused: connect");
+            
             if (this.isHost()) {
-
-                String nick = com.getNickByIp(ipAddr);
-
-                if (!nick.equals("")) {
-                    //remove nick from comunity.
-                    //com.removePeerByName(nick);
-                    
-                    //Remove ipAdd/nick from playlist
-                    cli.getPublicPlaylist().removefromPlaylist(nick);
-                } else {
-                    System.out.println("Tried to remove someone who did not exist");
-                }
+                System.out.println("Peer.connectionEvent: isHost()");
+                removePeer(ipAddr);
 
                 //com.removePeerByIp(ipAddr);
             } else {
+                System.out.println("Peer.connectionEvent: else");
                 //Check with other peers if the host is lost
             }
+        }
+
+    }
+
+    void removePeer(String ipAddr) {
+        System.out.println("Peer.removePeer: Starting removePeer");
+        String nick = com.getNickByIp(ipAddr);
+
+        System.out.println("Peer.removePeer: about to enter if");
+        if (!nick.equals("")) {
+            System.out.println("Peer.removePeer: nick not empty");
+
+            //remove nick from comunity.
+            System.out.println("Peer.removePeer: removing from comunity by nick");
+            com.removePeerByName(nick);
+
+            //Remove ipAdd/nick from playlist
+            System.out.println("Peer.removePeer: removing from playlist by nick");
+            cli.getPublicPlaylist().removefromPlaylist(nick);
+        } else {
+            System.out.println("Peer.removePeer: else");
+            System.out.println("Tried to remove someone who did not exist");
         }
     }
 
