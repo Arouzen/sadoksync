@@ -511,12 +511,13 @@ public class Client extends javax.swing.JFrame {
     }//GEN-LAST:event_buttonPlayActionPerformed
 
     private void ButtonStopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonStopActionPerformed
-        stopped = true;
         if (mediaPlayer.isPlaying()) {
             mediaPlayer.stop();
         }
         if (pr.isHost()) {
             mediaServer.stop();
+        } else {
+            stopped = true;
         }
     }//GEN-LAST:event_ButtonStopActionPerformed
 
