@@ -193,23 +193,24 @@ public class Client extends javax.swing.JFrame {
     public String getRtspUrl() {
         return "rtsp://" + this.server + ":" + this.port + "/" + this.rtspPath;
     }
-    
+
     public void setMode(String mode) {
         switch (mode) {
             case "chat":
                 this.rightPanelMode = mode;
+                int temp = jSplitPane1.getDividerLocation();
                 jSplitPane1.setRightComponent(scrollPaneChatt);
+                jSplitPane1.setDividerLocation(temp);
                 break;
             case "users":
                 this.rightPanelMode = mode;
                 updateRightPanel(getUsers());
-                break; 
+                break;
             case "playlist":
                 this.rightPanelMode = mode;
                 updateRightPanel(getPlaylist());
                 break;
         }
-        
     }
 
     /**
@@ -707,8 +708,10 @@ public class Client extends javax.swing.JFrame {
             model.addElement(element);
         }
 
+        int temp = jSplitPane1.getDividerLocation();
         scrollListPanel.setSize(jSplitPane1.getRightComponent().getSize());
         jSplitPane1.setRightComponent(scrollListPanel);
+        jSplitPane1.setDividerLocation(temp);
     }
 
     public void addToChat(String text) {
