@@ -566,30 +566,6 @@ public class Client extends javax.swing.JFrame {
         this.mediaType = text;
     }
 
-    private class TestAudioCallbackAdapter extends DefaultAudioCallbackAdapter {
-
-        /**
-         * Output stream.
-         */
-        private final BufferedOutputStream out;
-
-        /**
-         * Create an audio callback.
-         */
-        public TestAudioCallbackAdapter() {
-            super(4); // 4 is the block size for the audio samples
-            out = new BufferedOutputStream(System.out);
-        }
-
-        @Override
-        protected void onPlay(DirectAudioPlayer mediaPlayer, byte[] data, int sampleCount, long pts) {
-            try {
-                out.write(data);
-            } catch (IOException ex) {
-                Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
-    }
 
     public void updateRightPanel(ArrayList<String> elements) {
         DefaultListModel model = (DefaultListModel) listInScrollpane.getModel();
