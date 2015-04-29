@@ -583,6 +583,7 @@ public class Client extends javax.swing.JFrame {
         if (mediaPlayer.isPlaying()) {
             mediaPlayer.stop();
         }
+        pr.com.clearOldCommunity();
         pr.openLobby();
 
     }//GEN-LAST:event_jMenuItem4ActionPerformed

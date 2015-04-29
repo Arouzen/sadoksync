@@ -302,4 +302,10 @@ public class Comunity {
             lock.unlock();
         }
     }
+    
+    void clearOldCommunity() {
+        this.topic = "";
+        this.pMap = Collections.synchronizedMap(new HashMap<String, PeerReg>());
+        this.host = "";
+    }
 }
