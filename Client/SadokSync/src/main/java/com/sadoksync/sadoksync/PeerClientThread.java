@@ -23,14 +23,21 @@ class PeerClientThread extends Thread {
     Message msg;
     Boolean connected;
     Peer pr;
-    
+    String host;
+    int port;
+
     PeerClientThread(String host, int port, Message msg, Peer pr) {
         this.msg = msg;
         this.pr = pr;
+        this.host = host;
+        this.port = port;
         System.err.println("Initializing msg sender");
-        
-        try {
 
+    }
+
+    @Override
+    public void run() {
+        try {
             clientSocket = new Socket(host, port);
             connected = true;
         } catch (UnknownHostException e) {
@@ -41,29 +48,24 @@ class PeerClientThread extends Thread {
         } catch (IOException e) {
             System.out.println("Couldn't get I/O for " + "the connection to: " + host + "");
             System.out.println(e.getMessage());
-            
+
             //To often?
-            pr.connectionEvent(host,"connect");
-            
+            pr.connectionEvent(host, "connect");
+
             /*
-            if(e.getMessage().equals("Connection refused: connect")){
-                System.out.println("Yea!!!!!!!!!!!!!!!!!!");
-                pr.connectionEvent(msg.getipAddr(),"connect");
-            }else if(e.getMessage().equals("Connection timed out: connect")){
-                System.out.println("Yea!!!!!!!!!!!!!!!!!!");
-                pr.connectionEvent(msg.getipAddr(),"connect");
-            }
-            */
-            
+             if(e.getMessage().equals("Connection refused: connect")){
+             System.out.println("Yea!!!!!!!!!!!!!!!!!!");
+             pr.connectionEvent(msg.getipAddr(),"connect");
+             }else if(e.getMessage().equals("Connection timed out: connect")){
+             System.out.println("Yea!!!!!!!!!!!!!!!!!!");
+             pr.connectionEvent(msg.getipAddr(),"connect");
+             }
+             */
             //System.exit(1);
             connected = false;
         }
-    }
-
-    @Override
-    public void run() {
         System.err.println("msg sender: Sender");
-        
+
         if (connected) {
             try {
                 //in = new BufferedInputStream(clientSocket.getInputStream());

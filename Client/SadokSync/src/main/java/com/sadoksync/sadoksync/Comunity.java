@@ -225,13 +225,14 @@ public class Comunity {
         lock.lock();
         try {
             while (it.hasNext()) {
+                System.out.println("SIZE: " + pMap.size());
                 Map.Entry pair = (Map.Entry) it.next();
 
                 PeerReg p = (PeerReg) pair.getValue();
                 if (p.getAddr().equals(ipAddr)) {
                     ret = pMap.get(pair.getKey()).getNick();
                 }
-                it.remove();
+                //it.remove();
             }
             ocupied.signalAll();
         } finally {
