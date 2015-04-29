@@ -751,6 +751,7 @@ public class Client extends javax.swing.JFrame {
                                     String ip = pr.com.getPeerIP(playlist.getFirstInListOwner());
                                     if (!pr.getMyIp().equals(ip)) {
                                         mediaPlayer.release();
+                                        serverMediaPlayerFactory.release();
                                     } else {
 
                                     }
@@ -761,7 +762,7 @@ public class Client extends javax.swing.JFrame {
                                     System.out.println("[Server] No more media in list");
 
                                     mediaPlayer.release();
-                                    //serverMediaPlayerFactory.release();
+                                    serverMediaPlayerFactory.release();
                                 }
                             }
 
@@ -784,6 +785,7 @@ public class Client extends javax.swing.JFrame {
                                     }
 
                                     mediaPlayer.release();
+                                    serverMediaPlayerFactory.release();
                                     //serverMediaPlayerFactory.release();
                                 }
                             }
