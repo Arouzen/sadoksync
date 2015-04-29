@@ -130,7 +130,7 @@ public class ConnectionHandler extends Thread {
                     case "removefromlist":
                         pr.getClient().getPublicPlaylist().removefromPlaylist(msg.getName());
                         
-                    case "removePeer":
+                    case "removePeerbyNick":
                         pr.removePeerbyNick(msg.name);
                         
                 }
