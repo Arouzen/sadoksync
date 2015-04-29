@@ -463,6 +463,7 @@ public class Peer {
             
             if (this.isHost()) {
                 System.out.println("Peer.connectionEvent: isHost()");
+                System.out.println("PEER TO BE REMOVED: " + ipAddr);
                 removePeerbyIp(ipAddr);
 
                 //com.removePeerByIp(ipAddr);
