@@ -580,7 +580,6 @@ public class Client extends javax.swing.JFrame {
         msg.setType("removePeerbyNick");
         msg.setName(pr.getNick());
         pr.sendMsg(pr.getHost(), 4444, msg);
-        stopped = true;
         if (mediaPlayer.isPlaying()) {
             mediaPlayer.stop();
         }
