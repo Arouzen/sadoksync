@@ -48,13 +48,12 @@ public class ConnectionHandler extends Thread {
                         pr.getClient().updateRightPanel(pr.getClient().getPlaylist());
                         pr.getClient().rightPanelMode = "playlist";
                         break;
-                        
+
                     case "Playlist":
                         System.out.println("Message: Playlist");
                         if (msg.getText().equals("add") && pr.isHost()) {
                             System.out.println("Message: Playlist: Adding: ");
                             pr.getClient().addtoPlaylist(msg.getPair());
-
 
                             //pr.DeliverPlaylistToComunity();
                         } else if (msg.getText().equals("add") && !pr.isHost()) {
@@ -88,12 +87,12 @@ public class ConnectionHandler extends Thread {
                         break;
                     case "Join Comunity":
                         System.out.println("Join Comunity");
-                        if(pr.isHost()){
-                            pr.PeerToJoin(msg);  
-                        }else{
+                        if (pr.isHost()) {
+                            pr.PeerToJoin(msg);
+                        } else {
                             pr.sendToHost(msg);
                         }
-                        
+
                         //If comunity Host register the peer
                         //If not comunity Host, send this to comunity Host
                         break;
@@ -126,13 +125,15 @@ public class ConnectionHandler extends Thread {
                     case "chat message":
                         pr.getClient().addToChatOutput(msg.getText());
                         break;
-                        
+
                     case "removefromlist":
                         pr.getClient().getPublicPlaylist().removefromPlaylist(msg.getName());
-                        
+                        pr.getClient().updateRightPanel(pr.getClient().getPlaylist());
+                        pr.getClient().rightPanelMode = "playlist";
+
                     case "removePeerbyNick":
                         pr.removePeerbyNick(msg.name);
-                        
+
                 }
             }
 
