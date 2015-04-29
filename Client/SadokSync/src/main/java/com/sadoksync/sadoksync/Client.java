@@ -198,7 +198,9 @@ public class Client extends javax.swing.JFrame {
         switch (mode) {
             case "chat":
                 this.rightPanelMode = mode;
+                int temp = jSplitPane1.getDividerLocation();
                 jSplitPane1.setRightComponent(scrollPaneChatt);
+                jSplitPane1.setDividerLocation(temp);
                 break;
             case "users":
                 this.rightPanelMode = mode;
@@ -713,8 +715,10 @@ public class Client extends javax.swing.JFrame {
             model.addElement(element);
         }
 
+        int temp = jSplitPane1.getDividerLocation();
         scrollListPanel.setSize(jSplitPane1.getRightComponent().getSize());
         jSplitPane1.setRightComponent(scrollListPanel);
+        jSplitPane1.setDividerLocation(temp);
     }
 
     public void addToChat(String text) {
