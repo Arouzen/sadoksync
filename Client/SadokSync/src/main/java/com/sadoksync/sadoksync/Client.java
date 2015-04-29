@@ -198,9 +198,7 @@ public class Client extends javax.swing.JFrame {
         switch (mode) {
             case "chat":
                 this.rightPanelMode = mode;
-                int temp = jSplitPane1.getDividerLocation();
                 jSplitPane1.setRightComponent(scrollPaneChatt);
-                jSplitPane1.setDividerLocation(temp);
                 break;
             case "users":
                 this.rightPanelMode = mode;
@@ -211,6 +209,7 @@ public class Client extends javax.swing.JFrame {
                 updateRightPanel(getPlaylist());
                 break;
         }
+
     }
 
     /**
@@ -588,11 +587,17 @@ public class Client extends javax.swing.JFrame {
 
     private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
         // Remove client and its music from playlist.
+
         playlist.removefromPlaylist(pr.getNick());
-        Message msg = new Message();
-        msg.setType("removePeerbyNick");
-        msg.setName(pr.getNick());
-        pr.sendMsg(pr.getHost(), 4444, msg);
+        //byt host
+        if (pr.isHost()) {
+         startStream();
+        }
+            Message msg = new Message();
+            msg.setType("removePeerbyNick");
+            msg.setName(pr.getNick());
+            pr.sendMsg(pr.getHost(), 4444, msg);
+        
         if (mediaPlayer.isPlaying()) {
             mediaPlayer.stop();
         }
@@ -708,10 +713,8 @@ public class Client extends javax.swing.JFrame {
             model.addElement(element);
         }
 
-        int temp = jSplitPane1.getDividerLocation();
         scrollListPanel.setSize(jSplitPane1.getRightComponent().getSize());
         jSplitPane1.setRightComponent(scrollListPanel);
-        jSplitPane1.setDividerLocation(temp);
     }
 
     public void addToChat(String text) {
