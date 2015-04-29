@@ -710,7 +710,7 @@ public class Client extends javax.swing.JFrame {
                         serverMediaPlayer = serverMediaPlayerFactory.newHeadlessMediaPlayer();
 
                         serverMediaPlayer.addMediaPlayerEventListener(new MediaPlayerEventAdapter() {
-                            public void mediaStoppedFinished(MediaPlayer serverMediaPlayer) {
+                            public void mediaStoppedFinished(MediaPlayer serverMediaPlayer, boolean release) {
                                 playlist.removeFirstInQueue();
                                 updateRightPanel(getPlaylist());
                                 rightPanelMode = "playlist";
@@ -718,12 +718,16 @@ public class Client extends javax.swing.JFrame {
                                 if (!playlist.isEmpty()) {
                                     String ip = pr.com.getPeerIP(playlist.getFirstInListOwner());
                                     if (!pr.getMyIp().equals(ip)) {
-                                        serverMediaPlayer.release();
+                                        if (release) {
+                                            serverMediaPlayer.release();
+                                        }
                                     }
                                     streamNextMedia(serverMediaPlayer);
                                 } else {
                                     System.out.println("[Server] No more media in list");
-                                    serverMediaPlayer.release();
+                                    if (release) {
+                                        serverMediaPlayer.release();
+                                    }
                                     //serverMediaPlayerFactory.release();
                                 }
                             }
@@ -741,7 +745,7 @@ public class Client extends javax.swing.JFrame {
                                     if (subItems != null && !subItems.isEmpty()) {
                                         // Pick the first sub-item, and play it...
                                         String subItemMrl = subItems.get(0);
-                                        
+
                                         serverMediaPlayer.playMedia(subItemMrl,
                                                 options,
                                                 ":no-sout-rtp-sap",
@@ -759,11 +763,11 @@ public class Client extends javax.swing.JFrame {
                                         //    streaming MRL
                                     } else {
                                         System.out.println("first done");
-                                        mediaStoppedFinished(serverMediaPlayer);
+                                        mediaStoppedFinished(serverMediaPlayer, true);
                                     }
                                 } else {
                                     System.out.println("not utube");
-                                    mediaStoppedFinished(serverMediaPlayer);
+                                    mediaStoppedFinished(serverMediaPlayer, true);
                                 }
                             }
 
@@ -777,7 +781,7 @@ public class Client extends javax.swing.JFrame {
                             @Override
                             public void stopped(MediaPlayer serverMediaPlayer) {
                                 System.out.println("Event: Stopped");
-                                mediaStoppedFinished(serverMediaPlayer);
+                                mediaStoppedFinished(serverMediaPlayer, false);
                             }
 
                             @Override
