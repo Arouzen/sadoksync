@@ -90,6 +90,7 @@ public class Client extends javax.swing.JFrame {
 
     // File filter
     public FileFilter filefilter;
+    private boolean stopped;
 
     /**
      * Creates new form Client
@@ -157,6 +158,8 @@ public class Client extends javax.swing.JFrame {
         filefilter = new FileFilter();
 
         jSplitPane1.setLeftComponent(new EmptyCanvas());
+
+        stopped = false;
         /*
          this.isHost = pr.isHost();
          if (!isHost) {
@@ -503,10 +506,12 @@ public class Client extends javax.swing.JFrame {
     }//GEN-LAST:event_OpenActionPerformed
 
     private void buttonPlayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonPlayActionPerformed
+        stopped = false;
         connectToRtsp();
     }//GEN-LAST:event_buttonPlayActionPerformed
 
     private void ButtonStopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonStopActionPerformed
+        stopped = true;
         if (mediaPlayer.isPlaying()) {
             mediaPlayer.stop();
         }
@@ -570,15 +575,15 @@ public class Client extends javax.swing.JFrame {
     private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
         // Remove client and its music from playlist.
         playlist.removefromPlaylist(pr.getNick());
-       Message msg = new Message();
-       msg.setType("removePeerbyNick");
-       msg.setName(pr.getNick());
-       pr.sendMsg(pr.getHost(), 4444, msg);
-       if (mediaPlayer.isPlaying()) {
+        Message msg = new Message();
+        msg.setType("removePeerbyNick");
+        msg.setName(pr.getNick());
+        pr.sendMsg(pr.getHost(), 4444, msg);
+        if (mediaPlayer.isPlaying()) {
             mediaPlayer.stop();
         }
-       pr.openLobby();
-        
+        pr.openLobby();
+
     }//GEN-LAST:event_jMenuItem4ActionPerformed
     private void jSlider1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlider1StateChanged
         Object source = evt.getSource();
@@ -603,7 +608,9 @@ public class Client extends javax.swing.JFrame {
     }//GEN-LAST:event_buttonSendChatActionPerformed
 
     public void connectToRtsp() {
-        playMedia(getRtspUrl());
+        if (!stopped) {
+            playMedia(getRtspUrl());
+        }
     }
 
     public void playMedia(String url) {
