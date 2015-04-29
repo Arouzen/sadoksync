@@ -240,8 +240,10 @@ public class Comunity {
     }
 
     void removePeerByName(String nick) {
+        System.out.println("KOMMER VI ENS HIT 2");
         lock.lock();
         try {
+            System.out.println("KOMMER VI ENS HIT 3");
             Iterator it = pMap.entrySet().iterator();
             while (it.hasNext()) {
                 Map.Entry pair = (Map.Entry) it.next();

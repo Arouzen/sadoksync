@@ -43,7 +43,7 @@ class PeerClientThread extends Thread {
             System.out.println(e.getMessage());
             
             //To often?
-            pr.connectionEvent(msg.getipAddr(),"connect");
+            pr.connectionEvent(host,"connect");
             
             /*
             if(e.getMessage().equals("Connection refused: connect")){
