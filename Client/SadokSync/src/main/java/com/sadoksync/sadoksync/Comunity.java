@@ -178,6 +178,7 @@ public class Comunity {
         lock.lock();
         try {
             pMap.put(name, new PeerReg(name, ipAddr));
+            System.out.println("pMap size after add: " + pMap.size());
             ocupied.signalAll();
         } finally {
             lock.unlock();
@@ -244,6 +245,7 @@ public class Comunity {
         lock.lock();
         try {
             System.out.println("KOMMER VI ENS HIT 3");
+            System.out.println(pMap.size());
             Iterator it = pMap.entrySet().iterator();
             while (it.hasNext()) {
                 Map.Entry pair = (Map.Entry) it.next();
