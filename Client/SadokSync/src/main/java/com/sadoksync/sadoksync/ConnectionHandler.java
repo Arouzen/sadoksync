@@ -53,7 +53,6 @@ public class ConnectionHandler extends Thread {
                         }
                         break;
 
-
                     case "Set Stream":
                         System.out.println("Set Stream");
                         pr.getClient().setHost(clientSocket.getInetAddress().toString().substring(1));
@@ -61,22 +60,27 @@ public class ConnectionHandler extends Thread {
                         pr.getClient().setRtspPath(msg.getName());
                         pr.getClient().connectToRtsp();
                         break;
-                    case "Register Client":
-                        System.out.println("Register Client " + clientSocket.getInetAddress().toString().substring(1) + " end.");
-                        System.out.println(msg.getName());
+                    case "Register":
+                        System.out.println("Register Client from: " + clientSocket.getInetAddress().toString().substring(1) + " end.");
+                        pr.regPeer(new PeerReg(msg.getName(), msg.getText()));
+
                         //pr.PeerToJoin(msg, clientSocket.getInetAddress().toString().substring(1));
-
                         break;
-
+                    case "Join Confirmed":
+                        System.out.println("Join confirmed from:   " + clientSocket.getInetAddress().toString().substring(1) + " end.");
+                        pr.setMyIP(msg.getText());
+                        break;
+                       
                     case "Join Comunity":
                         System.out.println("Join Comunity " + clientSocket.getInetAddress().toString().substring(1) + " end.");
                         pr.peerToJoin(msg, clientSocket.getInetAddress().toString().substring(1));
+                        pr.confirmJoin(clientSocket.getInetAddress().toString().substring(1));
                         //If comunity Host register the peer
                         //If not comunity Host, send this to comunity Host
                         break;
                     case "Comunity List":
                         System.out.println("Comunity List");
-                        
+
                         List<ComunityRegistration> li = (List<ComunityRegistration>) msg.getList();
 
                         DefaultListModel lm = new DefaultListModel();

@@ -92,7 +92,7 @@ public class Comunity {
         return pMap;
     }
 
-    void addPeer(String ipAddr, String nick) {
+    void addPeer(String nick, String ipAddr) {
         System.out.println("Comunity: Adding " + nick + " @" + ipAddr);
         pMap.put(ipAddr, new PeerReg(nick, ipAddr));
     }

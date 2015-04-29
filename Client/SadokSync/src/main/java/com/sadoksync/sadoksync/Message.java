@@ -29,7 +29,6 @@ public class Message implements Serializable {
     Message(Comunity com) {
         this.name = com.getComunityName();
         this.type = "Comunity Registration";
-        //this.ipAddr = com.getHost();
         this.text = com.getTopic();
     }
 
