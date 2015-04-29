@@ -238,6 +238,9 @@ public class Client extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(82, 68, 68));
 
+        panelChatt.setBackground(new java.awt.Color(102, 102, 102));
+
+        textChatInput.setBackground(new java.awt.Color(102, 102, 102));
         textChatInput.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 textChatInputKeyPressed(evt);
@@ -262,6 +265,7 @@ public class Client extends javax.swing.JFrame {
         buttonPlay.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Reconnect_button_default.png"))); // NOI18N
         buttonPlay.setBorderPainted(false);
         buttonPlay.setContentAreaFilled(false);
+        buttonPlay.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         buttonPlay.setMaximumSize(new java.awt.Dimension(85, 40));
         buttonPlay.setMinimumSize(new java.awt.Dimension(85, 40));
         buttonPlay.setPreferredSize(new java.awt.Dimension(85, 40));
@@ -274,6 +278,7 @@ public class Client extends javax.swing.JFrame {
         jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/fullscreen_Button_default.png"))); // NOI18N
         jButton3.setBorderPainted(false);
         jButton3.setContentAreaFilled(false);
+        jButton3.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButton3.setMaximumSize(new java.awt.Dimension(85, 40));
         jButton3.setMinimumSize(new java.awt.Dimension(85, 40));
         jButton3.addActionListener(new java.awt.event.ActionListener() {
@@ -285,6 +290,7 @@ public class Client extends javax.swing.JFrame {
         ButtonStop.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Stop_Button_default.png"))); // NOI18N
         ButtonStop.setBorderPainted(false);
         ButtonStop.setContentAreaFilled(false);
+        ButtonStop.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         ButtonStop.setMaximumSize(new java.awt.Dimension(85, 40));
         ButtonStop.setMinimumSize(new java.awt.Dimension(85, 40));
         ButtonStop.setPreferredSize(new java.awt.Dimension(85, 40));
@@ -297,6 +303,7 @@ public class Client extends javax.swing.JFrame {
         buttonShowUsers.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Users_Button_default.png"))); // NOI18N
         buttonShowUsers.setBorderPainted(false);
         buttonShowUsers.setContentAreaFilled(false);
+        buttonShowUsers.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         buttonShowUsers.setMaximumSize(new java.awt.Dimension(85, 40));
         buttonShowUsers.setMinimumSize(new java.awt.Dimension(85, 40));
         buttonShowUsers.addActionListener(new java.awt.event.ActionListener() {
@@ -308,6 +315,7 @@ public class Client extends javax.swing.JFrame {
         buttonShowChat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Chat_button_default.png"))); // NOI18N
         buttonShowChat.setBorderPainted(false);
         buttonShowChat.setContentAreaFilled(false);
+        buttonShowChat.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         buttonShowChat.setMaximumSize(new java.awt.Dimension(85, 40));
         buttonShowChat.setMinimumSize(new java.awt.Dimension(85, 40));
         buttonShowChat.addActionListener(new java.awt.event.ActionListener() {
@@ -318,6 +326,8 @@ public class Client extends javax.swing.JFrame {
 
         canvas.setMinimumSize(new java.awt.Dimension(590, 484));
         jSplitPane1.setLeftComponent(canvas);
+
+        scrollPaneChatt.setBackground(new java.awt.Color(102, 102, 102));
 
         textChatOutput.setEditable(false);
         textChatOutput.setBackground(new java.awt.Color(102, 102, 102));
@@ -332,6 +342,7 @@ public class Client extends javax.swing.JFrame {
         buttonShowPlaylist.setIcon(new javax.swing.ImageIcon(getClass().getResource("/playlist_Button_default.png"))); // NOI18N
         buttonShowPlaylist.setBorderPainted(false);
         buttonShowPlaylist.setContentAreaFilled(false);
+        buttonShowPlaylist.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         buttonShowPlaylist.setMaximumSize(new java.awt.Dimension(85, 40));
         buttonShowPlaylist.setMinimumSize(new java.awt.Dimension(85, 40));
         buttonShowPlaylist.addActionListener(new java.awt.event.ActionListener() {
@@ -363,6 +374,8 @@ public class Client extends javax.swing.JFrame {
                 buttonSendChatActionPerformed(evt);
             }
         });
+
+        jMenuBar1.setBackground(new java.awt.Color(102, 102, 102));
 
         jMenu1.setText("File");
 
