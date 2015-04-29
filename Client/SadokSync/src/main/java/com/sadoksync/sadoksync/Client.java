@@ -238,6 +238,9 @@ public class Client extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(82, 68, 68));
 
+        panelChatt.setBackground(new java.awt.Color(102, 102, 102));
+
+        textChatInput.setBackground(new java.awt.Color(102, 102, 102));
         textChatInput.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 textChatInputKeyPressed(evt);
@@ -262,6 +265,7 @@ public class Client extends javax.swing.JFrame {
         buttonPlay.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Reconnect_button_default.png"))); // NOI18N
         buttonPlay.setBorderPainted(false);
         buttonPlay.setContentAreaFilled(false);
+        buttonPlay.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         buttonPlay.setMaximumSize(new java.awt.Dimension(85, 40));
         buttonPlay.setMinimumSize(new java.awt.Dimension(85, 40));
         buttonPlay.setPreferredSize(new java.awt.Dimension(85, 40));
@@ -274,6 +278,7 @@ public class Client extends javax.swing.JFrame {
         jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/fullscreen_Button_default.png"))); // NOI18N
         jButton3.setBorderPainted(false);
         jButton3.setContentAreaFilled(false);
+        jButton3.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButton3.setMaximumSize(new java.awt.Dimension(85, 40));
         jButton3.setMinimumSize(new java.awt.Dimension(85, 40));
         jButton3.addActionListener(new java.awt.event.ActionListener() {
@@ -285,6 +290,7 @@ public class Client extends javax.swing.JFrame {
         ButtonStop.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Stop_Button_default.png"))); // NOI18N
         ButtonStop.setBorderPainted(false);
         ButtonStop.setContentAreaFilled(false);
+        ButtonStop.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         ButtonStop.setMaximumSize(new java.awt.Dimension(85, 40));
         ButtonStop.setMinimumSize(new java.awt.Dimension(85, 40));
         ButtonStop.setPreferredSize(new java.awt.Dimension(85, 40));
@@ -297,6 +303,7 @@ public class Client extends javax.swing.JFrame {
         buttonShowUsers.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Users_Button_default.png"))); // NOI18N
         buttonShowUsers.setBorderPainted(false);
         buttonShowUsers.setContentAreaFilled(false);
+        buttonShowUsers.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         buttonShowUsers.setMaximumSize(new java.awt.Dimension(85, 40));
         buttonShowUsers.setMinimumSize(new java.awt.Dimension(85, 40));
         buttonShowUsers.addActionListener(new java.awt.event.ActionListener() {
@@ -308,6 +315,7 @@ public class Client extends javax.swing.JFrame {
         buttonShowChat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Chat_button_default.png"))); // NOI18N
         buttonShowChat.setBorderPainted(false);
         buttonShowChat.setContentAreaFilled(false);
+        buttonShowChat.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         buttonShowChat.setMaximumSize(new java.awt.Dimension(85, 40));
         buttonShowChat.setMinimumSize(new java.awt.Dimension(85, 40));
         buttonShowChat.addActionListener(new java.awt.event.ActionListener() {
@@ -318,6 +326,8 @@ public class Client extends javax.swing.JFrame {
 
         canvas.setMinimumSize(new java.awt.Dimension(590, 484));
         jSplitPane1.setLeftComponent(canvas);
+
+        scrollPaneChatt.setBackground(new java.awt.Color(102, 102, 102));
 
         textChatOutput.setEditable(false);
         textChatOutput.setBackground(new java.awt.Color(102, 102, 102));
@@ -332,6 +342,7 @@ public class Client extends javax.swing.JFrame {
         buttonShowPlaylist.setIcon(new javax.swing.ImageIcon(getClass().getResource("/playlist_Button_default.png"))); // NOI18N
         buttonShowPlaylist.setBorderPainted(false);
         buttonShowPlaylist.setContentAreaFilled(false);
+        buttonShowPlaylist.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         buttonShowPlaylist.setMaximumSize(new java.awt.Dimension(85, 40));
         buttonShowPlaylist.setMinimumSize(new java.awt.Dimension(85, 40));
         buttonShowPlaylist.addActionListener(new java.awt.event.ActionListener() {
@@ -363,6 +374,8 @@ public class Client extends javax.swing.JFrame {
                 buttonSendChatActionPerformed(evt);
             }
         });
+
+        jMenuBar1.setBackground(new java.awt.Color(102, 102, 102));
 
         jMenu1.setText("File");
 
@@ -569,8 +582,13 @@ public class Client extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItem3ActionPerformed
 
     private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
-        // TODO add your handling code here:
+        // Remove client and its music from playlist.
         playlist.removefromPlaylist(pr.getNick());
+        Message msg = new Message();
+        msg.setType("removePeerbyNick");
+        msg.setName(pr.getNick());
+        pr.sendMsg(pr.getHost(), 4444, msg);
+        pr.openLobby();
 
     }//GEN-LAST:event_jMenuItem4ActionPerformed
     private void jSlider1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlider1StateChanged
@@ -628,6 +646,7 @@ public class Client extends javax.swing.JFrame {
             if (visualizeMode) {
                 visualizeMode = false;
                 // Recreate the mediaplayerfactory without visualizer options
+                //"--realrtsp-caching=1200", manual cache size. 
                 mediaPlayerFactory = new MediaPlayerFactory();
                 mediaPlayer = mediaPlayerFactory.newEmbeddedMediaPlayer(new Win32FullScreenStrategy(fullscreenplayer.frame));
 
@@ -712,8 +731,18 @@ public class Client extends javax.swing.JFrame {
                         serverMediaPlayer.addMediaPlayerEventListener(new MediaPlayerEventAdapter() {
                             public void mediaStoppedFinished(MediaPlayer serverMediaPlayer, boolean release) {
                                 playlist.removeFirstInQueue();
+
+                                System.out.println("2");
+
                                 updateRightPanel(getPlaylist());
+
+                                System.out.println("3");
+
                                 rightPanelMode = "playlist";
+
+                                System.out.println("4");
+
+                                System.out.println("5");
 
                                 if (!playlist.isEmpty()) {
                                     String ip = pr.com.getPeerIP(playlist.getFirstInListOwner());
@@ -722,7 +751,9 @@ public class Client extends javax.swing.JFrame {
                                             serverMediaPlayer.release();
                                         }
                                     }
-                                    streamNextMedia(serverMediaPlayer);
+
+                                    streamNextMedia(mediaPlayer);
+
                                 } else {
                                     System.out.println("[Server] No more media in list");
                                     if (release) {
@@ -772,13 +803,6 @@ public class Client extends javax.swing.JFrame {
                             }
 
                             @Override
-                            public void error(MediaPlayer serverMediaPlayer) {
-                                // For some reason, even if things work, you get an error... you have to ignore
-                                // this error - but that of course makes handling real errors tricky
-                                System.out.println("Error!!!");
-                            }
-
-                            @Override
                             public void stopped(MediaPlayer serverMediaPlayer) {
                                 System.out.println("Event: Stopped");
                                 mediaStoppedFinished(serverMediaPlayer, false);
@@ -786,14 +810,22 @@ public class Client extends javax.swing.JFrame {
 
                             @Override
                             public void mediaSubItemAdded(MediaPlayer serverMediaPlayer, libvlc_media_t subItem) {
-                                // Show the sub-item being added for purposes of the test...
-                                System.out.println("mediaSubItemAdded: " + serverMediaPlayer.mrl(subItem));
-                                serverMediaPlayer.playMedia(serverMediaPlayer.mrl(subItem),
+                                List<String> items = serverMediaPlayer.subItems();
+                                for (String item : items) {
+                                    System.out.println(item);
+                                }
+                                serverMediaPlayer.playMedia(items.get(0),
                                         options,
                                         ":no-sout-rtp-sap",
                                         ":no-sout-standard-sap",
                                         ":sout-all",
-                                        ":sout-keep");
+                                        ":sout-keep"
+                                );
+                            }
+
+                            @Override
+                            public void buffering(MediaPlayer mediaPlayer, float newCache) {
+                                System.out.println("Buffering " + newCache);
                             }
 
                             private void streamNextMedia(MediaPlayer serverMediaPlayer) {
@@ -806,9 +838,6 @@ public class Client extends javax.swing.JFrame {
                                 String ip = pr.com.getPeerIP(playlist.getFirstInListOwner());
 
                                 if (pr.getMyIp().equals(ip) /*|| !media.getType().equals("local file")*/) {
-                                    System.out.println("test");
-                                    System.out.println(media.getPath());
-                                    //serverMediaPlayer.setPlaySubItems(true);
                                     serverMediaPlayer.playMedia(media.getPath(),
                                             options,
                                             ":no-sout-rtp-sap",
@@ -822,7 +851,7 @@ public class Client extends javax.swing.JFrame {
                                         Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
                                     }
 
-                                    setHost("localhost");
+                                    setHost(pr.getMyIp());
                                     setPort("5555");
                                     setRtspPath("demo");
 
@@ -845,19 +874,24 @@ public class Client extends javax.swing.JFrame {
                                         setMediaType(media.getType());
                                     }
 
-                                    System.out.println("test2");
-                                    playMedia(getRtspUrl());
+                                    try {
+                                        Thread.sleep(2000);
+                                    } catch (InterruptedException ex) {
+                                        Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+                                    }
+
+                                    connectToRtsp();
                                     pr.DeliverStreamToComunity(pr.getMyIp(), "demo", mediaType);
                                     pr.DeliverPlaylistToComunity();
                                 } else {
-                                    //serverMediaPlayer.release();
+                                    //mediaPlayer.release();
                                     //serverMediaPlayerFactory.release();
                                     pr.Ping(ip, "Move Host");
                                 }
                             }
                         });
 
-                        //serverMediaPlayer.setPlaySubItems(true);
+                        serverMediaPlayer.setPlaySubItems(true);
                         serverMediaPlayer.playMedia(media.getPath(),
                                 options,
                                 ":no-sout-rtp-sap",
@@ -896,6 +930,7 @@ public class Client extends javax.swing.JFrame {
                         }
 
                         playMedia(getRtspUrl());
+
                         pr.DeliverStreamToComunity(pr.getMyIp(), "demo", mediaType);
                         pr.DeliverPlaylistToComunity();
 
@@ -1161,9 +1196,9 @@ public class Client extends javax.swing.JFrame {
             frame.getRootPane().getActionMap().put("ESCAPE", escapeAction);
         }
 
-        private void fullscreen(MediaPlayerFactory fullscreenMediaPlayerFactory, EmbeddedMediaPlayer fullscreenMediaPlayer) {
+        private void fullscreen(MediaPlayerFactory fullscreenMediaPlayerFactory, EmbeddedMediaPlayer mediaPlayer) {
             this.videoSurface = fullscreenMediaPlayerFactory.newVideoSurface(this.canvas);
-            this.fullscreenMediaPlayer = fullscreenMediaPlayer;
+            this.fullscreenMediaPlayer = mediaPlayer;
             frame.setVisible(true);
             canvas.setVisible(true);
 

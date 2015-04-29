@@ -42,10 +42,19 @@ class PeerClientThread extends Thread {
             System.out.println("Couldn't get I/O for " + "the connection to: " + host + "");
             System.out.println(e.getMessage());
             
+            //To often?
+            pr.connectionEvent(msg.getipAddr(),"connect");
+            
+            /*
             if(e.getMessage().equals("Connection refused: connect")){
                 System.out.println("Yea!!!!!!!!!!!!!!!!!!");
-                pr.connectionEvent(msg.getipAddr(),"Connection refused: connect");
+                pr.connectionEvent(msg.getipAddr(),"connect");
+            }else if(e.getMessage().equals("Connection timed out: connect")){
+                System.out.println("Yea!!!!!!!!!!!!!!!!!!");
+                pr.connectionEvent(msg.getipAddr(),"connect");
             }
+            */
+            
             //System.exit(1);
             connected = false;
         }
