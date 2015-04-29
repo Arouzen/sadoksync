@@ -127,7 +127,6 @@ public class PublicPlaylist implements Serializable {
                 msg.setName(name);
                 pr.sendMsg(pr.getHost(), 4444, msg);
             }
-
         } finally {
             lock.unlock();
             pr.getClient().setMode("playlist");

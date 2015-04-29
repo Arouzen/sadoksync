@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.sadoksync.sadoksync;
 
 import java.util.Collections;
@@ -12,8 +7,6 @@ import java.util.Map;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -37,10 +30,8 @@ public class Comunity {
     public Comunity() {
         lock = new ReentrantLock();
         ocupied = lock.newCondition();
-
         System.out.println("Initializing Comunity View");
         this.topic = "";
-
         this.pMap = Collections.synchronizedMap(new HashMap<String, PeerReg>());
     }
     /*
@@ -59,11 +50,9 @@ public class Comunity {
     public void RegPeer(PeerReg peer) {
         System.out.println("Comunity: RegPeer: " + peer.getNick());
         //TO DO: Send registration of user to all other clients if this should be done. 
-
         lock.lock();
         try {
             pMap.put(peer.getNick(), peer);
-
             ocupied.signalAll();
         } finally {
             lock.unlock();
@@ -72,24 +61,20 @@ public class Comunity {
 
     void create(String cname, String myIP, String topic, String nick) {
         System.out.println("Comunity: create: " + cname + ", " + topic + ", @" + myIP);
-
         lock.lock();
         try {
             this.cname = cname;
             this.host = myIP;
             this.topic = topic;
-
             ocupied.signalAll();
         } finally {
             lock.unlock();
         }
-
         //Now you have to join a comunity that you create.
         //RegPeer(nick, new PeerReg(nick, host));
     }
 
     void setHost(String host) {
-
         lock.lock();
         try {
             this.host = host;
@@ -112,12 +97,10 @@ public class Comunity {
         lock.lock();
         try {
             this.topic = topic;
-
             ocupied.signalAll();
         } finally {
             lock.unlock();
         }
-
     }
     /*
      void findAll(String rhost, String name, int port, ClientRemoteInterface cri) {
@@ -143,11 +126,9 @@ public class Comunity {
      */
 
     String getComunityName() {
-
         String ret;
         lock.lock();
         try {
-
             ret = cname;
             ocupied.signalAll();
         } finally {
@@ -160,7 +141,6 @@ public class Comunity {
         String ret;
         lock.lock();
         try {
-
             ret = host;
             ocupied.signalAll();
         } finally {
@@ -173,21 +153,18 @@ public class Comunity {
         String ret;
         lock.lock();
         try {
-
             ret = topic;
             ocupied.signalAll();
         } finally {
             lock.unlock();
         }
         return ret;
-
     }
 
     Map getComunityPeers() {
         Map ret;
         lock.lock();
         try {
-
             ret = pMap;
             ocupied.signalAll();
         } finally {
@@ -200,14 +177,11 @@ public class Comunity {
         System.out.println("Comunity: addPeer: Adding " + name + " @" + ipAddr);
         lock.lock();
         try {
-
             pMap.put(name, new PeerReg(name, ipAddr));
-
             ocupied.signalAll();
         } finally {
             lock.unlock();
         }
-
     }
 
     String getPeerIP(String nowPlayingOwner) {
@@ -228,20 +202,16 @@ public class Comunity {
 
     void removePeerByIp(String ip) {
         Iterator it = pMap.entrySet().iterator();
-
         lock.lock();
         try {
-
             while (it.hasNext()) {
                 Map.Entry pair = (Map.Entry) it.next();
-
                 PeerReg p = (PeerReg) pair.getValue();
                 if (p.getAddr().equals(ip)) {
                     pMap.remove(pair.getKey());
                 }
                 it.remove();
             }
-
             ocupied.signalAll();
         } finally {
             lock.unlock();
@@ -251,10 +221,8 @@ public class Comunity {
     String getNickByIp(String ipAddr) {
         Iterator it = pMap.entrySet().iterator();
         String ret = "";
-
         lock.lock();
         try {
-
             while (it.hasNext()) {
                 Map.Entry pair = (Map.Entry) it.next();
 
@@ -264,7 +232,6 @@ public class Comunity {
                 }
                 it.remove();
             }
-
             ocupied.signalAll();
         } finally {
             lock.unlock();
@@ -278,25 +245,15 @@ public class Comunity {
             Iterator it = pMap.entrySet().iterator();
             while (it.hasNext()) {
                 Map.Entry pair = (Map.Entry) it.next();
-
                 System.out.println("BEFORE: " + pair.getKey());
             }
-            
-            
-            
             pMap.remove(nick);
-            
-            
             Iterator it2 = pMap.entrySet().iterator();
             while (it2.hasNext()) {
                 Map.Entry pair = (Map.Entry) it2.next();
 
                 System.out.println("AFTER: " + pair.getKey());
             }
-            
-            
-            
-
             ocupied.signalAll();
         } finally {
             lock.unlock();
