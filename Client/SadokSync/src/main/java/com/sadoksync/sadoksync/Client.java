@@ -585,7 +585,7 @@ public class Client extends javax.swing.JFrame {
         // TODO add your handling code here:
         playlist.removefromPlaylist(pr.getNick());
         pr.openLobby();
-        
+
     }//GEN-LAST:event_jMenuItem4ActionPerformed
     private void jSlider1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlider1StateChanged
         Object source = evt.getSource();
@@ -854,6 +854,12 @@ public class Client extends javax.swing.JFrame {
                                         }
                                     } else {
                                         setMediaType(media.getType());
+                                    }
+
+                                    try {
+                                        Thread.sleep(2000);
+                                    } catch (InterruptedException ex) {
+                                        Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
                                     }
 
                                     connectToRtsp();
