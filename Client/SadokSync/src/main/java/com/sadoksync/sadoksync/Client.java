@@ -569,12 +569,15 @@ public class Client extends javax.swing.JFrame {
     private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
         // Remove client and its music from playlist.
         playlist.removefromPlaylist(pr.getNick());
-        Message msg = new Message();
-        msg.setType("removePeerbyNick");
-        msg.setName(pr.getNick());
-        pr.sendMsg(pr.getHost(), 4444, msg);
-        pr.openLobby();
-
+       Message msg = new Message();
+       msg.setType("removePeerbyNick");
+       msg.setName(pr.getNick());
+       pr.sendMsg(pr.getHost(), 4444, msg);
+       if (mediaPlayer.isPlaying()) {
+            mediaPlayer.stop();
+        }
+       pr.openLobby();
+        
     }//GEN-LAST:event_jMenuItem4ActionPerformed
     private void jSlider1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlider1StateChanged
         Object source = evt.getSource();
@@ -714,7 +717,14 @@ public class Client extends javax.swing.JFrame {
                         serverMediaPlayer = serverMediaPlayerFactory.newHeadlessMediaPlayer();
 
                         serverMediaPlayer.addMediaPlayerEventListener(new MediaPlayerEventAdapter() {
-                            public void mediaStoppedFinished(MediaPlayer serverMediaPlayer, boolean release) {
+                            @Override
+                            public void finished(MediaPlayer mediaPlayer) {
+                                System.out.println("Event: Finished");
+                                if (mediaPlayer.subItemCount() > 0) {
+                                    System.out.println(mediaPlayer.subItems());
+                                }
+                                System.out.println("1");
+
                                 playlist.removeFirstInQueue();
 
                                 System.out.println("2");
@@ -732,65 +742,44 @@ public class Client extends javax.swing.JFrame {
                                 if (!playlist.isEmpty()) {
                                     String ip = pr.com.getPeerIP(playlist.getFirstInListOwner());
                                     if (!pr.getMyIp().equals(ip)) {
-                                        if (release) {
-                                            serverMediaPlayer.release();
-                                        }
+                                        mediaPlayer.release();
+                                        serverMediaPlayerFactory.release();
+                                    } else {
+
                                     }
 
                                     streamNextMedia(mediaPlayer);
 
                                 } else {
                                     System.out.println("[Server] No more media in list");
-                                    if (release) {
-                                        serverMediaPlayer.release();
+
+                                    mediaPlayer.release();
+                                    serverMediaPlayerFactory.release();
+                                }
+                            }
+
+                            @Override
+                            public void stopped(MediaPlayer mediaPlayer) {
+                                System.out.println("Event: Stopped");
+                                playlist.removeFirstInQueue();
+                                updateRightPanel(getPlaylist());
+                                rightPanelMode = "playlist";
+
+                                if (!playlist.isEmpty()) {
+                                    streamNextMedia(mediaPlayer);
+                                } else {
+                                    System.out.println("[Server] No more media in list");
+
+                                    try {
+                                        Thread.sleep(1000);
+                                    } catch (InterruptedException ex) {
+                                        Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
                                     }
+
+                                    mediaPlayer.release();
+                                    serverMediaPlayerFactory.release();
                                     //serverMediaPlayerFactory.release();
                                 }
-                            }
-
-                            @Override
-                            public void finished(MediaPlayer serverMediaPlayer) {
-                                System.out.println("Event: Finished");
-                                if (playlist.getFirstInList().type.equals("youtube")) {
-                                    // This is key...
-                                    //
-                                    // On receipt of a "finished" event, check if sub-items have been created...
-                                    List<String> subItems = serverMediaPlayer.subItems();
-                                    System.out.println("subItems=" + subItems);
-                                    // If sub-items were created...
-                                    if (subItems != null && !subItems.isEmpty()) {
-                                        // Pick the first sub-item, and play it...
-                                        String subItemMrl = subItems.get(0);
-
-                                        serverMediaPlayer.playMedia(subItemMrl,
-                                                options,
-                                                ":no-sout-rtp-sap",
-                                                ":no-sout-standard-sap",
-                                                ":sout-all",
-                                                ":sout-keep");
-                                        // What will happen next...
-                                        //
-                                        // 1. if the vlc lua script finds the streaming MRL via the normal i.e.
-                                        //    "primary" method, then this subitem MRL will be the streaming MRL; or
-                                        // 2. if the vlc lua script does not find the streaming MRL via the primary
-                                        //    method, then the vlc lua script fallback method is tried to locate the
-                                        //    streaming MRL and the next time a "finished" event is received there will
-                                        //    be a new sub-item for the just played subitem, and that will be the
-                                        //    streaming MRL
-                                    } else {
-                                        System.out.println("first done");
-                                        mediaStoppedFinished(serverMediaPlayer, true);
-                                    }
-                                } else {
-                                    System.out.println("not utube");
-                                    mediaStoppedFinished(serverMediaPlayer, true);
-                                }
-                            }
-
-                            @Override
-                            public void stopped(MediaPlayer serverMediaPlayer) {
-                                System.out.println("Event: Stopped");
-                                mediaStoppedFinished(serverMediaPlayer, false);
                             }
 
                             @Override
