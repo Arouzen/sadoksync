@@ -582,10 +582,14 @@ public class Client extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItem3ActionPerformed
 
     private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
-        // TODO add your handling code here:
+        // Remove client and its music from playlist.
         playlist.removefromPlaylist(pr.getNick());
-        pr.openLobby();
-
+       Message msg = new Message();
+       msg.setType("removePeerbyNick");
+       msg.setName(pr.getNick());
+       pr.sendMsg(pr.getHost(), 4444, msg);
+       pr.openLobby();
+        
     }//GEN-LAST:event_jMenuItem4ActionPerformed
     private void jSlider1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlider1StateChanged
         Object source = evt.getSource();
