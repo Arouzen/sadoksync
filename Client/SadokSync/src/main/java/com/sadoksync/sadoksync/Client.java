@@ -159,16 +159,6 @@ public class Client extends javax.swing.JFrame {
 
     }
 
-    public void persistClient(MediaPlayer mediaPlayer) {
-        System.out.println("Playing next video after 5sec...(client)");
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        playMedia(getRtspUrl());
-    }
-
     public void setHost(String ip) {
         this.server = ip;
     }
