@@ -57,7 +57,6 @@ class PeerClientThread extends Thread {
 
         } catch (IOException e) {
             System.out.println(e.toString());
-            //System.exit(1);
         }
 
     }

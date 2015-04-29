@@ -39,7 +39,6 @@ public class Comunity {
 
     public void RegPeer(PeerReg peer) {
         System.out.println("Comunity: RegPeer: " + peer.getNick());
-        //TO DO: Send registration of user to all other clients if this should be done. 
         pMap.put(peer.getAddr(), peer);
     }
 
@@ -56,8 +55,6 @@ public class Comunity {
         } finally {
             lock.unlock();
         }
-        //Now you have to join a comunity that you create.
-        //RegPeer(nick, new PeerReg(nick, host));
     }
 
     void setHost(String host) {

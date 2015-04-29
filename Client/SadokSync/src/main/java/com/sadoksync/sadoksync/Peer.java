@@ -58,9 +58,7 @@ public class Peer {
 
     void registerComunity(String rhost, int port) {
         Message msg = new Message(com);
-
         this.sendMsg(rhost, 3333, msg);
-
     }
 
     void findAllComunity(String rhost, int port) {
@@ -107,6 +105,7 @@ public class Peer {
     }
 
     void setMyIP(String ipAddr) {
+        System.out.println("Setting ip to: " + ipAddr);
         this.myIP = ipAddr;
     }
 

@@ -18,11 +18,9 @@ public class Driver {
     }
 
     public Driver() {
-        
-        
-        pr = new Peer();
-        pr.run();
-        
 
+        pr = new Peer();
+        pr.run();        
+        
     }
 }

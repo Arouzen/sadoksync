@@ -30,7 +30,6 @@ public class ConnectionHandler extends Thread {
 
         try {
             in = new ObjectInputStream(clientSocket.getInputStream());
-            //out = new BufferedOutputStream(clientSocket.getOutputStream());
 
             //Read Object
             Object msgObj;

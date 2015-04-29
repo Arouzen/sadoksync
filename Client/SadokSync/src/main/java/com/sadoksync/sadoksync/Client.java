@@ -156,12 +156,7 @@ public class Client extends javax.swing.JFrame {
         filefilter = new FileFilter();
 
         jSplitPane1.setLeftComponent(new EmptyCanvas());
-        /*
-         this.isHost = pr.isHost();
-         if (!isHost) {
-         buttonStream.setEnabled(false);
-         }
-         */
+
     }
 
     public void persistClient(MediaPlayer mediaPlayer) {
