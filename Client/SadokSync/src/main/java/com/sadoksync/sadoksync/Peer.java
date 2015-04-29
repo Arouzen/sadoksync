@@ -458,7 +458,7 @@ public class Peer {
     void connectionEvent(String ipAddr, String ce) {
         System.out.println("Peer.connectionEvent: Starting");
         
-        if (ce.equals("Connection refused: connect")) {
+        if (ce.equals("connect")) {
             System.out.println("Peer.connectionEvent: Connection refused: connect");
             
             if (this.isHost()) {
@@ -483,11 +483,11 @@ public class Peer {
             System.out.println("Peer.removePeer: nick not empty");
 
             //remove nick from comunity.
-            System.out.println("Peer.removePeer: removing from comunity by nick");
+            System.out.println("Peer.removePeer: removing from comunity by nick: " + nick);
             com.removePeerByName(nick);
 
             //Remove ipAdd/nick from playlist
-            System.out.println("Peer.removePeer: removing from playlist by nick");
+            System.out.println("Peer.removePeer: removing from playlist by nick: " + nick);
             cli.getPublicPlaylist().removefromPlaylist(nick);
         } else {
             System.out.println("Peer.removePeer: else");
