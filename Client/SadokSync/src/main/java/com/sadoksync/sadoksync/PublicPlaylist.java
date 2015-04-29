@@ -123,6 +123,7 @@ public class PublicPlaylist implements Serializable {
                 Message msg = new Message();
                 msg.setType("removefromlist");
                 msg.setName(name);
+                pr.sendMsg(pr.getHost(), 4444, msg);
             }
 
         } finally {
