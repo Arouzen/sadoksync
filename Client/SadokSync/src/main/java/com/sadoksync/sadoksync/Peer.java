@@ -130,6 +130,17 @@ public class Peer {
         });
     }
 
+        void directConnect(String ip) {
+
+        Message msg = new Message();
+        msg.setType("Join Comunity");
+        msg.setName(this.getNick());
+        //msg.setText(cname);
+
+        this.sendMsg(ip, 4444, msg);
+        this.openClient();
+    }
+    
     void openProperties() {
         //Kill stuff here
         final Lobby flb = lb;
