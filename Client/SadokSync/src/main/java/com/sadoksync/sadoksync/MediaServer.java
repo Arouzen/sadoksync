@@ -41,8 +41,13 @@ public class MediaServer {
 
     public void kill() {
         System.out.println("[MediaServer.kill] Kill start");
-        //serverMediaPlayer.release();
-        //serverMediaPlayerFactory.release();
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(MediaServer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        serverMediaPlayer.release();
+        serverMediaPlayerFactory.release();
         streamingServer.stop();
         System.out.println("[MediaServer.kill] Kill finish");
     }
@@ -121,6 +126,7 @@ public class MediaServer {
                                 playlist.removeFirstInQueue();
                                 client.updateRightPanel(client.getPlaylist());
                                 client.rightPanelMode = "playlist";
+                                
                                 /*if (!playlist.isEmpty()) {
                                  String ip = client.pr.com.getPeerIP(playlist.getFirstInListOwner());
                                  if (!client.pr.getMyIp().equals(ip)) {
@@ -138,6 +144,7 @@ public class MediaServer {
                                  }
                                  //serverMediaPlayerFactory.release();
                                  }*/
+                                
                                 client.startStream();
                                 kill();
                             }
