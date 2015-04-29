@@ -193,7 +193,7 @@ public class Client extends javax.swing.JFrame {
     public String getRtspUrl() {
         return "rtsp://" + this.server + ":" + this.port + "/" + this.rtspPath;
     }
-    
+
     public void setMode(String mode) {
         switch (mode) {
             case "chat":
@@ -203,13 +203,13 @@ public class Client extends javax.swing.JFrame {
             case "users":
                 this.rightPanelMode = mode;
                 updateRightPanel(getUsers());
-                break; 
+                break;
             case "playlist":
                 this.rightPanelMode = mode;
                 updateRightPanel(getPlaylist());
                 break;
         }
-        
+
     }
 
     /**
@@ -587,11 +587,16 @@ public class Client extends javax.swing.JFrame {
 
     private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
         // Remove client and its music from playlist.
+
         playlist.removefromPlaylist(pr.getNick());
-        Message msg = new Message();
-        msg.setType("removePeerbyNick");
-        msg.setName(pr.getNick());
-        pr.sendMsg(pr.getHost(), 4444, msg);
+        if (pr.isHost()) {
+         startStream();
+        }
+            Message msg = new Message();
+            msg.setType("removePeerbyNick");
+            msg.setName(pr.getNick());
+            pr.sendMsg(pr.getHost(), 4444, msg);
+        
         if (mediaPlayer.isPlaying()) {
             mediaPlayer.stop();
         }
