@@ -275,8 +275,27 @@ public class Comunity {
     void removePeerByName(String nick) {
         lock.lock();
         try {
+            Iterator it = pMap.entrySet().iterator();
+            while (it.hasNext()) {
+                Map.Entry pair = (Map.Entry) it.next();
 
+                System.out.println("BEFORE: " + pair.getKey());
+            }
+            
+            
+            
             pMap.remove(nick);
+            
+            
+            Iterator it2 = pMap.entrySet().iterator();
+            while (it2.hasNext()) {
+                Map.Entry pair = (Map.Entry) it2.next();
+
+                System.out.println("AFTER: " + pair.getKey());
+            }
+            
+            
+            
 
             ocupied.signalAll();
         } finally {
