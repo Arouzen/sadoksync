@@ -90,8 +90,13 @@ public class Client extends javax.swing.JFrame {
 
     // File filter
     public FileFilter filefilter;
+    
+    // "pause/stop" stream flag for clients
     private boolean stopped;
-
+    
+    // init empty canvas
+    final private EmptyCanvas emptyCanvas;
+    
     /**
      * Creates new form Client
      *
@@ -131,19 +136,22 @@ public class Client extends javax.swing.JFrame {
         videoSurface = mediaPlayerFactory.newVideoSurface(canvas);
         mediaPlayer.setVideoSurface(videoSurface);
         visualizeMode = false;
+        
+        //Init empty canvas
+        emptyCanvas = new EmptyCanvas();
 
         mediaPlayer.addMediaPlayerEventListener(new MediaPlayerEventAdapter() {
             @Override
             public void finished(MediaPlayer mediaPlayer) {
                 if (playlist.isEmpty()) {
-                    jSplitPane1.setLeftComponent(new EmptyCanvas());
+                    setLeftComponent(emptyCanvas);
                 }
             }
 
             @Override
             public void stopped(MediaPlayer mediaPlayer) {
                 if (playlist.isEmpty()) {
-                    jSplitPane1.setLeftComponent(new EmptyCanvas());
+                    setLeftComponent(emptyCanvas);
                 }
             }
         });
@@ -157,7 +165,8 @@ public class Client extends javax.swing.JFrame {
         // FileFilter init
         filefilter = new FileFilter();
 
-        jSplitPane1.setLeftComponent(new EmptyCanvas());
+        // Set default left canas to the empty canvas
+        setLeftComponent(emptyCanvas);
 
         stopped = false;
         /*
@@ -674,7 +683,7 @@ public class Client extends javax.swing.JFrame {
             }
         }
         // lastly, play the media in the mediaplayer with the apropriate options
-        jSplitPane1.setLeftComponent(canvas);
+        setLeftComponent(canvas);
         mediaPlayer.playMedia(url);
     }
 
@@ -767,8 +776,20 @@ public class Client extends javax.swing.JFrame {
             }
         } else {
             System.out.println("[Client.startStream] No more media in list!");
-            jSplitPane1.setLeftComponent(new EmptyCanvas());
+            setLeftComponent(emptyCanvas);
         }
+    }
+    
+    void setLeftComponent(Canvas canvas) {
+        int temp = jSplitPane1.getDividerLocation();
+        jSplitPane1.setLeftComponent(canvas);
+        jSplitPane1.setDividerLocation(temp);
+    }
+    
+    private void setLeftComponent(EmptyCanvas canvas) {
+        int temp = jSplitPane1.getDividerLocation();
+        jSplitPane1.setLeftComponent(canvas);
+        jSplitPane1.setDividerLocation(temp);
     }
 
     /**
