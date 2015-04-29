@@ -628,6 +628,7 @@ public class Client extends javax.swing.JFrame {
             if (visualizeMode) {
                 visualizeMode = false;
                 // Recreate the mediaplayerfactory without visualizer options
+                //"--realrtsp-caching=1200", manual cache size. 
                 mediaPlayerFactory = new MediaPlayerFactory();
                 mediaPlayer = mediaPlayerFactory.newEmbeddedMediaPlayer(new Win32FullScreenStrategy(fullscreenplayer.frame));
 
