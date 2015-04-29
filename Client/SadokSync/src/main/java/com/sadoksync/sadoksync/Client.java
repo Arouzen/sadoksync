@@ -723,27 +723,15 @@ public class Client extends javax.swing.JFrame {
                     try {
                         Media media = playlist.getFirstInList();
                         //No ip address here, only an @. 
-                        final String options = formatRtspStream("@", 5555, "demo");
-                        System.out.println("Streaming '" + media.getPath() + "' to '" + options + "'");
+
                         serverMediaPlayerFactory = new MediaPlayerFactory();
                         serverMediaPlayer = serverMediaPlayerFactory.newHeadlessMediaPlayer();
 
                         serverMediaPlayer.addMediaPlayerEventListener(new MediaPlayerEventAdapter() {
                             public void mediaStoppedFinished(MediaPlayer serverMediaPlayer, boolean release) {
                                 playlist.removeFirstInQueue();
-
-                                System.out.println("2");
-
                                 updateRightPanel(getPlaylist());
-
-                                System.out.println("3");
-
                                 rightPanelMode = "playlist";
-
-                                System.out.println("4");
-
-                                System.out.println("5");
-
                                 if (!playlist.isEmpty()) {
                                     String ip = pr.com.getPeerIP(playlist.getFirstInListOwner());
                                     if (!pr.getMyIp().equals(ip)) {
@@ -777,12 +765,7 @@ public class Client extends javax.swing.JFrame {
                                         // Pick the first sub-item, and play it...
                                         String subItemMrl = subItems.get(0);
 
-                                        serverMediaPlayer.playMedia(subItemMrl,
-                                                options,
-                                                ":no-sout-rtp-sap",
-                                                ":no-sout-standard-sap",
-                                                ":sout-all",
-                                                ":sout-keep");
+                                        streamMedia(serverMediaPlayer, subItemMrl, null, "youtube");
                                         // What will happen next...
                                         //
                                         // 1. if the vlc lua script finds the streaming MRL via the normal i.e.
@@ -810,17 +793,17 @@ public class Client extends javax.swing.JFrame {
 
                             @Override
                             public void mediaSubItemAdded(MediaPlayer serverMediaPlayer, libvlc_media_t subItem) {
-                                List<String> items = serverMediaPlayer.subItems();
-                                for (String item : items) {
-                                    System.out.println(item);
-                                }
-                                serverMediaPlayer.playMedia(items.get(0),
-                                        options,
-                                        ":no-sout-rtp-sap",
-                                        ":no-sout-standard-sap",
-                                        ":sout-all",
-                                        ":sout-keep"
-                                );
+                                /*List<String> items = serverMediaPlayer.subItems();
+                                 for (String item : items) {
+                                 System.out.println(item);
+                                 }
+                                 serverMediaPlayer.playMedia(items.get(0),
+                                 options,
+                                 ":no-sout-rtp-sap",
+                                 ":no-sout-standard-sap",
+                                 ":sout-all",
+                                 ":sout-keep"
+                                 );*/
                             }
 
                             @Override
@@ -838,51 +821,7 @@ public class Client extends javax.swing.JFrame {
                                 String ip = pr.com.getPeerIP(playlist.getFirstInListOwner());
 
                                 if (pr.getMyIp().equals(ip) /*|| !media.getType().equals("local file")*/) {
-                                    serverMediaPlayer.playMedia(media.getPath(),
-                                            options,
-                                            ":no-sout-rtp-sap",
-                                            ":no-sout-standard-sap",
-                                            ":sout-all",
-                                            ":sout-keep"
-                                    );
-                                    try {
-                                        Thread.sleep(4000);
-                                    } catch (InterruptedException ex) {
-                                        Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
-                                    }
-
-                                    setHost(pr.getMyIp());
-                                    setPort("5555");
-                                    setRtspPath("demo");
-
-                                    String mediaType = "";
-                                    if (media.getType().equals("local file")) {
-                                        String extension = media.getPath().split("\\.")[media.getPath().split("\\.").length - 1];
-                                        try {
-                                            if (filefilter.acceptMediaFile(extension, "visualize")) {
-                                                mediaType = "visualize";
-                                            } else if (filefilter.acceptMediaFile(extension, "video")) {
-                                                mediaType = "video";
-                                            }
-                                            setMediaType(mediaType);
-                                        } catch (ParseException ex) {
-                                            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
-                                        } catch (IOException ex) {
-                                            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
-                                        }
-                                    } else {
-                                        setMediaType(media.getType());
-                                    }
-
-                                    try {
-                                        Thread.sleep(2000);
-                                    } catch (InterruptedException ex) {
-                                        Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
-                                    }
-
-                                    connectToRtsp();
-                                    pr.DeliverStreamToComunity(pr.getMyIp(), "demo", mediaType);
-                                    pr.DeliverPlaylistToComunity();
+                                    streamMedia(serverMediaPlayer, media.getPath(), media, "");
                                 } else {
                                     //mediaPlayer.release();
                                     //serverMediaPlayerFactory.release();
@@ -891,48 +830,7 @@ public class Client extends javax.swing.JFrame {
                             }
                         });
 
-                        serverMediaPlayer.setPlaySubItems(true);
-                        serverMediaPlayer.playMedia(media.getPath(),
-                                options,
-                                ":no-sout-rtp-sap",
-                                ":no-sout-standard-sap",
-                                ":sout-all",
-                                ":sout-keep"
-                        );
-
-                        try {
-                            Thread.sleep(2000);
-                        } catch (InterruptedException ex) {
-                            ex.printStackTrace();
-                        }
-
-                        setHost("localhost");
-                        setPort("5555");
-                        setRtspPath("demo");
-
-                        String mediaType = "";
-                        if (media.getType().equals("local file")) {
-                            String extension = media.getPath().split("\\.")[media.getPath().split("\\.").length - 1];
-                            try {
-                                if (filefilter.acceptMediaFile(extension, "visualize")) {
-                                    mediaType = "visualize";
-                                } else if (filefilter.acceptMediaFile(extension, "video")) {
-                                    mediaType = "video";
-                                }
-                                setMediaType(mediaType);
-                            } catch (ParseException ex) {
-                                Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
-                            } catch (IOException ex) {
-                                Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
-                            }
-                        } else {
-                            setMediaType(media.getType());
-                        }
-
-                        playMedia(getRtspUrl());
-
-                        pr.DeliverStreamToComunity(pr.getMyIp(), "demo", mediaType);
-                        pr.DeliverPlaylistToComunity();
+                        streamMedia(serverMediaPlayer, media.getPath(), media, "");
 
                     } catch (Exception ex) {
                         ex.printStackTrace();
@@ -943,6 +841,58 @@ public class Client extends javax.swing.JFrame {
         } catch (Exception ex) {
             System.out.println("No please");
         }
+    }
+
+    public void streamMedia(MediaPlayer serverMediaPlayer, String mrl, Media media, String mediaType) {
+        final String options = formatRtspStream("@", 5555, "demo");
+        System.out.println("[Client.streamMedia] Streaming '" + mrl + "' to '" + options + "'");
+        serverMediaPlayer.playMedia(mrl,
+                options,
+                ":no-sout-rtp-sap",
+                ":no-sout-standard-sap",
+                ":sout-all",
+                ":sout-keep"
+        );
+        try {
+            Thread.sleep(4000);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        setHost("localhost");
+        setPort("5555");
+        setRtspPath("demo");
+
+        if (mediaType.equals("")) {
+            if (media.getType().equals("local file")) {
+                String extension = media.getPath().split("\\.")[media.getPath().split("\\.").length - 1];
+                try {
+                    if (filefilter.acceptMediaFile(extension, "visualize")) {
+                        mediaType = "visualize";
+                    } else if (filefilter.acceptMediaFile(extension, "video")) {
+                        mediaType = "video";
+                    }
+                } catch (ParseException ex) {
+                    Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (IOException ex) {
+                    Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            } else {
+                mediaType = media.getType();
+            }
+        }
+
+        setMediaType(mediaType);
+
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        playMedia(getRtspUrl());
+        pr.DeliverStreamToComunity(pr.getMyIp(), "demo", mediaType);
+        pr.DeliverPlaylistToComunity();
     }
 
     public void cleanStartOfPlaylist() {
