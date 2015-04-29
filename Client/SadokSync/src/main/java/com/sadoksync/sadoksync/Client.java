@@ -735,18 +735,55 @@ public class Client extends javax.swing.JFrame {
                                 if (!playlist.isEmpty()) {
                                     String ip = pr.com.getPeerIP(playlist.getFirstInListOwner());
                                     if (!pr.getMyIp().equals(ip)) {
-                                        if (release) {
-                                            serverMediaPlayer.release();
-                                        }
+                                        //if (release) {
+                                        serverMediaPlayer.release();
+                                        //}
                                     }
 
                                     streamNextMedia(mediaPlayer);
 
                                 } else {
                                     System.out.println("[Server] No more media in list");
-                                    if (release) {
+                                    //if (release) {
+                                    serverMediaPlayer.release();
+                                    //}
+                                    //serverMediaPlayerFactory.release();
+                                }
+                            }
+
+                            public void mediaStopped(MediaPlayer serverMediaPlayer) {
+                                playlist.removeFirstInQueue();
+                                updateRightPanel(getPlaylist());
+                                rightPanelMode = "playlist";
+                                if (!playlist.isEmpty()) {
+
+                                    streamNextMedia(mediaPlayer);
+
+                                } else {
+                                    System.out.println("[Server] No more media in list");
+
+                                }
+                            }
+
+                            public void mediaFinished(MediaPlayer serverMediaPlayer) {
+                                playlist.removeFirstInQueue();
+                                updateRightPanel(getPlaylist());
+                                rightPanelMode = "playlist";
+                                if (!playlist.isEmpty()) {
+                                    String ip = pr.com.getPeerIP(playlist.getFirstInListOwner());
+                                    if (!pr.getMyIp().equals(ip)) {
+
                                         serverMediaPlayer.release();
+
                                     }
+
+                                    streamNextMedia(mediaPlayer);
+
+                                } else {
+                                    System.out.println("[Server] No more media in list");
+
+                                    serverMediaPlayer.release();
+
                                     //serverMediaPlayerFactory.release();
                                 }
                             }
@@ -777,18 +814,18 @@ public class Client extends javax.swing.JFrame {
                                         //    streaming MRL
                                     } else {
                                         System.out.println("first done");
-                                        mediaStoppedFinished(serverMediaPlayer, true);
+                                        mediaFinished(serverMediaPlayer);
                                     }
                                 } else {
                                     System.out.println("not utube");
-                                    mediaStoppedFinished(serverMediaPlayer, true);
+                                    mediaFinished(serverMediaPlayer);
                                 }
                             }
 
                             @Override
                             public void stopped(MediaPlayer serverMediaPlayer) {
                                 System.out.println("Event: Stopped");
-                                mediaStoppedFinished(serverMediaPlayer, false);
+                                mediaStopped(serverMediaPlayer);
                             }
 
                             @Override
