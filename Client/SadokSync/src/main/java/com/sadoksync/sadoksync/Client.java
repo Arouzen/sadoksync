@@ -56,14 +56,13 @@ public class Client extends javax.swing.JFrame {
     private MediaPlayerFactory mediaPlayerFactory;
 
     // Create a new media player instance for the run-time platform
-    private EmbeddedMediaPlayer mediaPlayer;
-
-    // Create the server media player used to stream
-    public HeadlessMediaPlayer serverMediaPlayer;
-    public MediaPlayerFactory serverMediaPlayerFactory;
+    EmbeddedMediaPlayer mediaPlayer;
 
     // Create video surface
     public CanvasVideoSurface videoSurface;
+
+    // Create the mediaServer
+    private MediaServer mediaServer;
 
     // Create fullscreen player
     private final FullScreenPlayer fullscreenplayer;
@@ -84,7 +83,7 @@ public class Client extends javax.swing.JFrame {
 
     // Socket variables
     private boolean isHost;
-    private Peer pr;
+    Peer pr;
 
     // Mode
     private boolean visualizeMode;
@@ -525,7 +524,7 @@ public class Client extends javax.swing.JFrame {
             mediaPlayer.stop();
         }
         if (pr.isHost()) {
-            serverMediaPlayer.stop();
+            mediaServer.stop();
         }
     }//GEN-LAST:event_ButtonStopActionPerformed
 
@@ -717,182 +716,8 @@ public class Client extends javax.swing.JFrame {
     }
 
     public void startStreamingServer() {
-        try {
-            Thread streamingServer = new Thread() {
-                public void run() {
-                    try {
-                        Media media = playlist.getFirstInList();
-                        //No ip address here, only an @. 
-
-                        serverMediaPlayerFactory = new MediaPlayerFactory();
-                        serverMediaPlayer = serverMediaPlayerFactory.newHeadlessMediaPlayer();
-
-                        serverMediaPlayer.addMediaPlayerEventListener(new MediaPlayerEventAdapter() {
-                            public void mediaStoppedFinished(MediaPlayer serverMediaPlayer, boolean release) {
-                                playlist.removeFirstInQueue();
-                                updateRightPanel(getPlaylist());
-                                rightPanelMode = "playlist";
-                                if (!playlist.isEmpty()) {
-                                    String ip = pr.com.getPeerIP(playlist.getFirstInListOwner());
-                                    if (!pr.getMyIp().equals(ip)) {
-                                        if (release) {
-                                            serverMediaPlayer.release();
-                                        }
-                                    }
-
-                                    streamNextMedia(mediaPlayer);
-
-                                } else {
-                                    System.out.println("[Server] No more media in list");
-                                    if (release) {
-                                        serverMediaPlayer.release();
-                                    }
-                                    //serverMediaPlayerFactory.release();
-                                }
-                            }
-
-                            @Override
-                            public void finished(MediaPlayer serverMediaPlayer) {
-                                System.out.println("Event: Finished");
-                                if (playlist.getFirstInList().type.equals("youtube")) {
-                                    // This is key...
-                                    //
-                                    // On receipt of a "finished" event, check if sub-items have been created...
-                                    List<String> subItems = serverMediaPlayer.subItems();
-                                    System.out.println("subItems=" + subItems);
-                                    // If sub-items were created...
-                                    if (subItems != null && !subItems.isEmpty()) {
-                                        // Pick the first sub-item, and play it...
-                                        String subItemMrl = subItems.get(0);
-
-                                        streamMedia(serverMediaPlayer, subItemMrl, null, "youtube");
-                                        // What will happen next...
-                                        //
-                                        // 1. if the vlc lua script finds the streaming MRL via the normal i.e.
-                                        //    "primary" method, then this subitem MRL will be the streaming MRL; or
-                                        // 2. if the vlc lua script does not find the streaming MRL via the primary
-                                        //    method, then the vlc lua script fallback method is tried to locate the
-                                        //    streaming MRL and the next time a "finished" event is received there will
-                                        //    be a new sub-item for the just played subitem, and that will be the
-                                        //    streaming MRL
-                                    } else {
-                                        System.out.println("first done");
-                                        mediaStoppedFinished(serverMediaPlayer, true);
-                                    }
-                                } else {
-                                    System.out.println("not utube");
-                                    mediaStoppedFinished(serverMediaPlayer, true);
-                                }
-                            }
-
-                            @Override
-                            public void stopped(MediaPlayer serverMediaPlayer) {
-                                System.out.println("Event: Stopped");
-                                mediaStoppedFinished(serverMediaPlayer, false);
-                            }
-
-                            @Override
-                            public void mediaSubItemAdded(MediaPlayer serverMediaPlayer, libvlc_media_t subItem) {
-                                /*List<String> items = serverMediaPlayer.subItems();
-                                 for (String item : items) {
-                                 System.out.println(item);
-                                 }
-                                 serverMediaPlayer.playMedia(items.get(0),
-                                 options,
-                                 ":no-sout-rtp-sap",
-                                 ":no-sout-standard-sap",
-                                 ":sout-all",
-                                 ":sout-keep"
-                                 );*/
-                            }
-
-                            @Override
-                            public void buffering(MediaPlayer mediaPlayer, float newCache) {
-                                System.out.println("Buffering " + newCache);
-                            }
-
-                            private void streamNextMedia(MediaPlayer serverMediaPlayer) {
-                                System.out.println("[Server] Media stopped/finished, moving next in list!");
-
-                                //get the next media object in list
-                                Media media = playlist.getFirstInList();
-
-                                //get the ip of the owner of the next media.
-                                String ip = pr.com.getPeerIP(playlist.getFirstInListOwner());
-
-                                if (pr.getMyIp().equals(ip) /*|| !media.getType().equals("local file")*/) {
-                                    streamMedia(serverMediaPlayer, media.getPath(), media, "");
-                                } else {
-                                    //mediaPlayer.release();
-                                    //serverMediaPlayerFactory.release();
-                                    pr.Ping(ip, "Move Host");
-                                }
-                            }
-                        });
-
-                        streamMedia(serverMediaPlayer, media.getPath(), media, "");
-
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                    }
-                }
-            };
-            streamingServer.start();
-        } catch (Exception ex) {
-            System.out.println("No please");
-        }
-    }
-
-    public void streamMedia(MediaPlayer serverMediaPlayer, String mrl, Media media, String mediaType) {
-        final String options = formatRtspStream("@", 5555, "demo");
-        System.out.println("[Client.streamMedia] Streaming '" + mrl + "' to '" + options + "'");
-        serverMediaPlayer.playMedia(mrl,
-                options,
-                ":no-sout-rtp-sap",
-                ":no-sout-standard-sap",
-                ":sout-all",
-                ":sout-keep"
-        );
-        try {
-            Thread.sleep(4000);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        setHost("localhost");
-        setPort("5555");
-        setRtspPath("demo");
-
-        if (mediaType.equals("")) {
-            if (media.getType().equals("local file")) {
-                String extension = media.getPath().split("\\.")[media.getPath().split("\\.").length - 1];
-                try {
-                    if (filefilter.acceptMediaFile(extension, "visualize")) {
-                        mediaType = "visualize";
-                    } else if (filefilter.acceptMediaFile(extension, "video")) {
-                        mediaType = "video";
-                    }
-                } catch (ParseException ex) {
-                    Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (IOException ex) {
-                    Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            } else {
-                mediaType = media.getType();
-            }
-        }
-
-        setMediaType(mediaType);
-
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        playMedia(getRtspUrl());
-        pr.DeliverStreamToComunity(pr.getMyIp(), "demo", mediaType);
-        pr.DeliverPlaylistToComunity();
+        mediaServer = new MediaServer(playlist, this);
+        mediaServer.startStreamingServer();
     }
 
     public void cleanStartOfPlaylist() {
@@ -908,7 +733,6 @@ public class Client extends javax.swing.JFrame {
     public void startStream() {
         if (!playlist.isEmpty()) {
             String ip = pr.com.getPeerIP(playlist.getFirstInListOwner());
-
             if (pr.getMyIp().equals(ip)) {
                 startStreamingServer();
 
@@ -919,7 +743,9 @@ public class Client extends javax.swing.JFrame {
             } else {
                 pr.Ping(ip, "Move Host");
             }
-
+        } else {
+            System.out.println("[Client.startStream] No more media in list!");
+            jSplitPane1.setLeftComponent(new EmptyCanvas());
         }
     }
 
@@ -1001,18 +827,6 @@ public class Client extends javax.swing.JFrame {
 
     public PublicPlaylist getPublicPlaylist() {
         return playlist;
-    }
-
-    private static String formatRtspStream(String serverAddress, int serverPort, String id) {
-        StringBuilder sb = new StringBuilder(60);
-        sb.append(":sout=#rtp{sdp=rtsp://@");
-        sb.append(serverAddress);
-        sb.append(':');
-        sb.append(serverPort);
-        sb.append('/');
-        sb.append(id);
-        sb.append("}");
-        return sb.toString();
     }
 
     private void initStyle() {
