@@ -478,28 +478,18 @@ public class Peer {
 
     void removePeerbyIp(String ipAddr) {
         System.out.println("Peer.removePeer: Starting removePeer");
-        System.out.println("SIZE: " + com.pMap.size());
         String nick = com.getNickByIp(ipAddr);
-        System.out.println("SIZE: " + com.pMap.size());
-        System.out.println("REMOVEPEERBYIP NICK: " + nick);
 
-        System.out.println("Peer.removePeer: about to enter if");
         if (!nick.equals("")) {
-            System.out.println("KOMMER VI ENS HIT");
-            System.out.println("Peer.removePeer: nick not empty");
 
             //remove nick from comunity.
             System.out.println("Peer.removePeer: removing from comunity by nick: " + nick);
-            System.out.println("KOMMER VI ENS HIT 5");
             
             com.removePeerByName(nick);
-            System.out.println("SIZE: " + com.pMap.size());
             
-            System.out.println("KOMMER VI ENS HIT 4");
             //Remove ipAdd/nick from playlist
             System.out.println("Peer.removePeer: removing from playlist by nick: " + nick);
             cli.getPublicPlaylist().removefromPlaylist(nick);
-            System.out.println("SIZE: " + com.pMap.size());
         } else {
             System.out.println("Peer.removePeer: else");
             System.out.println("Tried to remove someone who did not exist");

@@ -225,7 +225,6 @@ public class Comunity {
         lock.lock();
         try {
             while (it.hasNext()) {
-                System.out.println("SIZE: " + pMap.size());
                 Map.Entry pair = (Map.Entry) it.next();
 
                 PeerReg p = (PeerReg) pair.getValue();
@@ -242,10 +241,8 @@ public class Comunity {
     }
 
     void removePeerByName(String nick) {
-        System.out.println("KOMMER VI ENS HIT 2");
         lock.lock();
         try {
-            System.out.println("KOMMER VI ENS HIT 3");
             System.out.println(pMap.size());
             Iterator it = pMap.entrySet().iterator();
             while (it.hasNext()) {
