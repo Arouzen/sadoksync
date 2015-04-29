@@ -224,7 +224,6 @@ public class Client extends javax.swing.JFrame {
         Open = new javax.swing.JMenuItem();
         jMenuItem3 = new javax.swing.JMenuItem();
         jMenuItem4 = new javax.swing.JMenuItem();
-        Exit = new javax.swing.JMenuItem();
         jSeparator2 = new javax.swing.JPopupMenu.Separator();
         jMenu2 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
@@ -265,7 +264,7 @@ public class Client extends javax.swing.JFrame {
         buttonPlay.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Reconnect_button_default.png"))); // NOI18N
         buttonPlay.setBorderPainted(false);
         buttonPlay.setContentAreaFilled(false);
-        buttonPlay.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        buttonPlay.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         buttonPlay.setMaximumSize(new java.awt.Dimension(85, 40));
         buttonPlay.setMinimumSize(new java.awt.Dimension(85, 40));
         buttonPlay.setPreferredSize(new java.awt.Dimension(85, 40));
@@ -278,7 +277,7 @@ public class Client extends javax.swing.JFrame {
         jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/fullscreen_Button_default.png"))); // NOI18N
         jButton3.setBorderPainted(false);
         jButton3.setContentAreaFilled(false);
-        jButton3.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jButton3.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         jButton3.setMaximumSize(new java.awt.Dimension(85, 40));
         jButton3.setMinimumSize(new java.awt.Dimension(85, 40));
         jButton3.addActionListener(new java.awt.event.ActionListener() {
@@ -290,7 +289,7 @@ public class Client extends javax.swing.JFrame {
         ButtonStop.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Stop_Button_default.png"))); // NOI18N
         ButtonStop.setBorderPainted(false);
         ButtonStop.setContentAreaFilled(false);
-        ButtonStop.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        ButtonStop.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         ButtonStop.setMaximumSize(new java.awt.Dimension(85, 40));
         ButtonStop.setMinimumSize(new java.awt.Dimension(85, 40));
         ButtonStop.setPreferredSize(new java.awt.Dimension(85, 40));
@@ -303,7 +302,7 @@ public class Client extends javax.swing.JFrame {
         buttonShowUsers.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Users_Button_default.png"))); // NOI18N
         buttonShowUsers.setBorderPainted(false);
         buttonShowUsers.setContentAreaFilled(false);
-        buttonShowUsers.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        buttonShowUsers.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         buttonShowUsers.setMaximumSize(new java.awt.Dimension(85, 40));
         buttonShowUsers.setMinimumSize(new java.awt.Dimension(85, 40));
         buttonShowUsers.addActionListener(new java.awt.event.ActionListener() {
@@ -315,7 +314,7 @@ public class Client extends javax.swing.JFrame {
         buttonShowChat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Chat_button_default.png"))); // NOI18N
         buttonShowChat.setBorderPainted(false);
         buttonShowChat.setContentAreaFilled(false);
-        buttonShowChat.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        buttonShowChat.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         buttonShowChat.setMaximumSize(new java.awt.Dimension(85, 40));
         buttonShowChat.setMinimumSize(new java.awt.Dimension(85, 40));
         buttonShowChat.addActionListener(new java.awt.event.ActionListener() {
@@ -342,7 +341,7 @@ public class Client extends javax.swing.JFrame {
         buttonShowPlaylist.setIcon(new javax.swing.ImageIcon(getClass().getResource("/playlist_Button_default.png"))); // NOI18N
         buttonShowPlaylist.setBorderPainted(false);
         buttonShowPlaylist.setContentAreaFilled(false);
-        buttonShowPlaylist.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        buttonShowPlaylist.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         buttonShowPlaylist.setMaximumSize(new java.awt.Dimension(85, 40));
         buttonShowPlaylist.setMinimumSize(new java.awt.Dimension(85, 40));
         buttonShowPlaylist.addActionListener(new java.awt.event.ActionListener() {
@@ -405,17 +404,6 @@ public class Client extends javax.swing.JFrame {
             }
         });
         jMenu1.add(jMenuItem4);
-
-        Exit.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Q, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.CTRL_MASK));
-        Exit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/GeoGebra_icon_exit.png"))); // NOI18N
-        Exit.setText("Exit");
-        Exit.setMaximumSize(new java.awt.Dimension(320, 320));
-        Exit.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ExitActionPerformed(evt);
-            }
-        });
-        jMenu1.add(Exit);
         jMenu1.add(jSeparator2);
 
         jMenuBar1.add(jMenu1);
@@ -512,10 +500,6 @@ public class Client extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_OpenActionPerformed
 
-    private void ExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ExitActionPerformed
-        System.exit(0);
-    }//GEN-LAST:event_ExitActionPerformed
-
     private void buttonPlayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonPlayActionPerformed
         connectToRtsp();
     }//GEN-LAST:event_buttonPlayActionPerformed
@@ -588,6 +572,9 @@ public class Client extends javax.swing.JFrame {
        msg.setType("removePeerbyNick");
        msg.setName(pr.getNick());
        pr.sendMsg(pr.getHost(), 4444, msg);
+       if (mediaPlayer.isPlaying()) {
+            mediaPlayer.stop();
+        }
        pr.openLobby();
         
     }//GEN-LAST:event_jMenuItem4ActionPerformed
@@ -1218,7 +1205,6 @@ public class Client extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton ButtonStop;
-    private javax.swing.JMenuItem Exit;
     private javax.swing.JMenuItem Open;
     private javax.swing.JButton buttonPlay;
     private javax.swing.JButton buttonSendChat;
