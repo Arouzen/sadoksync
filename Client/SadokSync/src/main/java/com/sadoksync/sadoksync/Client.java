@@ -589,6 +589,7 @@ public class Client extends javax.swing.JFrame {
         // Remove client and its music from playlist.
 
         playlist.removefromPlaylist(pr.getNick());
+        //byt host
         if (pr.isHost()) {
          startStream();
         }
