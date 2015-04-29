@@ -39,7 +39,7 @@ public class MediaServer {
         }
     }
 
-    public void kill() {
+    public void kill(boolean release) {
         System.out.println("[MediaServer.kill] Kill start");
         try {
             Thread.sleep(2000);
@@ -146,7 +146,7 @@ public class MediaServer {
                                  }*/
                                 
                                 client.startStream();
-                                kill();
+                                kill(release);
                             }
 
                             @Override
@@ -167,6 +167,13 @@ public class MediaServer {
                                     System.out.println("not utube");
                                     mediaStoppedFinished(serverMediaPlayer, true);
                                 }
+                            }
+
+                            @Override
+                            public void error(MediaPlayer mediaPlayer) {
+                                // For some reason, even if things work, you get an error... you have to ignore
+                                // this error - but that of course makes handling real errors tricky
+                                System.out.println("Error!!!");
                             }
 
                             @Override
