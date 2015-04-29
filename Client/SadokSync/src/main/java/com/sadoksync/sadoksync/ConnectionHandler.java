@@ -45,8 +45,6 @@ public class ConnectionHandler extends Thread {
                         System.out.println("Message: Set Playlist");
                         PublicPlaylist pl = new PublicPlaylist(pr, msg.getList());
                         pr.getClient().setPlayList(pl);
-                        pr.getClient().updateRightPanel(pr.getClient().getPlaylist());
-                        pr.getClient().rightPanelMode = "playlist";
                         break;
 
                     case "Playlist":
@@ -125,15 +123,12 @@ public class ConnectionHandler extends Thread {
                     case "chat message":
                         pr.getClient().addToChatOutput(msg.getText());
                         break;
-
                     case "removefromlist":
                         pr.getClient().getPublicPlaylist().removefromPlaylist(msg.getName());
-                        pr.getClient().updateRightPanel(pr.getClient().getPlaylist());
-                        pr.getClient().rightPanelMode = "playlist";
-
+                        break;
                     case "removePeerbyNick":
                         pr.removePeerbyNick(msg.name);
-
+                        break;
                 }
             }
 

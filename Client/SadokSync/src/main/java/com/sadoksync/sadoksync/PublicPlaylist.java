@@ -95,6 +95,7 @@ public class PublicPlaylist implements Serializable {
             ocupied.signalAll();
         } finally {
             lock.unlock();
+            pr.getClient().setMode("playlist");
         }
     }
 
@@ -129,6 +130,7 @@ public class PublicPlaylist implements Serializable {
 
         } finally {
             lock.unlock();
+            pr.getClient().setMode("playlist");
         }
     }
     /*

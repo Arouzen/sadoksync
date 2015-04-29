@@ -193,6 +193,24 @@ public class Client extends javax.swing.JFrame {
     public String getRtspUrl() {
         return "rtsp://" + this.server + ":" + this.port + "/" + this.rtspPath;
     }
+    
+    public void setMode(String mode) {
+        switch (mode) {
+            case "chat":
+                this.rightPanelMode = mode;
+                jSplitPane1.setRightComponent(scrollPaneChatt);
+                break;
+            case "users":
+                this.rightPanelMode = mode;
+                updateRightPanel(getUsers());
+                break; 
+            case "playlist":
+                this.rightPanelMode = mode;
+                updateRightPanel(getPlaylist());
+                break;
+        }
+        
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -500,8 +518,7 @@ public class Client extends javax.swing.JFrame {
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             File selectedMedia = fileChooser.getSelectedFile();
             playlist.addToPlaylist(pr.getNick(), selectedMedia);
-            updateRightPanel(getPlaylist());
-            rightPanelMode = "playlist";
+            setMode("playlist");
         }
     }//GEN-LAST:event_OpenActionPerformed
 
@@ -534,22 +551,19 @@ public class Client extends javax.swing.JFrame {
 
     private void buttonShowUsersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonShowUsersActionPerformed
         if (!rightPanelMode.equals("users")) {
-            updateRightPanel(getUsers());
-            rightPanelMode = "users";
+            setMode("users");
         }
     }//GEN-LAST:event_buttonShowUsersActionPerformed
 
     private void buttonShowChatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonShowChatActionPerformed
         if (!rightPanelMode.equals("chat")) {
-            jSplitPane1.setRightComponent(scrollPaneChatt);
-            rightPanelMode = "chat";
+            setMode("chat");
         }
     }//GEN-LAST:event_buttonShowChatActionPerformed
 
     private void buttonShowPlaylistActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonShowPlaylistActionPerformed
         if (!rightPanelMode.equals("playlist")) {
-            updateRightPanel(getPlaylist());
-            rightPanelMode = "playlist";
+            setMode("playlist");
         }
     }//GEN-LAST:event_buttonShowPlaylistActionPerformed
 
@@ -567,8 +581,6 @@ public class Client extends javax.swing.JFrame {
             }
             if (!id.isEmpty()) {
                 playlist.addToPlaylist(pr.getNick(), id, "youtube");
-                updateRightPanel(getPlaylist());
-                rightPanelMode = "playlist";
             }
         }
     }//GEN-LAST:event_jMenuItem3ActionPerformed
@@ -695,6 +707,7 @@ public class Client extends javax.swing.JFrame {
             model.addElement(element);
         }
 
+        scrollListPanel.setSize(jSplitPane1.getRightComponent().getSize());
         jSplitPane1.setRightComponent(scrollListPanel);
     }
 
@@ -925,7 +938,7 @@ public class Client extends javax.swing.JFrame {
 
     void setPlayList(PublicPlaylist playlist) {
         this.playlist = playlist;
-        //Redraw???
+        setMode("playlist");
     }
 
     class FullScreenPlayer {

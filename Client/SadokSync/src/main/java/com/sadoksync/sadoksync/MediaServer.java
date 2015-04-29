@@ -124,8 +124,7 @@ public class MediaServer {
                         serverMediaPlayer.addMediaPlayerEventListener(new MediaPlayerEventAdapter() {
                             public void mediaStoppedFinished(MediaPlayer serverMediaPlayer, boolean release) {
                                 playlist.removeFirstInQueue();
-                                client.updateRightPanel(client.getPlaylist());
-                                client.rightPanelMode = "playlist";
+                                client.setMode("playlist");
                                 
                                 /*if (!playlist.isEmpty()) {
                                  String ip = client.pr.com.getPeerIP(playlist.getFirstInListOwner());
