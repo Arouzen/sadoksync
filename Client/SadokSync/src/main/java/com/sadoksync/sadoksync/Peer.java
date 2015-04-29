@@ -463,7 +463,7 @@ public class Peer {
             
             if (this.isHost()) {
                 System.out.println("Peer.connectionEvent: isHost()");
-                removePeerByIp(ipAddr);
+                removePeerbyIp(ipAddr);
 
                 //com.removePeerByIp(ipAddr);
             } else {
@@ -474,7 +474,7 @@ public class Peer {
 
     }
 
-    void removePeerByIp(String ipAddr) {
+    void removePeerbyIp(String ipAddr) {
         System.out.println("Peer.removePeer: Starting removePeer");
         String nick = com.getNickByIp(ipAddr);
 
