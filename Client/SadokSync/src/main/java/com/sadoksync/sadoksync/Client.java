@@ -729,6 +729,12 @@ public class Client extends javax.swing.JFrame {
                                 updateRightPanel(getPlaylist());
                                 rightPanelMode = "playlist";
 
+                                try {
+                                    Thread.sleep(1000);
+                                } catch (InterruptedException ex) {
+                                    Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+                                }
+                                
                                 if (!playlist.isEmpty()) {
                                     String ip = pr.com.getPeerIP(playlist.getFirstInListOwner());
                                     if (!pr.getMyIp().equals(ip)) {
