@@ -15,8 +15,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.security.CodeSource;
-import java.security.ProtectionDomain;
+import java.util.Iterator;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -168,25 +167,8 @@ public class Client extends javax.swing.JFrame {
         //Init empty canvas
         emptyCanvas = new EmptyCanvas();
 
-        mediaPlayer.addMediaPlayerEventListener(
-                new MediaPlayerEventAdapter() {
-                    @Override
-                    public void finished(MediaPlayer mediaPlayer
-                    ) {
-                        if (playlist.isEmpty()) {
-                            setLeftComponent(emptyCanvas);
-                        }
-                    }
+        this.mediaPlayerInit(mediaPlayer);
 
-                    @Override
-                    public void stopped(MediaPlayer mediaPlayer
-                    ) {
-                        if (playlist.isEmpty()) {
-                            setLeftComponent(emptyCanvas);
-                        }
-                    }
-                }
-        );
         // Split panel inits
         jSplitPane1.setDividerLocation(
                 0.7);
@@ -208,6 +190,28 @@ public class Client extends javax.swing.JFrame {
          buttonStream.setEnabled(false);
          }
          */
+    }
+
+    private void mediaPlayerInit(EmbeddedMediaPlayer mediaPlayer) {
+        mediaPlayer.addMediaPlayerEventListener(
+                new MediaPlayerEventAdapter() {
+                    @Override
+                    public void finished(MediaPlayer mediaPlayer
+                    ) {
+                        if (playlist.isEmpty()) {
+                            setLeftComponent(emptyCanvas);
+                        }
+                    }
+
+                    @Override
+                    public void stopped(MediaPlayer mediaPlayer
+                    ) {
+                        if (playlist.isEmpty()) {
+                            setLeftComponent(emptyCanvas);
+                        }
+                    }
+                }
+        );
     }
 
     public void persistClient(MediaPlayer mediaPlayer) {
@@ -254,8 +258,7 @@ public class Client extends javax.swing.JFrame {
                 this.rightPanelMode = mode;
                 updateRightPanel(getPlaylist());
                 break;
-        }
-
+        } 
     }
 
     /**
@@ -638,13 +641,27 @@ public class Client extends javax.swing.JFrame {
         playlist.removefromPlaylist(pr.getNick());
         //byt host
         if (pr.isHost()) {
-            startStream();
-        }
-        Message msg = new Message();
-        msg.setType("removePeerbyNick");
-        msg.setName(pr.getNick());
-        pr.sendMsg(pr.getHost(), 4444, msg);
+            Iterator it2 = pr.com.pMap.entrySet().iterator();
+            while (it2.hasNext()) {
+                Map.Entry pair = (Map.Entry) it2.next();
 
+                System.out.println("BEFORE: " + pair.getKey());
+            }
+            pr.removePeerbyNick(pr.getNick());
+            Iterator it = pr.com.pMap.entrySet().iterator();
+            while (it.hasNext()) {
+                Map.Entry pair = (Map.Entry) it.next();
+
+                System.out.println("AFTER: " + pair.getKey());
+            }
+            pr.SendPMap(pr.getMyIp());
+            startStream();
+        } else {
+            Message msg = new Message();
+            msg.setType("removePeerbyNick");
+            msg.setName(pr.getNick());
+            pr.sendMsg(pr.getHost(), 4444, msg);
+        }
         if (mediaPlayer.isPlaying()) {
             mediaPlayer.stop();
         }
@@ -699,21 +716,21 @@ public class Client extends javax.swing.JFrame {
         if (mediaType.equals("visualize")) {
             // Check if visualizemode already set, else we need to set it to visualizemode
             // If not, its already in visualizemode and we can play media without any changes
-            if (!visualizeMode) {
-                visualizeMode = true;
-                System.out.println("1");
+
+            System.out.println("1");
                 // To set it to visualize mode we need to:
-                // Recreate the mediaPlayerFactory with visualizer options
-                mediaPlayerFactory = new MediaPlayerFactory("--audio-visual=visual", "--effect-list=spectrum");
-                System.out.println("2");
-                mediaPlayer = mediaPlayerFactory.newEmbeddedMediaPlayer(new Win32FullScreenStrategy(fullscreenplayer.frame));
-                System.out.println("3");
-                //Set visualizer mediaplayer to surface
-                videoSurface = mediaPlayerFactory.newVideoSurface(canvas);
-                System.out.println("4");
-                mediaPlayer.setVideoSurface(videoSurface);
-                System.out.println("5");
-            }
+            // Recreate the mediaPlayerFactory with visualizer options
+            mediaPlayerFactory = new MediaPlayerFactory("--audio-visual=visual", "--effect-list=spectrum");
+            System.out.println("2");
+            mediaPlayer = mediaPlayerFactory.newEmbeddedMediaPlayer(new Win32FullScreenStrategy(fullscreenplayer.frame));
+            System.out.println("3");
+            //Set visualizer mediaplayer to surface
+            videoSurface = mediaPlayerFactory.newVideoSurface(canvas);
+            System.out.println("4");
+            mediaPlayer.setVideoSurface(videoSurface);
+            System.out.println("5");
+            this.mediaPlayerInit(mediaPlayer);
+
             // Own visualizer stuff. dont remove pls
             // I think this gives us a audiostream to work with
             /*MediaPlayerFactory factory = new MediaPlayerFactory();
@@ -731,6 +748,7 @@ public class Client extends javax.swing.JFrame {
             //Set mediaplayer without visualize options to surface
             videoSurface = mediaPlayerFactory.newVideoSurface(canvas);
             mediaPlayer.setVideoSurface(videoSurface);
+            this.mediaPlayerInit(mediaPlayer);
 
         }
         // lastly, play the media in the mediaplayer with the apropriate options
