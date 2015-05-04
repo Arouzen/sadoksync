@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Iterator;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -632,13 +633,27 @@ public class Client extends javax.swing.JFrame {
         playlist.removefromPlaylist(pr.getNick());
         //byt host
         if (pr.isHost()) {
-            startStream();
-        }
-        Message msg = new Message();
-        msg.setType("removePeerbyNick");
-        msg.setName(pr.getNick());
-        pr.sendMsg(pr.getHost(), 4444, msg);
+            Iterator it2 = pr.com.pMap.entrySet().iterator();
+            while (it2.hasNext()) {
+                Map.Entry pair = (Map.Entry) it2.next();
 
+                System.out.println("BEFORE: " + pair.getKey());
+            }
+            pr.removePeerbyNick(pr.getNick());
+            Iterator it = pr.com.pMap.entrySet().iterator();
+            while (it.hasNext()) {
+                Map.Entry pair = (Map.Entry) it.next();
+
+                System.out.println("AFTER: " + pair.getKey());
+            }
+            pr.SendPMap(pr.getMyIp());
+            startStream();
+        } else {
+            Message msg = new Message();
+            msg.setType("removePeerbyNick");
+            msg.setName(pr.getNick());
+            pr.sendMsg(pr.getHost(), 4444, msg);
+        }
         if (mediaPlayer.isPlaying()) {
             mediaPlayer.stop();
         }
