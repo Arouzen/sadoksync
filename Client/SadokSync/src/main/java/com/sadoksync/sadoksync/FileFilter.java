@@ -3,6 +3,8 @@ package com.sadoksync.sadoksync;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.json.simple.JSONArray;
@@ -16,18 +18,17 @@ import org.json.simple.parser.ParseException;
  */
 class FileFilter extends javax.swing.filechooser.FileFilter {
 
-    StringBuilder location;
+    ClassLoader classLoader;
 
     public FileFilter() {
-        location = new StringBuilder(Client.class.getProtectionDomain().getCodeSource().getLocation().toString());
-        location.delete(0, 6);
+        classLoader = getClass().getClassLoader();
     }
 
     public boolean acceptMediaFile(String mediaExtension, String type) throws ParseException, IOException {
-        File f = new File(location.toString() + "/VLCExtensions.json");
-
+        InputStream in = classLoader.getResourceAsStream("VLCExtensions.json");
+        
         JSONParser JSONParser = new JSONParser();
-        JSONObject jsonObject = (JSONObject) JSONParser.parse(new FileReader(f));
+        JSONObject jsonObject = (JSONObject) JSONParser.parse(new InputStreamReader(in));
         JSONObject jsonMediaObject = (JSONObject) jsonObject.get("media");
         JSONArray jsonVisualizeArray = (JSONArray) jsonMediaObject.get("visualize");
         JSONArray jsonVideoArray = (JSONArray) jsonMediaObject.get("video");
