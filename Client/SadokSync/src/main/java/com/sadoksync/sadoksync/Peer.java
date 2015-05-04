@@ -47,7 +47,7 @@ public class Peer {
 
     //del?
     void setComunityTopic(String topic) {
-      
+
         com.setTopic(topic);
     }
 
@@ -222,7 +222,7 @@ public class Peer {
             while (i.hasNext()) {
                 key = (String) i.next();
                 opr = (PeerReg) m.get(key);
-                System.out.println("sendMsgToComunity(loop):  " + opr.getAddr() + " From:" +  this.getMyIp());
+                System.out.println("sendMsgToComunity(loop):  " + opr.getAddr() + " From:" + this.getMyIp());
                 //Work is needed here
                 if (!this.getMyIp().equals(opr.getAddr())) {
                     System.out.println("Trigger: ");
@@ -336,21 +336,21 @@ public class Peer {
         this.sendMsg(ipAddr, 4444, msgret);
     }
 
-    void deliverStreamToComunity(String path) {
+    void deliverStreamToComunity(String mediaType) {
         //Delives a message that set where the stream is currently.
         System.out.println("deliverPlaylistToComunity()");
         Message msgret = new Message();
         // msgret.setipAddr(this.getMyIp());
         msgret.setType("Set Stream");
         msgret.setName("demo");
+        msgret.setText(mediaType);
         this.sendMsgToComunity(msgret);
     }
 
     void deliverPlaylistToComunity() {
-        System.out.println("deliverPlaylistToComunity()");
         //Deliver the playlist... how?
         List li = null;
-        PublicPlaylist pli = cli.getPubicPlaylist();
+        PublicPlaylist pli = cli.getPublicPlaylist();
         pli.getLock().lock();
         try {
             //get media from li and put into a list.
@@ -361,9 +361,19 @@ public class Peer {
             pli.getLock().unlock();
         }
         Message msgret = new Message();
+        //msgret.setipAddr(this.getMyIp());
         msgret.setType("Set Playlist");
         msgret.setList(li);
         this.sendMsgToComunity(msgret);
+    }
+
+    void Ping(String ipAddr, String why) {
+        System.out.println("Ping from: " + this.getMyIp() + " to " + ipAddr);
+        Message msgret = new Message();
+        //msgret.setipAddr(this.getMyIp());
+        msgret.setType("Ping");
+        msgret.setText(why);
+        this.sendMsg(ipAddr, 4444, msgret);
     }
 
     boolean isHost() {
@@ -381,7 +391,7 @@ public class Peer {
     void deliverPlaylist(String ipAddr) {
         //Deliver the playlist... how?
         List li = null;
-        PublicPlaylist pli = cli.getPubicPlaylist();
+        PublicPlaylist pli = cli.getPublicPlaylist();
         pli.getLock().lock();
         try {
             //get media from li and put into a list.

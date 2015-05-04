@@ -51,13 +51,13 @@ public class PublicPlaylist implements Serializable {
      Critical section locked with lock.
      Adds an item to the playlists.
      */
-    public void addToPlaylist(String ip, File mediaFile) {
-        Pair pair = new Pair(ip, new Media(mediaFile, "local file"));
+    public void addToPlaylist(String owner, File mediaFile) {
+        Pair pair = new Pair(owner, new Media(mediaFile, "local file"));
         this.addToPlaylist(pair);
     }
 
-    public void addToPlaylist(String ip, String url, String type) {
-        Pair pair = new Pair(ip, new Media(url, type));
+    public void addToPlaylist(String owner, String url, String type) {
+        Pair pair = new Pair(owner, new Media(url, type));
         this.addToPlaylist(pair);
     }
 
@@ -76,6 +76,7 @@ public class PublicPlaylist implements Serializable {
                     //pr.getClient().addtoPlaylist(msg.getPair());
 
                     //play next media
+                    System.out.println("{PublicPlaylist.addToPlaylist] Starting stream");
                     pr.getClient().startStream();
                 } else {
                     playlist.add(pair);
@@ -84,6 +85,7 @@ public class PublicPlaylist implements Serializable {
                 pr.deliverPlaylistToComunity();
             } else {
                 Message msg = new Message();
+                //msg.setipAddr(pr.getMyIp());
                 msg.setType("Playlist");
                 msg.setText("add");
                 msg.setPair(pair);
@@ -93,6 +95,41 @@ public class PublicPlaylist implements Serializable {
             ocupied.signalAll();
         } finally {
             lock.unlock();
+            pr.getClient().setMode("playlist");
+        }
+    }
+
+    // Remove all elements from the arraylist (playlist) containing the key (user).
+    public void removefromPlaylist(String name) {
+        lock.lock();
+        try {
+            if (pr.isHost()) {
+
+                //Temporary list containing indexes to remove. 
+                ArrayList<Integer> save = new ArrayList<Integer>();
+                
+                //find indexes for all objects belonging to one person. 
+                for (int i = 0; i < playlist.size(); i++) {
+                    if (playlist.get(i).key().equals(name)) {
+                        save.add(i);
+                    }
+                }
+
+                for (int i = save.size(); i > 0; i--) {
+                    int j = save.get(i - 1);
+                    playlist.remove(j);
+                }
+
+                pr.deliverPlaylistToComunity();
+            } else {
+                Message msg = new Message();
+                msg.setType("removefromlist");
+                msg.setName(name);
+                pr.sendMsg(pr.getHost(), 4444, msg);
+            }
+        } finally {
+            lock.unlock();
+            pr.getClient().setMode("playlist");
         }
     }
     /*

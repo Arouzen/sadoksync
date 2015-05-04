@@ -20,11 +20,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.BoundedRangeModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JSlider;
 import javax.swing.KeyStroke;
 import javax.swing.LookAndFeel;
 import javax.swing.TransferHandler;
@@ -54,14 +56,13 @@ public class Client extends javax.swing.JFrame {
     private MediaPlayerFactory mediaPlayerFactory;
 
     // Create a new media player instance for the run-time platform
-    private EmbeddedMediaPlayer mediaPlayer;
-
-    // Create the server media player used to stream
-    public HeadlessMediaPlayer serverMediaPlayer;
-    public MediaPlayerFactory serverMediaPlayerFactory;
+    EmbeddedMediaPlayer mediaPlayer;
 
     // Create video surface
     public CanvasVideoSurface videoSurface;
+
+    // Create the mediaServer
+    private MediaServer mediaServer;
 
     // Create fullscreen player
     private final FullScreenPlayer fullscreenplayer;
@@ -82,14 +83,20 @@ public class Client extends javax.swing.JFrame {
 
     // Socket variables
     private boolean isHost;
-    private Peer pr;
+    Peer pr;
 
     // Mode
     private boolean visualizeMode;
 
     // File filter
     public FileFilter filefilter;
-
+    
+    // "pause/stop" stream flag for clients
+    private boolean stopped;
+    
+    // init empty canvas
+    final private EmptyCanvas emptyCanvas;
+    
     /**
      * Creates new form Client
      *
@@ -129,24 +136,27 @@ public class Client extends javax.swing.JFrame {
         videoSurface = mediaPlayerFactory.newVideoSurface(canvas);
         mediaPlayer.setVideoSurface(videoSurface);
         visualizeMode = false;
+        
+        //Init empty canvas
+        emptyCanvas = new EmptyCanvas();
 
         mediaPlayer.addMediaPlayerEventListener(new MediaPlayerEventAdapter() {
             @Override
             public void finished(MediaPlayer mediaPlayer) {
                 if (playlist.isEmpty()) {
-                    jSplitPane1.setLeftComponent(new EmptyCanvas());
+                    setLeftComponent(emptyCanvas);
                 }
             }
 
             @Override
             public void stopped(MediaPlayer mediaPlayer) {
                 if (playlist.isEmpty()) {
-                    jSplitPane1.setLeftComponent(new EmptyCanvas());
+                    setLeftComponent(emptyCanvas);
                 }
             }
         });
         // Split panel inits
-        //jSplitPane1.setDividerLocation(0.7);
+        jSplitPane1.setDividerLocation(0.7);
         rightPanelMode = "chat";
 
         // Public playlist init
@@ -155,8 +165,26 @@ public class Client extends javax.swing.JFrame {
         // FileFilter init
         filefilter = new FileFilter();
 
-        jSplitPane1.setLeftComponent(new EmptyCanvas());
+        // Set default left canas to the empty canvas
+        setLeftComponent(emptyCanvas);
 
+        stopped = false;
+        /*
+         this.isHost = pr.isHost();
+         if (!isHost) {
+         buttonStream.setEnabled(false);
+         }
+         */
+    }
+
+    public void persistClient(MediaPlayer mediaPlayer) {
+        System.out.println("Playing next video after 5sec...(client)");
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        playMedia(getRtspUrl());
     }
 
     public void setHost(String ip) {
@@ -175,6 +203,26 @@ public class Client extends javax.swing.JFrame {
         return "rtsp://" + this.server + ":" + this.port + "/" + this.rtspPath;
     }
 
+    public void setMode(String mode) {
+        switch (mode) {
+            case "chat":
+                this.rightPanelMode = mode;
+                int temp = jSplitPane1.getDividerLocation();
+                jSplitPane1.setRightComponent(scrollPaneChatt);
+                jSplitPane1.setDividerLocation(temp);
+                break;
+            case "users":
+                this.rightPanelMode = mode;
+                updateRightPanel(getUsers());
+                break;
+            case "playlist":
+                this.rightPanelMode = mode;
+                updateRightPanel(getPlaylist());
+                break;
+        }
+
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -187,7 +235,6 @@ public class Client extends javax.swing.JFrame {
         scrollListPanel = new javax.swing.JScrollPane();
         listInScrollpane = new javax.swing.JList();
         panelChatt = new javax.swing.JPanel();
-        buttonSendChat = new javax.swing.JButton();
         textChatInput = new javax.swing.JTextField();
         jLabel1 = new javax.swing.JLabel();
         buttonPlay = new javax.swing.JButton();
@@ -201,11 +248,13 @@ public class Client extends javax.swing.JFrame {
         textChatOutput = new javax.swing.JTextArea();
         buttonShowPlaylist = new javax.swing.JButton();
         jSlider1 = new javax.swing.JSlider();
+        labelVolume = new javax.swing.JLabel();
+        buttonSendChat = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         Open = new javax.swing.JMenuItem();
         jMenuItem3 = new javax.swing.JMenuItem();
-        Exit = new javax.swing.JMenuItem();
+        jMenuItem4 = new javax.swing.JMenuItem();
         jSeparator2 = new javax.swing.JPopupMenu.Separator();
         jMenu2 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
@@ -219,18 +268,9 @@ public class Client extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(82, 68, 68));
 
-        buttonSendChat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/send_button_default _ off.png"))); // NOI18N
-        buttonSendChat.setMaximumSize(new java.awt.Dimension(85, 40));
-        buttonSendChat.setMinimumSize(new java.awt.Dimension(85, 40));
-        buttonSendChat.setPreferredSize(new java.awt.Dimension(85, 40));
-        buttonSendChat.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/send_button_default _ off_click.png"))); // NOI18N
-        buttonSendChat.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/send_button_default _ off_hover.png"))); // NOI18N
-        buttonSendChat.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                buttonSendChatActionPerformed(evt);
-            }
-        });
+        panelChatt.setBackground(new java.awt.Color(102, 102, 102));
 
+        textChatInput.setBackground(new java.awt.Color(102, 102, 102));
         textChatInput.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 textChatInputKeyPressed(evt);
@@ -241,14 +281,10 @@ public class Client extends javax.swing.JFrame {
         panelChatt.setLayout(panelChattLayout);
         panelChattLayout.setHorizontalGroup(
             panelChattLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panelChattLayout.createSequentialGroup()
-                .addComponent(textChatInput)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(buttonSendChat, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addComponent(textChatInput)
         );
         panelChattLayout.setVerticalGroup(
             panelChattLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(buttonSendChat, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
             .addComponent(textChatInput, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
         );
 
@@ -256,45 +292,62 @@ public class Client extends javax.swing.JFrame {
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("S A D O K S Y N C !");
 
-        buttonPlay.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Button_play_Default.png"))); // NOI18N
+        buttonPlay.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Reconnect_button_default.png"))); // NOI18N
+        buttonPlay.setBorderPainted(false);
+        buttonPlay.setContentAreaFilled(false);
+        buttonPlay.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         buttonPlay.setMaximumSize(new java.awt.Dimension(85, 40));
         buttonPlay.setMinimumSize(new java.awt.Dimension(85, 40));
         buttonPlay.setPreferredSize(new java.awt.Dimension(85, 40));
-        buttonPlay.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/Button_play_Clicked.png"))); // NOI18N
-        buttonPlay.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/Button_play_Default1.png"))); // NOI18N
         buttonPlay.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 buttonPlayActionPerformed(evt);
             }
         });
 
-        jButton3.setText("fullscreen");
+        jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/fullscreen_Button_default.png"))); // NOI18N
+        jButton3.setBorderPainted(false);
+        jButton3.setContentAreaFilled(false);
+        jButton3.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        jButton3.setMaximumSize(new java.awt.Dimension(85, 40));
+        jButton3.setMinimumSize(new java.awt.Dimension(85, 40));
         jButton3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton3ActionPerformed(evt);
             }
         });
 
-        ButtonStop.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Button_Stop_default.png"))); // NOI18N
+        ButtonStop.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Stop_Button_default.png"))); // NOI18N
+        ButtonStop.setBorderPainted(false);
+        ButtonStop.setContentAreaFilled(false);
+        ButtonStop.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         ButtonStop.setMaximumSize(new java.awt.Dimension(85, 40));
         ButtonStop.setMinimumSize(new java.awt.Dimension(85, 40));
         ButtonStop.setPreferredSize(new java.awt.Dimension(85, 40));
-        ButtonStop.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/Button_Stop_Hover.png"))); // NOI18N
-        ButtonStop.setSelectedIcon(new javax.swing.ImageIcon(getClass().getResource("/Button_Stop_Click.png"))); // NOI18N
         ButtonStop.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 ButtonStopActionPerformed(evt);
             }
         });
 
-        buttonShowUsers.setText("Show Users");
+        buttonShowUsers.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Users_Button_default.png"))); // NOI18N
+        buttonShowUsers.setBorderPainted(false);
+        buttonShowUsers.setContentAreaFilled(false);
+        buttonShowUsers.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        buttonShowUsers.setMaximumSize(new java.awt.Dimension(85, 40));
+        buttonShowUsers.setMinimumSize(new java.awt.Dimension(85, 40));
         buttonShowUsers.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 buttonShowUsersActionPerformed(evt);
             }
         });
 
-        buttonShowChat.setText("Show Chat");
+        buttonShowChat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Chat_button_default.png"))); // NOI18N
+        buttonShowChat.setBorderPainted(false);
+        buttonShowChat.setContentAreaFilled(false);
+        buttonShowChat.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        buttonShowChat.setMaximumSize(new java.awt.Dimension(85, 40));
+        buttonShowChat.setMinimumSize(new java.awt.Dimension(85, 40));
         buttonShowChat.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 buttonShowChatActionPerformed(evt);
@@ -303,6 +356,8 @@ public class Client extends javax.swing.JFrame {
 
         canvas.setMinimumSize(new java.awt.Dimension(590, 484));
         jSplitPane1.setLeftComponent(canvas);
+
+        scrollPaneChatt.setBackground(new java.awt.Color(102, 102, 102));
 
         textChatOutput.setEditable(false);
         textChatOutput.setBackground(new java.awt.Color(102, 102, 102));
@@ -314,16 +369,48 @@ public class Client extends javax.swing.JFrame {
 
         jSplitPane1.setRightComponent(scrollPaneChatt);
 
-        buttonShowPlaylist.setText("Show Playlist");
+        buttonShowPlaylist.setIcon(new javax.swing.ImageIcon(getClass().getResource("/playlist_Button_default.png"))); // NOI18N
+        buttonShowPlaylist.setBorderPainted(false);
+        buttonShowPlaylist.setContentAreaFilled(false);
+        buttonShowPlaylist.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        buttonShowPlaylist.setMaximumSize(new java.awt.Dimension(85, 40));
+        buttonShowPlaylist.setMinimumSize(new java.awt.Dimension(85, 40));
         buttonShowPlaylist.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 buttonShowPlaylistActionPerformed(evt);
             }
         });
 
+        jSlider1.setPaintLabels(true);
+        jSlider1.setValue(100);
+        jSlider1.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jSlider1StateChanged(evt);
+            }
+        });
+
+        labelVolume.setText("100 %");
+
+        buttonSendChat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/send_button_default _ off.png"))); // NOI18N
+        buttonSendChat.setBorderPainted(false);
+        buttonSendChat.setContentAreaFilled(false);
+        buttonSendChat.setMaximumSize(new java.awt.Dimension(85, 40));
+        buttonSendChat.setMinimumSize(new java.awt.Dimension(85, 40));
+        buttonSendChat.setPreferredSize(new java.awt.Dimension(85, 40));
+        buttonSendChat.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/send_button_default _ off_click.png"))); // NOI18N
+        buttonSendChat.setRolloverIcon(new javax.swing.ImageIcon(getClass().getResource("/send_button_default _ off_hover.png"))); // NOI18N
+        buttonSendChat.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonSendChatActionPerformed(evt);
+            }
+        });
+
+        jMenuBar1.setBackground(new java.awt.Color(102, 102, 102));
+
         jMenu1.setText("File");
 
         Open.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.CTRL_MASK));
+        Open.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Yellow_folder_icon_open.png"))); // NOI18N
         Open.setText("Open");
         Open.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -333,6 +420,7 @@ public class Client extends javax.swing.JFrame {
         jMenu1.add(Open);
 
         jMenuItem3.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_U, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItem3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/link.png"))); // NOI18N
         jMenuItem3.setText("Add url");
         jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -341,16 +429,15 @@ public class Client extends javax.swing.JFrame {
         });
         jMenu1.add(jMenuItem3);
 
-        Exit.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Q, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.CTRL_MASK));
-        Exit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/GeoGebra_icon_exit.png"))); // NOI18N
-        Exit.setText("Exit");
-        Exit.setMaximumSize(new java.awt.Dimension(320, 320));
-        Exit.addActionListener(new java.awt.event.ActionListener() {
+        jMenuItem4.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_X, java.awt.event.InputEvent.ALT_MASK | java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItem4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/GeoGebra_icon_exit.png"))); // NOI18N
+        jMenuItem4.setText("Exit to lobby");
+        jMenuItem4.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ExitActionPerformed(evt);
+                jMenuItem4ActionPerformed(evt);
             }
         });
-        jMenu1.add(Exit);
+        jMenu1.add(jMenuItem4);
         jMenu1.add(jSeparator2);
 
         jMenuBar1.add(jMenu1);
@@ -375,50 +462,62 @@ public class Client extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 980, Short.MAX_VALUE)
+                    .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1038, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(ButtonStop, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(ButtonStop, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(buttonPlay, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(buttonPlay, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(11, 11, 11)
+                                .addComponent(labelVolume, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jSlider1, javax.swing.GroupLayout.PREFERRED_SIZE, 278, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jSlider1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(0, 0, Short.MAX_VALUE)))
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(11, 11, 11)
-                                .addComponent(panelChatt, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addGap(0, 0, Short.MAX_VALUE)
+                                .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(buttonShowChat, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(buttonShowUsers, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(buttonShowPlaylist, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(0, 39, Short.MAX_VALUE)
-                                .addComponent(jButton3)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(buttonShowChat)
+                                .addComponent(panelChatt, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(buttonShowUsers)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(buttonShowPlaylist)))))
+                                .addComponent(buttonSendChat, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                 .addGap(0, 0, 0))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton3)
-                    .addComponent(buttonShowChat)
-                    .addComponent(buttonShowUsers)
-                    .addComponent(buttonShowPlaylist))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(buttonShowPlaylist, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(buttonShowChat, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(buttonShowUsers, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jSplitPane1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(panelChatt, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(buttonPlay, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(ButtonStop, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jSlider1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(19, 19, 19)
+                        .addComponent(labelVolume))
+                    .addGroup(layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(buttonSendChat, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addComponent(panelChatt, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(buttonPlay, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(ButtonStop, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jSlider1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
                 .addContainerGap())
         );
 
@@ -429,17 +528,13 @@ public class Client extends javax.swing.JFrame {
         int returnVal = fileChooser.showOpenDialog(this);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             File selectedMedia = fileChooser.getSelectedFile();
-            playlist.addToPlaylist(pr.getMyIp(), selectedMedia);
-            updateRightPanel(getPlaylist());
-            rightPanelMode = "playlist";
+            playlist.addToPlaylist(pr.getNick(), selectedMedia);
+            setMode("playlist");
         }
     }//GEN-LAST:event_OpenActionPerformed
 
-    private void ExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ExitActionPerformed
-        System.exit(0);
-    }//GEN-LAST:event_ExitActionPerformed
-
     private void buttonPlayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonPlayActionPerformed
+        stopped = false;
         connectToRtsp();
     }//GEN-LAST:event_buttonPlayActionPerformed
 
@@ -448,7 +543,9 @@ public class Client extends javax.swing.JFrame {
             mediaPlayer.stop();
         }
         if (pr.isHost()) {
-            serverMediaPlayer.stop();
+            mediaServer.stop();
+        } else {
+            stopped = true;
         }
     }//GEN-LAST:event_ButtonStopActionPerformed
 
@@ -463,36 +560,21 @@ public class Client extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jButton3ActionPerformed
 
-    private void buttonSendChatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonSendChatActionPerformed
-        addToChat(textChatInput.getText());
-        textChatInput.setText("");
-    }//GEN-LAST:event_buttonSendChatActionPerformed
-
-    private void textChatInputKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_textChatInputKeyPressed
-        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            addToChat(textChatInput.getText());
-            textChatInput.setText("");
-        }
-    }//GEN-LAST:event_textChatInputKeyPressed
-
     private void buttonShowUsersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonShowUsersActionPerformed
         if (!rightPanelMode.equals("users")) {
-            updateRightPanel(getUsers());
-            rightPanelMode = "users";
+            setMode("users");
         }
     }//GEN-LAST:event_buttonShowUsersActionPerformed
 
     private void buttonShowChatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonShowChatActionPerformed
         if (!rightPanelMode.equals("chat")) {
-            jSplitPane1.setRightComponent(scrollPaneChatt);
-            rightPanelMode = "chat";
+            setMode("chat");
         }
     }//GEN-LAST:event_buttonShowChatActionPerformed
 
     private void buttonShowPlaylistActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonShowPlaylistActionPerformed
         if (!rightPanelMode.equals("playlist")) {
-            updateRightPanel(getPlaylist());
-            rightPanelMode = "playlist";
+            setMode("playlist");
         }
     }//GEN-LAST:event_buttonShowPlaylistActionPerformed
 
@@ -509,15 +591,57 @@ public class Client extends javax.swing.JFrame {
                 id = url.substring(0, end_of_id);
             }
             if (!id.isEmpty()) {
-                playlist.addToPlaylist(pr.getMyIp(), id, "youtube");
-                updateRightPanel(getPlaylist());
-                rightPanelMode = "playlist";
+                playlist.addToPlaylist(pr.getNick(), id, "youtube");
             }
         }
     }//GEN-LAST:event_jMenuItem3ActionPerformed
 
+    private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
+        // Remove client and its music from playlist.
+
+        playlist.removefromPlaylist(pr.getNick());
+        //byt host
+        if (pr.isHost()) {
+         startStream();
+        }
+            Message msg = new Message();
+            msg.setType("removePeerbyNick");
+            msg.setName(pr.getNick());
+            pr.sendMsg(pr.getHost(), 4444, msg);
+        
+        if (mediaPlayer.isPlaying()) {
+            mediaPlayer.stop();
+        }
+        pr.com.clearOldCommunity();
+        pr.openLobby();
+
+    }//GEN-LAST:event_jMenuItem4ActionPerformed
+    private void jSlider1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlider1StateChanged
+        Object source = evt.getSource();
+        if (source instanceof JSlider) {
+            JSlider theJSlider = (JSlider) source;
+            System.out.println("Slider changed: " + theJSlider.getValue());
+            mediaPlayer.setVolume(theJSlider.getValue());
+            labelVolume.setText(theJSlider.getValue() + " %");
+        }
+    }//GEN-LAST:event_jSlider1StateChanged
+
+    private void textChatInputKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_textChatInputKeyPressed
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            addToChat(textChatInput.getText());
+            textChatInput.setText("");
+        }
+    }//GEN-LAST:event_textChatInputKeyPressed
+
+    private void buttonSendChatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonSendChatActionPerformed
+        addToChat(textChatInput.getText());
+        textChatInput.setText("");
+    }//GEN-LAST:event_buttonSendChatActionPerformed
+
     public void connectToRtsp() {
-        playMedia(getRtspUrl());
+        if (!stopped) {
+            playMedia(getRtspUrl());
+        }
     }
 
     public void playMedia(String url) {
@@ -530,7 +654,6 @@ public class Client extends javax.swing.JFrame {
             // If not, its already in visualizemode and we can play media without any changes
             if (!visualizeMode) {
                 visualizeMode = true;
-                System.out.println("visualizeMode = true");
                 // To set it to visualize mode we need to:
                 // Recreate the mediaPlayerFactory with visualizer options
                 mediaPlayerFactory = new MediaPlayerFactory("--audio-visual=visual", "--effect-list=spectrum");
@@ -549,8 +672,8 @@ public class Client extends javax.swing.JFrame {
             // Check if in visualizemode, if it is we need to recreate the mediaplayer
             if (visualizeMode) {
                 visualizeMode = false;
-                System.out.println("visualizeMode = false");
                 // Recreate the mediaplayerfactory without visualizer options
+                //"--realrtsp-caching=1200", manual cache size. 
                 mediaPlayerFactory = new MediaPlayerFactory();
                 mediaPlayer = mediaPlayerFactory.newEmbeddedMediaPlayer(new Win32FullScreenStrategy(fullscreenplayer.frame));
 
@@ -560,7 +683,7 @@ public class Client extends javax.swing.JFrame {
             }
         }
         // lastly, play the media in the mediaplayer with the apropriate options
-        jSplitPane1.setLeftComponent(canvas);
+        setLeftComponent(canvas);
         mediaPlayer.playMedia(url);
     }
 
@@ -568,6 +691,30 @@ public class Client extends javax.swing.JFrame {
         this.mediaType = text;
     }
 
+    private class TestAudioCallbackAdapter extends DefaultAudioCallbackAdapter {
+
+        /**
+         * Output stream.
+         */
+        private final BufferedOutputStream out;
+
+        /**
+         * Create an audio callback.
+         */
+        public TestAudioCallbackAdapter() {
+            super(4); // 4 is the block size for the audio samples
+            out = new BufferedOutputStream(System.out);
+        }
+
+        @Override
+        protected void onPlay(DirectAudioPlayer mediaPlayer, byte[] data, int sampleCount, long pts) {
+            try {
+                out.write(data);
+            } catch (IOException ex) {
+                Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
 
     public void updateRightPanel(ArrayList<String> elements) {
         DefaultListModel model = (DefaultListModel) listInScrollpane.getModel();
@@ -577,13 +724,16 @@ public class Client extends javax.swing.JFrame {
             model.addElement(element);
         }
 
+        int temp = jSplitPane1.getDividerLocation();
+        scrollListPanel.setSize(jSplitPane1.getRightComponent().getSize());
         jSplitPane1.setRightComponent(scrollListPanel);
+        jSplitPane1.setDividerLocation(temp);
     }
 
     public void addToChat(String text) {
         if (!text.isEmpty()) {
             Message msg = new Message();
-            
+            //msg.setipAddr(pr.getMyIp());
             // TODO - validate IP with nick for security
             msg.setType("chat message");
             msg.setText(pr.getNick() + ": " + text);
@@ -597,186 +747,12 @@ public class Client extends javax.swing.JFrame {
     }
 
     public void startStreamingServer() {
-        try {
-            Thread streamingServer = new Thread() {
-                public void run() {
-                    try {
-                        Media media = playlist.getFirstInList();
-                        //No ip address here, only an @. 
-                        final String options = formatRtspStream("@", 5555, "demo");
-                        System.out.println("Streaming '" + media.getPath() + "' to '" + options + "'");
-                        serverMediaPlayerFactory = new MediaPlayerFactory();
-                        serverMediaPlayer = serverMediaPlayerFactory.newHeadlessMediaPlayer();
-
-                        serverMediaPlayer.addMediaPlayerEventListener(new MediaPlayerEventAdapter() {
-                            @Override
-                            public void finished(MediaPlayer mediaPlayer) {
-                                if (mediaPlayer.subItemCount() > 0) {
-                                    System.out.println(mediaPlayer.subItems());
-                                }
-                                playlist.removeFirstInQueue();
-                                updateRightPanel(getPlaylist());
-                                rightPanelMode = "playlist";
-
-                                String ip = playlist.getFirstInListOwner();
-
-                                if (!playlist.isEmpty() && pr.getMyIp().equals(ip)) {
-                                    streamNextMedia(mediaPlayer);
-                                } else if (!playlist.isEmpty() && !pr.getMyIp().equals(ip)) {
-                                    mediaPlayer.release();
-                                    streamNextMedia(mediaPlayer);
-                                } else {
-                                    System.out.println("[Server] No more media in list");
-                                    mediaPlayer.release();
-                                    //serverMediaPlayerFactory.release();
-                                }
-                            }
-
-                            @Override
-                            public void stopped(MediaPlayer mediaPlayer) {
-                                playlist.removeFirstInQueue();
-                                updateRightPanel(getPlaylist());
-                                rightPanelMode = "playlist";
-                                if (!playlist.isEmpty()) {
-                                    streamNextMedia(mediaPlayer);
-                                } else {
-                                    System.out.println("[Server] No more media in list");
-                                    //mediaPlayer.release();
-                                    //serverMediaPlayerFactory.release();
-                                }
-                            }
-
-                            @Override
-                            public void mediaSubItemAdded(MediaPlayer serverMediaPlayer, libvlc_media_t subItem) {
-                                List<String> items = serverMediaPlayer.subItems();
-                                serverMediaPlayer.playMedia(items.get(0),
-                                        options,
-                                        ":no-sout-rtp-sap",
-                                        ":no-sout-standard-sap",
-                                        ":sout-all",
-                                        ":sout-keep"
-                                );
-                            }
-
-                            @Override
-                            public void buffering(MediaPlayer mediaPlayer, float newCache) {
-                                System.out.println("Buffering " + newCache);
-                            }
-
-                            private void streamNextMedia(MediaPlayer serverMediaPlayer) {
-                                System.out.println("[Server] Media stopped/finished, moving next in list!");
-
-                                //get the next media object in list
-                                Media media = playlist.getFirstInList();
-
-                                //get the ip of the owner of the next media.
-                                String ip = playlist.getFirstInListOwner();
-
-                                if (pr.isHost()) {
-                                    System.out.println("(stream) this is host");
-                                    serverMediaPlayer.playMedia(media.getPath(),
-                                            options,
-                                            ":no-sout-rtp-sap",
-                                            ":no-sout-standard-sap",
-                                            ":sout-all",
-                                            ":sout-keep"
-                                    );
-                                    try {
-                                        Thread.sleep(4000);
-                                    } catch (InterruptedException ex) {
-                                        Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
-                                    }
-
-                                    setHost(pr.getMyIp());
-                                    setPort("5555");
-                                    setRtspPath("demo");
-
-                                    String mediaType = "";
-                                    if (media.getType().equals("local file")) {
-                                        String extension = media.getPath().split("\\.")[media.getPath().split("\\.").length - 1];
-                                        try {
-                                            if (filefilter.acceptMediaFile(extension, "visualize")) {
-                                                mediaType = "visualize";
-                                            } else if (filefilter.acceptMediaFile(extension, "video")) {
-                                                mediaType = "video";
-                                            }
-                                            setMediaType(mediaType);
-                                        } catch (ParseException ex) {
-                                            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
-                                        } catch (IOException ex) {
-                                            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
-                                        }
-                                    } else {
-                                        setMediaType(media.getType());
-                                    }
-
-                                    connectToRtsp();
-                                    pr.deliverStreamToComunity(mediaType);
-                                    pr.deliverPlaylistToComunity();
-                                } else {
-                                    //mediaPlayer.release();
-                                    //serverMediaPlayerFactory.release();
-                                    pr.ping(ip, "Move Host");
-                                }
-                            }
-                        });
-
-                        serverMediaPlayer.setPlaySubItems(true);
-                        serverMediaPlayer.playMedia(media.getPath(),
-                                options,
-                                ":no-sout-rtp-sap",
-                                ":no-sout-standard-sap",
-                                ":sout-all",
-                                ":sout-keep"
-                        );
-
-                        try {
-                            Thread.sleep(2000);
-                        } catch (InterruptedException ex) {
-                            ex.printStackTrace();
-                        }
-
-                        setHost("localhost");
-                        setPort("5555");
-                        setRtspPath("demo");
-
-                        String mediaType = "";
-                        if (media.getType().equals("local file")) {
-                            String extension = media.getPath().split("\\.")[media.getPath().split("\\.").length - 1];
-                            try {
-                                if (filefilter.acceptMediaFile(extension, "visualize")) {
-                                    mediaType = "visualize";
-                                } else if (filefilter.acceptMediaFile(extension, "video")) {
-                                    mediaType = "video";
-                                }
-                                setMediaType(mediaType);
-                            } catch (ParseException ex) {
-                                Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
-                            } catch (IOException ex) {
-                                Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
-                            }
-                        } else {
-                            setMediaType(media.getType());
-                        }
-
-                        playMedia(getRtspUrl());
-
-                        pr.deliverStreamToComunity(mediaType);
-                        pr.deliverPlaylistToComunity();
-
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                    }
-                }
-            };
-            streamingServer.start();
-        } catch (Exception ex) {
-            System.out.println("No please");
-        }
+        mediaServer = new MediaServer(playlist, this);
+        mediaServer.startStreamingServer();
     }
 
     public void cleanStartOfPlaylist() {
-        while (!pr.getMyIp().equals(playlist.getFirstInListOwner())) {
+        while (!pr.getMyIp().equals(pr.com.getPeerIP(playlist.getFirstInListOwner()))) {
             playlist.removeFirstInQueue();
         }
     }
@@ -787,16 +763,33 @@ public class Client extends javax.swing.JFrame {
 
     public void startStream() {
         if (!playlist.isEmpty()) {
-            String ip = playlist.getFirstInListOwner();
-            System.out.println("starting stream on ip: " + ip + " from " + pr.getMyIp());
+            String ip = pr.com.getPeerIP(playlist.getFirstInListOwner());
             if (pr.getMyIp().equals(ip)) {
                 startStreamingServer();
 
+                /*
+                 playMedia(getRtspUrl());
+                 pr.DeliverStreamToComunity(pr.getMyIp(), "demo");
+                 */
             } else {
-                pr.ping(ip, "Move Host");
+                pr.Ping(ip, "Move Host");
             }
-
+        } else {
+            System.out.println("[Client.startStream] No more media in list!");
+            setLeftComponent(emptyCanvas);
         }
+    }
+    
+    void setLeftComponent(Canvas canvas) {
+        int temp = jSplitPane1.getDividerLocation();
+        jSplitPane1.setLeftComponent(canvas);
+        jSplitPane1.setDividerLocation(temp);
+    }
+    
+    private void setLeftComponent(EmptyCanvas canvas) {
+        int temp = jSplitPane1.getDividerLocation();
+        jSplitPane1.setLeftComponent(canvas);
+        jSplitPane1.setDividerLocation(temp);
     }
 
     /**
@@ -843,7 +836,8 @@ public class Client extends javax.swing.JFrame {
         Map map = pr.com.getComunityPeers();
 
         for (Object entry : map.keySet()) {
-            list.add(((PeerReg)map.get(entry)).getNick());
+            String key = entry.toString();
+            list.add(key);
         }
 
         return list;
@@ -874,20 +868,8 @@ public class Client extends javax.swing.JFrame {
         updateRightPanel(getPlaylist());
     }
 
-    public PublicPlaylist getPubicPlaylist() {
+    public PublicPlaylist getPublicPlaylist() {
         return playlist;
-    }
-
-    private static String formatRtspStream(String serverAddress, int serverPort, String id) {
-        StringBuilder sb = new StringBuilder(60);
-        sb.append(":sout=#rtp{sdp=rtsp://@");
-        sb.append(serverAddress);
-        sb.append(':');
-        sb.append(serverPort);
-        sb.append('/');
-        sb.append(id);
-        sb.append("}");
-        return sb.toString();
     }
 
     private void initStyle() {
@@ -969,7 +951,7 @@ public class Client extends javax.swing.JFrame {
                 }
                 for (File file : data) {
                     if (filefilter.accept(file)) {
-                        playlist.addToPlaylist(pr.getMyIp(), file);
+                        playlist.addToPlaylist(pr.getNick(), file);
                     } else {
                         displayDropLocation("Does only accept media files.");
                     }
@@ -987,7 +969,7 @@ public class Client extends javax.swing.JFrame {
 
     void setPlayList(PublicPlaylist playlist) {
         this.playlist = playlist;
-        //Redraw???
+        setMode("playlist");
     }
 
     class FullScreenPlayer {
@@ -1057,7 +1039,6 @@ public class Client extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton ButtonStop;
-    private javax.swing.JMenuItem Exit;
     private javax.swing.JMenuItem Open;
     private javax.swing.JButton buttonPlay;
     private javax.swing.JButton buttonSendChat;
@@ -1073,10 +1054,12 @@ public class Client extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem3;
+    private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JSlider jSlider1;
     private javax.swing.JSplitPane jSplitPane1;
+    private javax.swing.JLabel labelVolume;
     private javax.swing.JList listInScrollpane;
     private javax.swing.JPanel panelChatt;
     private javax.swing.JScrollPane scrollListPanel;
