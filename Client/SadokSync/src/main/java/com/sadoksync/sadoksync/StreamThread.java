@@ -79,7 +79,6 @@ public class StreamThread extends Thread {
 
                             //serverMediaPlayer.release();
                             //serverMediaPlayerFactory.release();
-
                         }
                         client.startStream();
                         //streamNextMedia(client.mediaPlayer);
@@ -89,7 +88,6 @@ public class StreamThread extends Thread {
 
                         //serverMediaPlayer.release();
                         //serverMediaPlayerFactory.release();
-
                     }
 
                     //kill(true);
@@ -179,17 +177,34 @@ public class StreamThread extends Thread {
             ex.printStackTrace();
         }
     }
-    public void stopMedia() {
-        if (serverMediaPlayer.isPlaying()) {
-            serverMediaPlayer.stop();
-        }
-    }
-    
-    public void kill() {
-        //this.stopMedia();
 
-        serverMediaPlayer.release();
-        serverMediaPlayerFactory.release();
+    public void stopMedia() {
+        System.out.println("StreamThread: stopMedia:");
+        if (serverMediaPlayer != null) {
+            System.out.println("StreamThread: stopMedia: 1");
+            if (serverMediaPlayer.isPlaying()) {
+                System.out.println("StreamThread: stopMedia: 2");
+                serverMediaPlayer.stop();
+                System.out.println("StreamThread: stopMedia: 3");
+            }
+        }
+
+    }
+
+    public void kill() {
+        System.out.println("StreamThread: kill:");
+        this.stopMedia();
+        System.out.println("StreamThread: kill: 1");
+        if (serverMediaPlayer != null) {
+            System.out.println("StreamThread: kill: 2");
+            serverMediaPlayer.release();
+            System.out.println("StreamThread: kill: 3");
+        }
+        if (serverMediaPlayerFactory != null) {
+            System.out.println("StreamThread: kill: 4");
+            serverMediaPlayerFactory.release();
+            System.out.println("StreamThread: kill: 5");
+        }
     }
 
     private static String formatRtspStream(String serverAddress, int serverPort, String id) {
@@ -214,7 +229,7 @@ public class StreamThread extends Thread {
                 ":sout-all",
                 ":sout-keep"
         );
-        
+
         //Let the stream startup
         try {
             Thread.sleep(4000);
