@@ -9,7 +9,7 @@ import javax.swing.DefaultListModel;
 
 /**
  *
- * @author Pontus
+ * @author Alexander
  */
 public class ConnectionHandler extends Thread {
 
@@ -44,7 +44,6 @@ public class ConnectionHandler extends Thread {
                         System.out.println("Message: Set Playlist");
                         PublicPlaylist pl = new PublicPlaylist(pr, msg.getList());
                         pr.getClient().setPlayList(pl);
-
                         break;
                     case "Playlist":
                         System.out.println("Message: Playlist");

@@ -530,6 +530,7 @@ public class Client extends javax.swing.JFrame {
             // If not, its already in visualizemode and we can play media without any changes
             if (!visualizeMode) {
                 visualizeMode = true;
+                System.out.println("visualizeMode = true");
                 // To set it to visualize mode we need to:
                 // Recreate the mediaPlayerFactory with visualizer options
                 mediaPlayerFactory = new MediaPlayerFactory("--audio-visual=visual", "--effect-list=spectrum");
@@ -548,6 +549,7 @@ public class Client extends javax.swing.JFrame {
             // Check if in visualizemode, if it is we need to recreate the mediaplayer
             if (visualizeMode) {
                 visualizeMode = false;
+                System.out.println("visualizeMode = false");
                 // Recreate the mediaplayerfactory without visualizer options
                 mediaPlayerFactory = new MediaPlayerFactory();
                 mediaPlayer = mediaPlayerFactory.newEmbeddedMediaPlayer(new Win32FullScreenStrategy(fullscreenplayer.frame));
