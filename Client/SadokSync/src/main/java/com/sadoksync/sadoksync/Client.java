@@ -629,7 +629,7 @@ public class Client extends javax.swing.JFrame {
         playlist.removefromPlaylist(pr.getNick());
         //byt host
         if (pr.isHost()) {
-                 Iterator it2 = pr.com.pMap.entrySet().iterator();
+            Iterator it2 = pr.com.pMap.entrySet().iterator();
             while (it2.hasNext()) {
                 Map.Entry pair = (Map.Entry) it2.next();
 
@@ -644,12 +644,12 @@ public class Client extends javax.swing.JFrame {
             }
             pr.SendPMap(pr.getMyIp());
             startStream();
+        } else {
+            Message msg = new Message();
+            msg.setType("removePeerbyNick");
+            msg.setName(pr.getNick());
+            pr.sendMsg(pr.getHost(), 4444, msg);
         }
-        Message msg = new Message();
-        msg.setType("removePeerbyNick");
-        msg.setName(pr.getNick());
-        pr.sendMsg(pr.getHost(), 4444, msg);
-
         if (mediaPlayer.isPlaying()) {
             mediaPlayer.stop();
         }
@@ -728,7 +728,7 @@ public class Client extends javax.swing.JFrame {
             // Check if in visualizemode, if it is we need to recreate the mediaplayer
 
             System.out.println("1");
-                // Recreate the mediaplayerfactory without visualizer options
+            // Recreate the mediaplayerfactory without visualizer options
             //"--realrtsp-caching=1200", manual cache size. 
             mediaPlayerFactory = new MediaPlayerFactory();
             mediaPlayer = mediaPlayerFactory.newEmbeddedMediaPlayer(new Win32FullScreenStrategy(fullscreenplayer.frame));
