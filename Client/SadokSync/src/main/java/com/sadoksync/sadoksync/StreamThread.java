@@ -66,7 +66,7 @@ public class StreamThread extends Thread {
                         //serverMediaPlayerFactory.release();
                     }
 
-                    kill(true);
+                    kill();
                 }
 
                 public void mediaFinished(MediaPlayer serverMediaPlayer) {
@@ -186,7 +186,9 @@ public class StreamThread extends Thread {
         }
     }
     
-    private void kill(boolean cond) {
+    public void kill() {
+        this.stopMedia();
+
         serverMediaPlayer.release();
         serverMediaPlayerFactory.release();
     }
