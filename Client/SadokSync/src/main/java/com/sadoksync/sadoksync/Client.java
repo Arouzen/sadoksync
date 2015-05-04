@@ -600,11 +600,10 @@ public class Client extends javax.swing.JFrame {
         // Remove client and its music from playlist.
 
         playlist.removefromPlaylist(pr.getNick());
-        //byt hos
+        //byt host
         if (pr.isHost()) {
-          pr.removePeerbyNick(pr.getNick());
-          startStream();
-                  
+            pr.removePeerbyNick(pr.getNick());
+            startStream();
         }
         Message msg = new Message();
         msg.setType("removePeerbyNick");
