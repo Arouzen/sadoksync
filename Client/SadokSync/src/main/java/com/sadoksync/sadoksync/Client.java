@@ -602,6 +602,7 @@ public class Client extends javax.swing.JFrame {
         playlist.removefromPlaylist(pr.getNick());
         //byt host
         if (pr.isHost()) {
+            pr.removePeerbyNick(pr.getNick());
             pr.SendPMap(pr.getMyIp());
             startStream();
         } else {
