@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Iterator;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -628,6 +629,20 @@ public class Client extends javax.swing.JFrame {
         playlist.removefromPlaylist(pr.getNick());
         //byt host
         if (pr.isHost()) {
+                 Iterator it2 = pr.com.pMap.entrySet().iterator();
+            while (it2.hasNext()) {
+                Map.Entry pair = (Map.Entry) it2.next();
+
+                System.out.println("BEFORE: " + pair.getKey());
+            }
+            pr.removePeerbyNick(pr.getNick());
+            Iterator it = pr.com.pMap.entrySet().iterator();
+            while (it.hasNext()) {
+                Map.Entry pair = (Map.Entry) it.next();
+
+                System.out.println("AFTER: " + pair.getKey());
+            }
+            pr.SendPMap(pr.getMyIp());
             startStream();
         }
         Message msg = new Message();
@@ -711,17 +726,17 @@ public class Client extends javax.swing.JFrame {
              audioPlayer.playMedia(url);*/
         } else {
             // Check if in visualizemode, if it is we need to recreate the mediaplayer
-           
-                System.out.println("1");
-                // Recreate the mediaplayerfactory without visualizer options
-                //"--realrtsp-caching=1200", manual cache size. 
-                mediaPlayerFactory = new MediaPlayerFactory();
-                mediaPlayer = mediaPlayerFactory.newEmbeddedMediaPlayer(new Win32FullScreenStrategy(fullscreenplayer.frame));
 
-                //Set mediaplayer without visualize options to surface
-                videoSurface = mediaPlayerFactory.newVideoSurface(canvas);
-                mediaPlayer.setVideoSurface(videoSurface);
-            
+            System.out.println("1");
+                // Recreate the mediaplayerfactory without visualizer options
+            //"--realrtsp-caching=1200", manual cache size. 
+            mediaPlayerFactory = new MediaPlayerFactory();
+            mediaPlayer = mediaPlayerFactory.newEmbeddedMediaPlayer(new Win32FullScreenStrategy(fullscreenplayer.frame));
+
+            //Set mediaplayer without visualize options to surface
+            videoSurface = mediaPlayerFactory.newVideoSurface(canvas);
+            mediaPlayer.setVideoSurface(videoSurface);
+
         }
         // lastly, play the media in the mediaplayer with the apropriate options
         setLeftComponent(canvas);
