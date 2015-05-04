@@ -602,13 +602,14 @@ public class Client extends javax.swing.JFrame {
         playlist.removefromPlaylist(pr.getNick());
         //byt host
         if (pr.isHost()) {
-            pr.removePeerbyNick(pr.getNick());
+            pr.SendPMap(pr.getMyIp());
             startStream();
+        } else {
+            Message msg = new Message();
+            msg.setType("removePeerbyNick");
+            msg.setName(pr.getNick());
+            pr.sendMsg(pr.getHost(), 4444, msg);
         }
-        Message msg = new Message();
-        msg.setType("removePeerbyNick");
-        msg.setName(pr.getNick());
-        pr.sendMsg(pr.getHost(), 4444, msg);
 
         if (mediaPlayer.isPlaying()) {
             mediaPlayer.stop();
