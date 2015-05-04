@@ -13,6 +13,7 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -602,7 +603,19 @@ public class Client extends javax.swing.JFrame {
         playlist.removefromPlaylist(pr.getNick());
         //byt host
         if (pr.isHost()) {
+            Iterator it2 = pr.com.pMap.entrySet().iterator();
+            while (it2.hasNext()) {
+                Map.Entry pair = (Map.Entry) it2.next();
+
+                System.out.println("BEFORE: " + pair.getKey());
+            }
             pr.removePeerbyNick(pr.getNick());
+            Iterator it = pr.com.pMap.entrySet().iterator();
+            while (it.hasNext()) {
+                Map.Entry pair = (Map.Entry) it.next();
+
+                System.out.println("AFTER: " + pair.getKey());
+            }
             pr.SendPMap(pr.getMyIp());
             startStream();
         } else {
