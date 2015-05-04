@@ -38,7 +38,7 @@ public class StreamThreadManager {
         } catch (InterruptedException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
+
         System.out.println("Starting stream");
         st = new StreamThread(playlist, cli);
 
@@ -49,25 +49,25 @@ public class StreamThreadManager {
         System.out.println("StreamThreadManager: killStream");
         //Make sure that there is a stream to kill.
         if (st != null) {
-            //if (st.isAlive()) {
-            System.out.println("Killing stream");
-            st.kill();
-            try {
-                //Wait for the st thread to die.
-                st.join();
-                System.out.println("Thread joined");
-            } catch (InterruptedException ex) {
-                Logger.getLogger(StreamThreadManager.class.getName()).log(Level.SEVERE, null, ex);
+            if (st.isAlive()) {
+                System.out.println("Killing stream");
+                st.kill();
+                try {
+                    //Wait for the st thread to die.
+                    st.join();
+                    System.out.println("Thread joined");
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(StreamThreadManager.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
-            //}
         }
     }
 
     void stop() {
         st.stopMedia();
-
-        playlist.removeFirstInQueue();
-        cli.setMode("playlist");
+        //this.killStream();
+        //playlist.removeFirstInQueue();
+        //cli.setMode("playlist");
         cli.startStream();
 
     }

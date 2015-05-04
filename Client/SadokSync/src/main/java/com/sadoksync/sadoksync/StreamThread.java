@@ -188,7 +188,6 @@ public class StreamThread extends Thread {
                 System.out.println("StreamThread: stopMedia: 3");
             }
         }
-
     }
 
     public void kill() {
