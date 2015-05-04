@@ -25,7 +25,6 @@ public class StreamThread extends Thread {
     PublicPlaylist playlist;
     HeadlessMediaPlayer serverMediaPlayer;
     MediaPlayerFactory serverMediaPlayerFactory;
-    Thread streamingServer;
     Client client;
 
     public StreamThread(PublicPlaylist playlist, Client client) {
@@ -66,7 +65,7 @@ public class StreamThread extends Thread {
                         //serverMediaPlayerFactory.release();
                     }
 
-                    kill();
+                    //kill();
                 }
 
                 public void mediaFinished(MediaPlayer serverMediaPlayer) {
@@ -78,8 +77,8 @@ public class StreamThread extends Thread {
                         String ip = client.pr.com.getPeerIP(playlist.getFirstInListOwner());
                         if (!client.pr.getMyIp().equals(ip)) {
 
-                            serverMediaPlayer.release();
-                            serverMediaPlayerFactory.release();
+                            //serverMediaPlayer.release();
+                            //serverMediaPlayerFactory.release();
 
                         }
                         client.startStream();
@@ -88,8 +87,8 @@ public class StreamThread extends Thread {
                     } else {
                         System.out.println("[Server] No more media in list");
 
-                        serverMediaPlayer.release();
-                        serverMediaPlayerFactory.release();
+                        //serverMediaPlayer.release();
+                        //serverMediaPlayerFactory.release();
 
                     }
 
@@ -187,7 +186,7 @@ public class StreamThread extends Thread {
     }
     
     public void kill() {
-        this.stopMedia();
+        //this.stopMedia();
 
         serverMediaPlayer.release();
         serverMediaPlayerFactory.release();
@@ -215,6 +214,8 @@ public class StreamThread extends Thread {
                 ":sout-all",
                 ":sout-keep"
         );
+        
+        //Let the stream startup
         try {
             Thread.sleep(4000);
         } catch (InterruptedException ex) {

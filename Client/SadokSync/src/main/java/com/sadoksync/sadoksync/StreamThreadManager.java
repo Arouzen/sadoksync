@@ -14,33 +14,46 @@ import java.util.logging.Logger;
  */
 public class StreamThreadManager {
 
-    PublicPlaylist playlist;
-    Client client;
-
     StreamThread st;
     boolean stream;
 
-    public StreamThreadManager(PublicPlaylist playlist, Client client) {
-        this.playlist = playlist;
-        this.client = client;
+    public StreamThreadManager() {
+
     }
 
-    public void startStream() {
+    public void startStream(PublicPlaylist playlist, Client aThis) {
+        System.out.println("StreamThreadManager: startStream");
+
+        //Kill any old stream
+        killStream();
+        
+
+        System.out.println("Starting stream");
+        st = new StreamThread(playlist, aThis);
+
+        st.start();
+    }
+
+    public void killStream() {
+        System.out.println("StreamThreadManager: killStream");
+        //Make sure that there is a stream to kill.
         if (st != null) {
-            st = new StreamThread(playlist, client);
-        } else {
-            killStream();
-            st = new StreamThread(playlist, client);
+            //if (st.isAlive()) {
+                System.out.println("Killing stream");
+                st.kill();
+                try {
+                    //Wait for the st thread to die.
+                    st.join();
+                    System.out.println("Thread joined");
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(StreamThreadManager.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            //}
         }
     }
-    
-    public void killStream() {
-        st.kill();
-        try {
-            //Wait for the st thread to die.
-            st.join();
-        } catch (InterruptedException ex) {
-            Logger.getLogger(StreamThreadManager.class.getName()).log(Level.SEVERE, null, ex);
-        }
+
+    void stop() {
+        //st.stopMedia();
+        killStream();
     }
 }

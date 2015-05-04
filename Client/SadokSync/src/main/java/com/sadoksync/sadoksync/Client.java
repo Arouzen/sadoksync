@@ -50,6 +50,7 @@ import uk.co.caprica.vlcj.player.headless.HeadlessMediaPlayer;
  */
 public class Client extends javax.swing.JFrame {
 
+    private StreamThreadManager stm;
     private String mediaType;
 
     // Create a media player factory
@@ -62,8 +63,7 @@ public class Client extends javax.swing.JFrame {
     public CanvasVideoSurface videoSurface;
 
     // Create the mediaServer
-    private MediaServer mediaServer;
-
+    //private MediaServer mediaServer;
     // Create fullscreen player
     private final FullScreenPlayer fullscreenplayer;
 
@@ -90,19 +90,21 @@ public class Client extends javax.swing.JFrame {
 
     // File filter
     public FileFilter filefilter;
-    
+
     // "pause/stop" stream flag for clients
     private boolean stopped;
-    
+
     // init empty canvas
     final private EmptyCanvas emptyCanvas;
-    
+
     /**
      * Creates new form Client
      *
      * @param pr Peer
      */
     public Client(Peer pr) {
+        stm = new StreamThreadManager();
+
         // Init style and layout
         initStyle();
         // Now create rest of components with saved default layout
@@ -136,7 +138,7 @@ public class Client extends javax.swing.JFrame {
         videoSurface = mediaPlayerFactory.newVideoSurface(canvas);
         mediaPlayer.setVideoSurface(videoSurface);
         visualizeMode = false;
-        
+
         //Init empty canvas
         emptyCanvas = new EmptyCanvas();
 
@@ -543,7 +545,8 @@ public class Client extends javax.swing.JFrame {
             mediaPlayer.stop();
         }
         if (pr.isHost()) {
-            mediaServer.stop();
+            //mediaServer.stop();
+            stm.stop();
         } else {
             stopped = true;
         }
@@ -602,13 +605,13 @@ public class Client extends javax.swing.JFrame {
         playlist.removefromPlaylist(pr.getNick());
         //byt host
         if (pr.isHost()) {
-         startStream();
+            startStream();
         }
-            Message msg = new Message();
-            msg.setType("removePeerbyNick");
-            msg.setName(pr.getNick());
-            pr.sendMsg(pr.getHost(), 4444, msg);
-        
+        Message msg = new Message();
+        msg.setType("removePeerbyNick");
+        msg.setName(pr.getNick());
+        pr.sendMsg(pr.getHost(), 4444, msg);
+
         if (mediaPlayer.isPlaying()) {
             mediaPlayer.stop();
         }
@@ -645,6 +648,17 @@ public class Client extends javax.swing.JFrame {
     }
 
     public void playMedia(String url) {
+
+        mediaPlayerFactory.release();
+
+        mediaPlayer.release();
+
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
         //String[] s = playlist.getNowPlaying().split("\\.");
         // media ends with mp3? Then we want a visualizer
         //if (s[s.length - 1].endsWith("mp3")) {
@@ -654,14 +668,18 @@ public class Client extends javax.swing.JFrame {
             // If not, its already in visualizemode and we can play media without any changes
             if (!visualizeMode) {
                 visualizeMode = true;
+                System.out.println("1");
                 // To set it to visualize mode we need to:
                 // Recreate the mediaPlayerFactory with visualizer options
                 mediaPlayerFactory = new MediaPlayerFactory("--audio-visual=visual", "--effect-list=spectrum");
+                System.out.println("2");
                 mediaPlayer = mediaPlayerFactory.newEmbeddedMediaPlayer(new Win32FullScreenStrategy(fullscreenplayer.frame));
-
+                System.out.println("3");
                 //Set visualizer mediaplayer to surface
                 videoSurface = mediaPlayerFactory.newVideoSurface(canvas);
+                System.out.println("4");
                 mediaPlayer.setVideoSurface(videoSurface);
+                System.out.println("5");
             }
             // Own visualizer stuff. dont remove pls
             // I think this gives us a audiostream to work with
@@ -670,8 +688,8 @@ public class Client extends javax.swing.JFrame {
              audioPlayer.playMedia(url);*/
         } else {
             // Check if in visualizemode, if it is we need to recreate the mediaplayer
-            if (visualizeMode) {
-                visualizeMode = false;
+           
+                System.out.println("1");
                 // Recreate the mediaplayerfactory without visualizer options
                 //"--realrtsp-caching=1200", manual cache size. 
                 mediaPlayerFactory = new MediaPlayerFactory();
@@ -680,7 +698,7 @@ public class Client extends javax.swing.JFrame {
                 //Set mediaplayer without visualize options to surface
                 videoSurface = mediaPlayerFactory.newVideoSurface(canvas);
                 mediaPlayer.setVideoSurface(videoSurface);
-            }
+            
         }
         // lastly, play the media in the mediaplayer with the apropriate options
         setLeftComponent(canvas);
@@ -747,8 +765,10 @@ public class Client extends javax.swing.JFrame {
     }
 
     public void startStreamingServer() {
-        mediaServer = new MediaServer(playlist, this);
-        mediaServer.startStreamingServer();
+
+        stm.startStream(playlist, this);
+        //mediaServer = new MediaServer(playlist, this);
+        //mediaServer.startStreamingServer();
     }
 
     public void cleanStartOfPlaylist() {
@@ -779,13 +799,13 @@ public class Client extends javax.swing.JFrame {
             setLeftComponent(emptyCanvas);
         }
     }
-    
+
     void setLeftComponent(Canvas canvas) {
         int temp = jSplitPane1.getDividerLocation();
         jSplitPane1.setLeftComponent(canvas);
         jSplitPane1.setDividerLocation(temp);
     }
-    
+
     private void setLeftComponent(EmptyCanvas canvas) {
         int temp = jSplitPane1.getDividerLocation();
         jSplitPane1.setLeftComponent(canvas);
