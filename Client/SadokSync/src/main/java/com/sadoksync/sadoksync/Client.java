@@ -90,13 +90,13 @@ public class Client extends javax.swing.JFrame {
 
     // File filter
     public FileFilter filefilter;
-    
+
     // "pause/stop" stream flag for clients
     private boolean stopped;
-    
+
     // init empty canvas
     final private EmptyCanvas emptyCanvas;
-    
+
     /**
      * Creates new form Client
      *
@@ -136,7 +136,7 @@ public class Client extends javax.swing.JFrame {
         videoSurface = mediaPlayerFactory.newVideoSurface(canvas);
         mediaPlayer.setVideoSurface(videoSurface);
         visualizeMode = false;
-        
+
         //Init empty canvas
         emptyCanvas = new EmptyCanvas();
 
@@ -600,15 +600,17 @@ public class Client extends javax.swing.JFrame {
         // Remove client and its music from playlist.
 
         playlist.removefromPlaylist(pr.getNick());
-        //byt host
+        //byt hos
         if (pr.isHost()) {
-         startStream();
+          pr.removePeerbyNick(pr.getNick());
+          startStream();
+                  
         }
-            Message msg = new Message();
-            msg.setType("removePeerbyNick");
-            msg.setName(pr.getNick());
-            pr.sendMsg(pr.getHost(), 4444, msg);
-        
+        Message msg = new Message();
+        msg.setType("removePeerbyNick");
+        msg.setName(pr.getNick());
+        pr.sendMsg(pr.getHost(), 4444, msg);
+
         if (mediaPlayer.isPlaying()) {
             mediaPlayer.stop();
         }
@@ -779,13 +781,13 @@ public class Client extends javax.swing.JFrame {
             setLeftComponent(emptyCanvas);
         }
     }
-    
+
     void setLeftComponent(Canvas canvas) {
         int temp = jSplitPane1.getDividerLocation();
         jSplitPane1.setLeftComponent(canvas);
         jSplitPane1.setDividerLocation(temp);
     }
-    
+
     private void setLeftComponent(EmptyCanvas canvas) {
         int temp = jSplitPane1.getDividerLocation();
         jSplitPane1.setLeftComponent(canvas);
