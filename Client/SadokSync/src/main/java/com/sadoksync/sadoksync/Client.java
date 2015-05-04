@@ -12,10 +12,15 @@ import java.awt.event.KeyEvent;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.AbstractAction;
@@ -33,6 +38,7 @@ import javax.swing.TransferHandler;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import org.json.simple.parser.ParseException;
+import sun.misc.Launcher;
 import uk.co.caprica.vlcj.binding.internal.libvlc_media_t;
 import uk.co.caprica.vlcj.player.MediaPlayer;
 import uk.co.caprica.vlcj.player.MediaPlayerEventAdapter;
@@ -117,15 +123,24 @@ public class Client extends javax.swing.JFrame {
         this.pr = pr;
 
         //VLCLibrary init
-        StringBuilder location = new StringBuilder(Client.class.getProtectionDomain().getCodeSource().getLocation().toString());
-        location.delete(0, 6);
-        location.append("VLC/");
-        System.out.println(location);
-        NativeLibrary.addSearchPath("libvlc", location.toString());
+        final File jarFile = new File(getClass().getProtectionDomain().getCodeSource().getLocation().getPath());
+        if (jarFile.isFile()) { // Run with JAR
+            System.out.println("JAR");
+            NativeLibrary.addSearchPath("libvlc", "VLC"); // IDK NOTHING WORKS PLS HELP HERE IVE TRIED MANY THINGS :(((
+        } else { // Run with IDE
+            System.out.println("IDE");
+            StringBuilder location = new StringBuilder(Client.class.getProtectionDomain().getCodeSource().getLocation().toString());
+            location.delete(0, 6);
+            location.append("VLC/");
+            System.out.println(location);
+            NativeLibrary.addSearchPath("libvlc", location.toString());
+        }
 
         //File chooser settings init
-        fileChooser.setFileFilter(new FileFilter());
-        fileChooser.setAcceptAllFileFilterUsed(false);
+        fileChooser.setFileFilter(
+                new FileFilter());
+        fileChooser.setAcceptAllFileFilterUsed(
+                false);
 
         //Fullscreenplayer init
         fullscreenplayer = new FullScreenPlayer();
@@ -136,29 +151,35 @@ public class Client extends javax.swing.JFrame {
 
         //Set mediaplayer to surface
         videoSurface = mediaPlayerFactory.newVideoSurface(canvas);
+
         mediaPlayer.setVideoSurface(videoSurface);
         visualizeMode = false;
 
         //Init empty canvas
         emptyCanvas = new EmptyCanvas();
 
-        mediaPlayer.addMediaPlayerEventListener(new MediaPlayerEventAdapter() {
-            @Override
-            public void finished(MediaPlayer mediaPlayer) {
-                if (playlist.isEmpty()) {
-                    setLeftComponent(emptyCanvas);
-                }
-            }
+        mediaPlayer.addMediaPlayerEventListener(
+                new MediaPlayerEventAdapter() {
+                    @Override
+                    public void finished(MediaPlayer mediaPlayer
+                    ) {
+                        if (playlist.isEmpty()) {
+                            setLeftComponent(emptyCanvas);
+                        }
+                    }
 
-            @Override
-            public void stopped(MediaPlayer mediaPlayer) {
-                if (playlist.isEmpty()) {
-                    setLeftComponent(emptyCanvas);
+                    @Override
+                    public void stopped(MediaPlayer mediaPlayer
+                    ) {
+                        if (playlist.isEmpty()) {
+                            setLeftComponent(emptyCanvas);
+                        }
+                    }
                 }
-            }
-        });
+        );
         // Split panel inits
-        jSplitPane1.setDividerLocation(0.7);
+        jSplitPane1.setDividerLocation(
+                0.7);
         rightPanelMode = "chat";
 
         // Public playlist init
@@ -183,8 +204,10 @@ public class Client extends javax.swing.JFrame {
         System.out.println("Playing next video after 5sec...(client)");
         try {
             Thread.sleep(5000);
+
         } catch (InterruptedException ex) {
-            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Client.class
+                    .getName()).log(Level.SEVERE, null, ex);
         }
         playMedia(getRtspUrl());
     }
@@ -707,6 +730,7 @@ public class Client extends javax.swing.JFrame {
 
     public void setMediaType(String text) {
         this.mediaType = text;
+
     }
 
     private class TestAudioCallbackAdapter extends DefaultAudioCallbackAdapter {
@@ -826,16 +850,21 @@ public class Client extends javax.swing.JFrame {
                 if ("Nimbus".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
+
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Client.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Client.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Client.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Client.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Client.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Client.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Client.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Client.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
@@ -899,24 +928,31 @@ public class Client extends javax.swing.JFrame {
                 if ("Nimbus".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
+
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Client.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Client.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Client.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Client.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Client.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Client.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Client.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Client.class
+                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         // Save java Look&Feel (L&F)
         LookAndFeel originalLaf = UIManager.getLookAndFeel();
         try {
             // Switch to Windows L&F
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+
         } catch (Exception ex) {
-            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Client.class
+                    .getName()).log(Level.SEVERE, null, ex);
         }
 
         //Create the Windows L&F file chooser
@@ -925,8 +961,10 @@ public class Client extends javax.swing.JFrame {
         try {
             //Flick the L&F back to the default
             UIManager.setLookAndFeel(originalLaf);
+
         } catch (UnsupportedLookAndFeelException ex) {
-            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Client.class
+                    .getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -990,6 +1028,7 @@ public class Client extends javax.swing.JFrame {
     void setPlayList(PublicPlaylist playlist) {
         this.playlist = playlist;
         setMode("playlist");
+
     }
 
     class FullScreenPlayer {
