@@ -170,8 +170,8 @@ public class StreamThread extends Thread {
                     }
                 }
             });
-
-            streamMedia(serverMediaPlayer, media.getPath(), media, "");
+            String p = media.getPath();
+            streamMedia(serverMediaPlayer, p, media, "");
 
         } catch (Exception ex) {
             ex.printStackTrace();

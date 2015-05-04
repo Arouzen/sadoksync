@@ -33,6 +33,12 @@ public class StreamThreadManager {
         //Kill any old stream
         killStream();
 
+        try {
+            Thread.sleep(4000);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
         System.out.println("Starting stream");
         st = new StreamThread(playlist, cli);
 
@@ -58,10 +64,11 @@ public class StreamThreadManager {
     }
 
     void stop() {
-        //st.stopMedia();
-        killStream();
+        st.stopMedia();
+
         playlist.removeFirstInQueue();
         cli.setMode("playlist");
         cli.startStream();
+
     }
 }

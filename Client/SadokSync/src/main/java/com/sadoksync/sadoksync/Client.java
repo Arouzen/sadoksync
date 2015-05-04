@@ -158,25 +158,8 @@ public class Client extends javax.swing.JFrame {
         //Init empty canvas
         emptyCanvas = new EmptyCanvas();
 
-        mediaPlayer.addMediaPlayerEventListener(
-                new MediaPlayerEventAdapter() {
-                    @Override
-                    public void finished(MediaPlayer mediaPlayer
-                    ) {
-                        if (playlist.isEmpty()) {
-                            setLeftComponent(emptyCanvas);
-                        }
-                    }
+        this.mediaPlayerInit(mediaPlayer);
 
-                    @Override
-                    public void stopped(MediaPlayer mediaPlayer
-                    ) {
-                        if (playlist.isEmpty()) {
-                            setLeftComponent(emptyCanvas);
-                        }
-                    }
-                }
-        );
         // Split panel inits
         jSplitPane1.setDividerLocation(
                 0.7);
@@ -198,6 +181,28 @@ public class Client extends javax.swing.JFrame {
          buttonStream.setEnabled(false);
          }
          */
+    }
+
+    private void mediaPlayerInit(EmbeddedMediaPlayer mediaPlayer) {
+        mediaPlayer.addMediaPlayerEventListener(
+                new MediaPlayerEventAdapter() {
+                    @Override
+                    public void finished(MediaPlayer mediaPlayer
+                    ) {
+                        if (playlist.isEmpty()) {
+                            setLeftComponent(emptyCanvas);
+                        }
+                    }
+
+                    @Override
+                    public void stopped(MediaPlayer mediaPlayer
+                    ) {
+                        if (playlist.isEmpty()) {
+                            setLeftComponent(emptyCanvas);
+                        }
+                    }
+                }
+        );
     }
 
     public void persistClient(MediaPlayer mediaPlayer) {
@@ -244,8 +249,7 @@ public class Client extends javax.swing.JFrame {
                 this.rightPanelMode = mode;
                 updateRightPanel(getPlaylist());
                 break;
-        }
-
+        } 
     }
 
     /**
@@ -689,21 +693,21 @@ public class Client extends javax.swing.JFrame {
         if (mediaType.equals("visualize")) {
             // Check if visualizemode already set, else we need to set it to visualizemode
             // If not, its already in visualizemode and we can play media without any changes
-            if (!visualizeMode) {
-                visualizeMode = true;
-                System.out.println("1");
+
+            System.out.println("1");
                 // To set it to visualize mode we need to:
-                // Recreate the mediaPlayerFactory with visualizer options
-                mediaPlayerFactory = new MediaPlayerFactory("--audio-visual=visual", "--effect-list=spectrum");
-                System.out.println("2");
-                mediaPlayer = mediaPlayerFactory.newEmbeddedMediaPlayer(new Win32FullScreenStrategy(fullscreenplayer.frame));
-                System.out.println("3");
-                //Set visualizer mediaplayer to surface
-                videoSurface = mediaPlayerFactory.newVideoSurface(canvas);
-                System.out.println("4");
-                mediaPlayer.setVideoSurface(videoSurface);
-                System.out.println("5");
-            }
+            // Recreate the mediaPlayerFactory with visualizer options
+            mediaPlayerFactory = new MediaPlayerFactory("--audio-visual=visual", "--effect-list=spectrum");
+            System.out.println("2");
+            mediaPlayer = mediaPlayerFactory.newEmbeddedMediaPlayer(new Win32FullScreenStrategy(fullscreenplayer.frame));
+            System.out.println("3");
+            //Set visualizer mediaplayer to surface
+            videoSurface = mediaPlayerFactory.newVideoSurface(canvas);
+            System.out.println("4");
+            mediaPlayer.setVideoSurface(videoSurface);
+            System.out.println("5");
+            this.mediaPlayerInit(mediaPlayer);
+
             // Own visualizer stuff. dont remove pls
             // I think this gives us a audiostream to work with
             /*MediaPlayerFactory factory = new MediaPlayerFactory();
@@ -711,17 +715,18 @@ public class Client extends javax.swing.JFrame {
              audioPlayer.playMedia(url);*/
         } else {
             // Check if in visualizemode, if it is we need to recreate the mediaplayer
-           
-                System.out.println("1");
-                // Recreate the mediaplayerfactory without visualizer options
-                //"--realrtsp-caching=1200", manual cache size. 
-                mediaPlayerFactory = new MediaPlayerFactory();
-                mediaPlayer = mediaPlayerFactory.newEmbeddedMediaPlayer(new Win32FullScreenStrategy(fullscreenplayer.frame));
 
-                //Set mediaplayer without visualize options to surface
-                videoSurface = mediaPlayerFactory.newVideoSurface(canvas);
-                mediaPlayer.setVideoSurface(videoSurface);
-            
+            System.out.println("1");
+            // Recreate the mediaplayerfactory without visualizer options
+            //"--realrtsp-caching=1200", manual cache size. 
+            mediaPlayerFactory = new MediaPlayerFactory();
+            mediaPlayer = mediaPlayerFactory.newEmbeddedMediaPlayer(new Win32FullScreenStrategy(fullscreenplayer.frame));
+
+            //Set mediaplayer without visualize options to surface
+            videoSurface = mediaPlayerFactory.newVideoSurface(canvas);
+            mediaPlayer.setVideoSurface(videoSurface);
+            this.mediaPlayerInit(mediaPlayer);
+
         }
         // lastly, play the media in the mediaplayer with the apropriate options
         setLeftComponent(canvas);
