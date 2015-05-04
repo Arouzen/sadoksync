@@ -76,7 +76,7 @@ public class PublicPlaylist implements Serializable {
                     //pr.getClient().addtoPlaylist(msg.getPair());
 
                     //play next media
-                    System.out.println("{PublicPlaylist.addToPlaylist] Starting stream");
+                    System.out.println("[PublicPlaylist.addToPlaylist] Starting stream");
                     pr.getClient().startStream();
                 } else {
                     playlist.add(pair);
@@ -89,6 +89,7 @@ public class PublicPlaylist implements Serializable {
                 msg.setType("Playlist");
                 msg.setText("add");
                 msg.setPair(pair);
+                
                 pr.sendMsg(pr.getHost(), 4444, msg);
             }
 

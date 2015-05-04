@@ -48,7 +48,12 @@ public class ConnectionHandler extends Thread {
                     case "Playlist":
                         System.out.println("Message: Playlist");
                         if (msg.getText().equals("add") && pr.isHost()) {
+                            System.out.println("Message: Playlist: Adding: ");
                             pr.getClient().addtoPlaylist(msg.getPair());
+
+                            //pr.DeliverPlaylistToComunity();
+                        } else if (msg.getText().equals("add") && !pr.isHost()) {
+                            //Relay message
                         }
                         break;
 
@@ -56,6 +61,7 @@ public class ConnectionHandler extends Thread {
                         System.out.println("Set Stream");
                         pr.getClient().setHost(clientSocket.getInetAddress().toString().substring(1));
                         pr.getClient().setPort("5555");
+                        pr.getClient().setMediaType(msg.getText());
                         pr.getClient().setRtspPath(msg.getName());
                         pr.getClient().connectToRtsp();
                         break;
@@ -69,7 +75,7 @@ public class ConnectionHandler extends Thread {
                         System.out.println("Join confirmed from:   " + clientSocket.getInetAddress().toString().substring(1) + " end.");
                         pr.setMyIP(msg.getText());
                         break;
-                       
+
                     case "Join Comunity":
                         System.out.println("Join Comunity " + clientSocket.getInetAddress().toString().substring(1) + " end.");
                         pr.peerToJoin(msg, clientSocket.getInetAddress().toString().substring(1));
