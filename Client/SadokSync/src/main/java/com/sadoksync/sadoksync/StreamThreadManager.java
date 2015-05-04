@@ -14,6 +14,9 @@ import java.util.logging.Logger;
  */
 public class StreamThreadManager {
 
+    PublicPlaylist playlist;
+    Client cli;
+
     StreamThread st;
     boolean stream;
 
@@ -21,15 +24,23 @@ public class StreamThreadManager {
 
     }
 
-    public void startStream(PublicPlaylist playlist, Client aThis) {
+    public void startStream(PublicPlaylist playlist, Client cli) {
+        this.playlist = playlist;
+        this.cli = cli;
+
         System.out.println("StreamThreadManager: startStream");
 
         //Kill any old stream
         killStream();
-        
 
+        try {
+            Thread.sleep(4000);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
         System.out.println("Starting stream");
-        st = new StreamThread(playlist, aThis);
+        st = new StreamThread(playlist, cli);
 
         st.start();
     }
@@ -39,21 +50,25 @@ public class StreamThreadManager {
         //Make sure that there is a stream to kill.
         if (st != null) {
             //if (st.isAlive()) {
-                System.out.println("Killing stream");
-                st.kill();
-                try {
-                    //Wait for the st thread to die.
-                    st.join();
-                    System.out.println("Thread joined");
-                } catch (InterruptedException ex) {
-                    Logger.getLogger(StreamThreadManager.class.getName()).log(Level.SEVERE, null, ex);
-                }
+            System.out.println("Killing stream");
+            st.kill();
+            try {
+                //Wait for the st thread to die.
+                st.join();
+                System.out.println("Thread joined");
+            } catch (InterruptedException ex) {
+                Logger.getLogger(StreamThreadManager.class.getName()).log(Level.SEVERE, null, ex);
+            }
             //}
         }
     }
 
     void stop() {
-        //st.stopMedia();
-        killStream();
+        st.stopMedia();
+
+        playlist.removeFirstInQueue();
+        cli.setMode("playlist");
+        cli.startStream();
+
     }
 }

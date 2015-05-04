@@ -181,7 +181,10 @@ public class PublicPlaylist implements Serializable {
     public void removeFirstInQueue() {
         lock.lock();
         try {
-            playlist.remove(0);
+            if(playlist.size() != 0){
+                playlist.remove(0);
+            }
+            
 
             ocupied.signalAll();
         } finally {
