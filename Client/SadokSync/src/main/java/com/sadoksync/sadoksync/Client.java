@@ -12,8 +12,11 @@ import java.awt.event.KeyEvent;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.security.CodeSource;
+import java.security.ProtectionDomain;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -125,8 +128,15 @@ public class Client extends javax.swing.JFrame {
         //VLCLibrary init
         final File jarFile = new File(getClass().getProtectionDomain().getCodeSource().getLocation().getPath());
         if (jarFile.isFile()) { // Run with JAR
-            System.out.println("JAR");
-            NativeLibrary.addSearchPath("libvlc", "VLC"); // IDK NOTHING WORKS PLS HELP HERE IVE TRIED MANY THINGS :(((
+            String tmpDir = System.getProperty("java.io.tmpdir");
+            String VLCDir = tmpDir + "VLC\\";
+            try {
+                new ExtractDirFromJar("/VLC", VLCDir);
+            } catch (IOException ex) {
+                Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            NativeLibrary.addSearchPath("libvlc", VLCDir);
+            System.out.println(VLCDir);
         } else { // Run with IDE
             System.out.println("IDE");
             StringBuilder location = new StringBuilder(Client.class.getProtectionDomain().getCodeSource().getLocation().toString());
@@ -711,17 +721,17 @@ public class Client extends javax.swing.JFrame {
              audioPlayer.playMedia(url);*/
         } else {
             // Check if in visualizemode, if it is we need to recreate the mediaplayer
-           
-                System.out.println("1");
-                // Recreate the mediaplayerfactory without visualizer options
-                //"--realrtsp-caching=1200", manual cache size. 
-                mediaPlayerFactory = new MediaPlayerFactory();
-                mediaPlayer = mediaPlayerFactory.newEmbeddedMediaPlayer(new Win32FullScreenStrategy(fullscreenplayer.frame));
 
-                //Set mediaplayer without visualize options to surface
-                videoSurface = mediaPlayerFactory.newVideoSurface(canvas);
-                mediaPlayer.setVideoSurface(videoSurface);
-            
+            System.out.println("1");
+            // Recreate the mediaplayerfactory without visualizer options
+            //"--realrtsp-caching=1200", manual cache size. 
+            mediaPlayerFactory = new MediaPlayerFactory();
+            mediaPlayer = mediaPlayerFactory.newEmbeddedMediaPlayer(new Win32FullScreenStrategy(fullscreenplayer.frame));
+
+            //Set mediaplayer without visualize options to surface
+            videoSurface = mediaPlayerFactory.newVideoSurface(canvas);
+            mediaPlayer.setVideoSurface(videoSurface);
+
         }
         // lastly, play the media in the mediaplayer with the apropriate options
         setLeftComponent(canvas);
