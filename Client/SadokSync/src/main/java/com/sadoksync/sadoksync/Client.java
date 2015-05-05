@@ -634,30 +634,12 @@ public class Client extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItem3ActionPerformed
 
     private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
+        //Move to ActionExitToLobby
         // Remove client and its music from playlist.
+        ActionExitToLobby aetl = new ActionExitToLobby(pr, stm, mediaPlayer);
+        new Thread(aetl).start();
 
-        playlist.removefromPlaylist(pr.getNick());
-        //byt host
-        if (pr.isHost()) {
-            pr.removePeerbyNick(pr.getNick());
-            Message removeHost = new Message();
-            removeHost.setType("removePeerFromCommunity");
-            removeHost.setName(pr.getNick());
-            pr.sendMsgToComunity(removeHost);
-            pr.SendPMap(pr.getMyIp());
-            stm.killStream();
-            startStream();
-        } else {
-            Message msg = new Message();
-            msg.setType("removePeerbyNick");
-            msg.setName(pr.getNick());
-            pr.sendMsg(pr.getHost(), 4444, msg);
-        }
-        if (mediaPlayer.isPlaying()) {
-            mediaPlayer.stop();
-        }
-        pr.com.clearOldCommunity();
-        pr.openLobby();
+
     }//GEN-LAST:event_jMenuItem4ActionPerformed
     private void jSlider1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlider1StateChanged
         Object source = evt.getSource();
@@ -692,8 +674,6 @@ public class Client extends javax.swing.JFrame {
         mediaPlayer.release();
 
         mediaPlayerFactory.release();
-
-
 
         try {
             Thread.sleep(1000);
