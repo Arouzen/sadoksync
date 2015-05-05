@@ -79,7 +79,7 @@ public class Peer {
         msg.setName(nick);
         msg.setText(addr);
         //msg.setText(cname);
-        System.out.println("joinComunity");
+        System.out.println("JoiningComunity");
         this.sendMsg(addr, 4444, msg);
         this.openClient();
     }
