@@ -100,46 +100,9 @@ public class Comunity {
         pMap.put(ipAddr, new PeerReg(nick, ipAddr));
     }
 
-    void removePeerByIp(String ip) {
-        Iterator it = pMap.entrySet().iterator();
-        lock.lock();
-        try {
-            while (it.hasNext()) {
-                Map.Entry pair = (Map.Entry) it.next();
-                PeerReg p = (PeerReg) pair.getValue();
-                if (p.getAddr().equals(ip)) {
-                    pMap.remove(pair.getKey());
-                }
-                it.remove();
-            }
-            ocupied.signalAll();
-        } finally {
-            lock.unlock();
-        }
-    }
+   
 
-    String getNickByIp(String ipAddr) {
-        Iterator it = pMap.entrySet().iterator();
-        String ret = "";
-        lock.lock();
-        try {
-            while (it.hasNext()) {
-                Map.Entry pair = (Map.Entry) it.next();
-
-                PeerReg p = (PeerReg) pair.getValue();
-                if (p.getAddr().equals(ipAddr)) {
-                    ret = pMap.get(pair.getKey()).getNick();
-                }
-                //it.remove();
-            }
-            ocupied.signalAll();
-        } finally {
-            lock.unlock();
-        }
-        return ret;
-    }
-
-    void removePeerByName(String nick) {
+    void removePeer(String ip) {
         lock.lock();
         try {
             System.out.println(pMap.size());
@@ -148,7 +111,7 @@ public class Comunity {
                 Map.Entry pair = (Map.Entry) it.next();
                 System.out.println("BEFORE: " + pair.getKey());
             }
-            pMap.remove(nick);
+            pMap.remove(ip);
             Iterator it2 = pMap.entrySet().iterator();
             while (it2.hasNext()) {
                 Map.Entry pair = (Map.Entry) it2.next();

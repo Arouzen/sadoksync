@@ -225,8 +225,8 @@ public class Peer {
                 opr = (PeerReg) m.get(key);
                 System.out.println("sendMsgToComunity(loop):  " + opr.getAddr() + " From:" + this.getMyIp());
                 //Work is needed here
-                //if (!this.getMyIp().equals(opr.getAddr())) {
-                    if (this.isHost()) {
+                if (!this.getMyIp().equals(opr.getAddr())) {
+                    //if (!this.isHost()) {
                     System.out.println("Trigger: ");
                     this.sendMsg(opr.getAddr(), 4444, msg);
                 }
