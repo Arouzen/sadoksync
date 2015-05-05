@@ -73,6 +73,7 @@ public class ActionExitToLobby implements Runnable {
             mediaPlayer.stop();
         }
         pr.com.clearOldCommunity();
+        pr.getClient().clearPlaylist();
         pr.openLobby();
     }
 }

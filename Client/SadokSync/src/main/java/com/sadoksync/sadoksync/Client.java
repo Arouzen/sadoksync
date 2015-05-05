@@ -733,6 +733,10 @@ public class Client extends javax.swing.JFrame {
 
     }
 
+    public void clearPlaylist() {
+      playlist.clear();
+    }
+
     private class TestAudioCallbackAdapter extends DefaultAudioCallbackAdapter {
 
         /**

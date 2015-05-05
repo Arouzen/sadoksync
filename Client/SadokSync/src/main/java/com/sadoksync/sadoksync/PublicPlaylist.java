@@ -206,6 +206,18 @@ public class PublicPlaylist implements Serializable {
         return ret;
     }
 
+    void clear() {
+        boolean ret;
+        lock.lock();
+        try {
+            playlist = new ArrayList<Pair>();
+
+            ocupied.signalAll();
+        } finally {
+            lock.unlock();
+        }
+    }
+
     public static class Pair implements Serializable {
 
         private final String key;

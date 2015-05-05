@@ -266,6 +266,7 @@ public class Comunity {
         this.topic = "";
         this.pMap = Collections.synchronizedMap(new HashMap<String, PeerReg>());
         this.host = "";
+        
     }
 
     public boolean isEmpty() {
