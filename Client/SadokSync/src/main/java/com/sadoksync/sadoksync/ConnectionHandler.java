@@ -80,6 +80,9 @@ public class ConnectionHandler extends Thread {
                         System.out.println("Join Comunity " + clientSocket.getInetAddress().toString().substring(1) + " end.");
                         pr.peerToJoin(msg, clientSocket.getInetAddress().toString().substring(1));
                         pr.confirmJoin(clientSocket.getInetAddress().toString().substring(1));
+                        if(pr.isHost() && (pr.getMyIp().equals("127.0.0.1"))){
+                            pr.setMyIP(msg.getText()); //This is not looking good
+                        }
                         //If comunity Host register the peer
                         //If not comunity Host, send this to comunity Host
                         break;

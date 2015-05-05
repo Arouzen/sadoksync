@@ -723,8 +723,6 @@ public class Client extends javax.swing.JFrame {
 
     }
 
-    
-
     public void updateRightPanel(ArrayList<String> elements) {
         DefaultListModel model = (DefaultListModel) listInScrollpane.getModel();
         model.clear();
@@ -852,9 +850,8 @@ public class Client extends javax.swing.JFrame {
         ArrayList<String> list = new ArrayList<String>();
         Map map = pr.com.getComunityPeers();
 
-        for (Object entry : map.keySet()) {
-            String key = entry.toString();
-            list.add(key);
+        for (Object entry : map.values()) {
+            list.add(((PeerReg)entry).nick);
         }
 
         return list;

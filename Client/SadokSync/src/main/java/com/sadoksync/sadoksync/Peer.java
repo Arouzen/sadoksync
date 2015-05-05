@@ -72,11 +72,12 @@ public class Peer {
     }
 
     void joinComunity(String cname, String addr, String nick) {
-        ComunityRegistration cr = cMap.get(cname);
+        
 
         Message msg = new Message();
         msg.setType("Join Comunity");
         msg.setName(nick);
+        msg.setText(addr);
         //msg.setText(cname);
         System.out.println("joinComunity");
         this.sendMsg(addr, 4444, msg);
@@ -298,7 +299,6 @@ public class Peer {
                 this.sendMsg(ip, 4444, msgret);
                 break;
         }
-
     }
 
     void sendPMap() {
