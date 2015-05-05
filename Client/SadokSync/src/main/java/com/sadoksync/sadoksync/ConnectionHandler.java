@@ -80,7 +80,7 @@ public class ConnectionHandler extends Thread {
                         System.out.println("Join Comunity " + clientSocket.getInetAddress().toString().substring(1) + " end.");
                         pr.peerToJoin(msg, clientSocket.getInetAddress().toString().substring(1));
                         pr.confirmJoin(clientSocket.getInetAddress().toString().substring(1));
-                        if(pr.isHost() && (pr.getMyIp().equals("127.0.0.1"))){
+                        if(pr.isHost() && (pr.getMyIp().equals("127.0.0.1")) && !clientSocket.getInetAddress().toString().substring(1).equals("127.0.0.1")){
                             //No longer alone! :D
                             System.out.println("No longer alone! They see me @:" + msg.getText());
                             pr.setMyIP(msg.getText()); //This is not looking good

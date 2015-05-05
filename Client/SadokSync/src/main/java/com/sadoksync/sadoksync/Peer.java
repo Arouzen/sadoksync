@@ -72,7 +72,6 @@ public class Peer {
     }
 
     void joinComunity(String cname, String addr, String nick) {
-        
 
         Message msg = new Message();
         msg.setType("Join Comunity");
@@ -223,9 +222,10 @@ public class Peer {
             while (i.hasNext()) {
                 key = (String) i.next();
                 opr = (PeerReg) m.get(key);
-                System.out.println("sendMsgToComunity(loop):  " + opr.getAddr() + " From:" + this.getMyIp());
+                
                 //Work is needed here
                 if (!this.getMyIp().equals(opr.getAddr())) {
+                    System.out.println("sendMsgToComunity(loop):  " + opr.getAddr() + " From:" + this.getMyIp());
                     //if (!this.isHost()) {
                     System.out.println("Trigger: ");
                     this.sendMsg(opr.getAddr(), 4444, msg);
@@ -303,26 +303,29 @@ public class Peer {
     }
 
     void sendPMap() {
-        Map m = com.getComunityPeers();
-        System.out.println("SendPMap");
-        Set s = m.keySet(); // Needn't be in synchronized block
-        String key;
-        PeerReg opr;
-        Message msg = new Message();
-        msg.setType("Register");
-        synchronized (m) {  // Synchronizing on m, not s!
-            Iterator i = s.iterator(); // Must be in synchronized block
-            while (i.hasNext()) {
+        if (this.isHost()) {
+            Map m = com.getComunityPeers();
+            System.out.println("SendPMap:");
+            Set s = m.keySet(); // Needn't be in synchronized block
+            String key;
+            PeerReg opr;
+            Message msg = new Message();
+            msg.setType("Register");
+            synchronized (m) {  // Synchronizing on m, not s!
+                Iterator i = s.iterator(); // Must be in synchronized block
+                while (i.hasNext()) {
 
-                key = (String) i.next();
-                opr = (PeerReg) m.get(key);
+                    key = (String) i.next();
+                    opr = (PeerReg) m.get(key);
 
-                //msg.setipAddr(opr.getAddr());
-                msg.setName(opr.getNick());
-                System.out.println("sending Pmap to: " + opr.getNick());
-                //Work is needed here
-                if (!isHost()) {
-                    this.sendMsg(opr.getAddr(), 4444, msg);
+                    //msg.setipAddr(opr.getAddr());
+                    msg.setName(opr.getNick());
+                    
+                    //Work is needed here
+                    if (!opr.getAddr().equals(this.getMyIp())) {
+                        System.out.println("sending Pmap to: " + opr.getAddr());
+                        this.sendMsg(opr.getAddr(), 4444, msg);
+                    }
                 }
             }
         }
@@ -367,7 +370,6 @@ public class Peer {
         msgret.setList(li);
         this.sendMsgToComunity(msgret);
     }
-
 
     boolean isHost() {
         return this.isHost;
