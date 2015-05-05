@@ -519,6 +519,12 @@ public class Peer {
        void removePeerFromCommunity(String nick) {
            System.out.println("Starting to remove host from community list!");
            com.removePeerByName(nick);
+           if(this.isHost()){
+               Message msg = new Message();
+               msg.setName(nick);
+               msg.setType("removePeerFromCommunity");                       
+               this.sendMsgToComunity(msg);
+           }
        }
 
 }
