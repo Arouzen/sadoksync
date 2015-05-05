@@ -261,46 +261,10 @@ public class Comunity {
             lock.unlock();
         }
     }
-
+    
     void clearOldCommunity() {
         this.topic = "";
         this.pMap = Collections.synchronizedMap(new HashMap<String, PeerReg>());
         this.host = "";
-        
-    }
-
-    public boolean isEmpty() {
-        boolean ret;
-        lock.lock();
-        try {
-
-            if (pMap.size() == 0) {
-                ret = true;
-            } else {
-                ret = false;
-            }
-
-            ocupied.signalAll();
-        } finally {
-            lock.unlock();
-        }
-        return ret;
-    }
-
-    public String getNextPeerIP() {
-        String ret;
-        lock.lock();
-        try {
-            System.out.println(pMap.size());
-            Iterator it = pMap.entrySet().iterator();
-
-            Map.Entry pair = (Map.Entry) it.next();
-            PeerReg pr = (PeerReg)pair.getValue();
-            ret = pr.getAddr();
-            ocupied.signalAll();
-        } finally {
-            lock.unlock();
-        }
-        return ret;
     }
 }

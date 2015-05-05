@@ -31,7 +31,7 @@ public class Peer {
 
     //ClientInterface cri;
     ServiceRegistry sr;
-    Lobby lb;
+    Newlobby lb;
     Client cli;
     Properties prop;
 
@@ -67,7 +67,7 @@ public class Peer {
         msg.setipAddr(this.getMyIp());
         msg.setType("Find All");
         msg.setName(this.getNick());
-        this.sendMsg(rhost, port, msg);
+        this.sendMsg(rhost, 3333, msg);
     }
     /*
      void joinComunity(String cname, String addr, int port) {
@@ -114,7 +114,7 @@ public class Peer {
      }
      */
 
-    void setLobby(Lobby lb) {
+    void setLobby(Newlobby lb) {
         this.lb = lb;
     }
 
@@ -152,7 +152,7 @@ public class Peer {
     }
 
     void openLobby() {
-        final Lobby flb = lb;
+        final Newlobby flb = lb;
         final Properties fprop = prop;
         final Client fcli = cli;
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -165,7 +165,7 @@ public class Peer {
     }
 
     void openProperties() {
-        final Lobby flb = lb;
+        final Newlobby flb = lb;
         final Properties fprop = prop;
         final Client fcli = cli;
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -178,7 +178,7 @@ public class Peer {
     }
 
     void openClient() {
-        final Lobby flb = lb;
+        final Newlobby flb = lb;
         final Properties fprop = prop;
         final Client fcli = cli;
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -197,7 +197,7 @@ public class Peer {
         com = new Comunity();
 
         this.setProp(new Properties(this));
-        this.setLobby(new Lobby(this));
+        this.setLobby(new Newlobby(this));
         this.setClient(new Client(this));
 
         //synchMap = new SynchReg();
@@ -251,7 +251,7 @@ public class Peer {
      return synchMap;
      }
      */
-    Lobby getLobby() {
+    Newlobby getLobby() {
         return lb;
     }
 
@@ -457,10 +457,10 @@ public class Peer {
 
     void connectionEvent(String ipAddr, String ce) {
         System.out.println("Peer.connectionEvent: Starting");
-
+        
         if (ce.equals("connect")) {
             System.out.println("Peer.connectionEvent: Connection refused: connect");
-
+            
             if (this.isHost()) {
                 System.out.println("Peer.connectionEvent: isHost()");
                 System.out.println("PEER TO BE REMOVED: " + ipAddr);
@@ -479,15 +479,14 @@ public class Peer {
     void removePeerbyIp(String ipAddr) {
         System.out.println("Peer.removePeer: Starting removePeer");
         String nick = com.getNickByIp(ipAddr);
-        removePeerbyNick(nick);
-/*
+
         if (!nick.equals("")) {
 
             //remove nick from comunity.
             System.out.println("Peer.removePeer: removing from comunity by nick: " + nick);
-
+            
             com.removePeerByName(nick);
-
+            
             //Remove ipAdd/nick from playlist
             System.out.println("Peer.removePeer: removing from playlist by nick: " + nick);
             cli.getPublicPlaylist().removefromPlaylist(nick);
@@ -495,10 +494,9 @@ public class Peer {
             System.out.println("Peer.removePeer: else");
             System.out.println("Tried to remove someone who did not exist");
         }
-        */
     }
-
-    void removePeerbyNick(String nick) {
+    
+       void removePeerbyNick(String nick) {
         System.out.println("Peer.removePeer: Starting removePeer");
 
         System.out.println("Peer.removePeer: about to enter if");
@@ -509,13 +507,6 @@ public class Peer {
             System.out.println("Peer.removePeer: removing from comunity by nick: " + nick);
             com.removePeerByName(nick);
 
-            if (this.isHost()) {
-                Message msg = new Message();
-                msg.setName(nick);
-                msg.setType("removePeerbyNick");
-                this.sendMsgToComunity(msg);
-            }
-
             //Remove ipAdd/nick from playlist
             System.out.println("Peer.removePeer: removing from playlist by nick: " + nick);
             cli.getPublicPlaylist().removefromPlaylist(nick);
@@ -523,12 +514,6 @@ public class Peer {
             System.out.println("Peer.removePeer: else");
             System.out.println("Tried to remove someone who did not exist");
         }
-
-    }
-
-    void removePeerFromCommunity(String nick) {
-        System.out.println("Starting to remove host from community list!");
-        com.removePeerByName(nick);
     }
 
 }

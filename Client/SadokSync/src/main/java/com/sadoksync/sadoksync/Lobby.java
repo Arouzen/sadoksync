@@ -6,7 +6,6 @@
 package com.sadoksync.sadoksync;
 
 import java.awt.event.KeyEvent;
-import javax.swing.DefaultListModel;
 
 /**
  *
@@ -137,6 +136,12 @@ public class Lobby extends javax.swing.JFrame {
 
         jLabel5.setText("Direct Connect:");
 
+        jTdc.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTdcActionPerformed(evt);
+            }
+        });
+
         jButton5.setText("Connect");
         jButton5.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -172,7 +177,7 @@ public class Lobby extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jTextFieldRegistryAddr)
-                            .addComponent(jTextFieldNick, javax.swing.GroupLayout.DEFAULT_SIZE, 212, Short.MAX_VALUE))
+                            .addComponent(jTextFieldNick, javax.swing.GroupLayout.DEFAULT_SIZE, 238, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, 85, Short.MAX_VALUE)
@@ -271,9 +276,9 @@ public class Lobby extends javax.swing.JFrame {
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         if (jTextFieldNick.getText().length() > 2 && jTextFieldNick.getText().length() < 15) {
-            ActionSetName asn = new ActionSetName(pr, jTextFieldNick.getText(), this);
+         //   ActionSetName asn = new ActionSetName(pr, jTextFieldNick.getText(), this);
             jTextFieldNick.setEnabled(false);
-            new Thread(asn).start();
+          //  new Thread(asn).start();
         }
     }//GEN-LAST:event_jButton4ActionPerformed
 
@@ -284,9 +289,9 @@ public class Lobby extends javax.swing.JFrame {
     private void jTextFieldNickKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextFieldNickKeyPressed
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             if (jTextFieldNick.getText().length() > 2 && jTextFieldNick.getText().length() < 15) {
-                ActionSetName asn = new ActionSetName(pr, jTextFieldNick.getText(), this);
+             //   ActionSetName asn = new ActionSetName(pr, jTextFieldNick.getText(), this);
                 jTextFieldNick.setEnabled(false);
-                new Thread(asn).start();
+               // new Thread(asn).start();
             }
         }
     }//GEN-LAST:event_jTextFieldNickKeyPressed
@@ -316,9 +321,13 @@ public class Lobby extends javax.swing.JFrame {
     }//GEN-LAST:event_jTextField1KeyPressed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-        ActionDirectConnect adc = new ActionDirectConnect(pr, jTdc.getText());
-        new Thread(adc).start();
+            ActionDirectConnect adc = new ActionDirectConnect(pr, jTdc.getText() );
+            new Thread(adc).start();      
     }//GEN-LAST:event_jButton5ActionPerformed
+
+    private void jTdcActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTdcActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTdcActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -340,17 +349,4 @@ public class Lobby extends javax.swing.JFrame {
     private javax.swing.JTextField jTextFieldNick;
     private javax.swing.JTextField jTextFieldRegistryAddr;
     // End of variables declaration//GEN-END:variables
-
-    void clearList() {
-
-
-        final DefaultListModel flm = new DefaultListModel();
-
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                jList1.setModel(flm);
-            }
-        });
-
-    }
 }

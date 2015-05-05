@@ -12,17 +12,10 @@ import java.awt.event.KeyEvent;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.Iterator;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.AbstractAction;
@@ -40,7 +33,6 @@ import javax.swing.TransferHandler;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import org.json.simple.parser.ParseException;
-import sun.misc.Launcher;
 import uk.co.caprica.vlcj.binding.internal.libvlc_media_t;
 import uk.co.caprica.vlcj.player.MediaPlayer;
 import uk.co.caprica.vlcj.player.MediaPlayerEventAdapter;
@@ -58,7 +50,6 @@ import uk.co.caprica.vlcj.player.headless.HeadlessMediaPlayer;
  */
 public class Client extends javax.swing.JFrame {
 
-    private StreamThreadManager stm;
     private String mediaType;
 
     // Create a media player factory
@@ -71,7 +62,8 @@ public class Client extends javax.swing.JFrame {
     public CanvasVideoSurface videoSurface;
 
     // Create the mediaServer
-    //private MediaServer mediaServer;
+    private MediaServer mediaServer;
+
     // Create fullscreen player
     private final FullScreenPlayer fullscreenplayer;
 
@@ -98,21 +90,19 @@ public class Client extends javax.swing.JFrame {
 
     // File filter
     public FileFilter filefilter;
-
+    
     // "pause/stop" stream flag for clients
     private boolean stopped;
-
+    
     // init empty canvas
     final private EmptyCanvas emptyCanvas;
-
+    
     /**
      * Creates new form Client
      *
      * @param pr Peer
      */
     public Client(Peer pr) {
-        stm = new StreamThreadManager();
-
         // Init style and layout
         initStyle();
         // Now create rest of components with saved default layout
@@ -125,31 +115,15 @@ public class Client extends javax.swing.JFrame {
         this.pr = pr;
 
         //VLCLibrary init
-        final File jarFile = new File(getClass().getProtectionDomain().getCodeSource().getLocation().getPath());
-        if (jarFile.isFile()) { // Run with JAR
-            String tmpDir = System.getProperty("java.io.tmpdir");
-            String VLCDir = tmpDir + "VLC\\";
-            try {
-                new ExtractDirFromJar("/VLC", VLCDir);
-            } catch (IOException ex) {
-                Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            NativeLibrary.addSearchPath("libvlc", VLCDir);
-            System.out.println(VLCDir);
-        } else { // Run with IDE
-            System.out.println("IDE");
-            StringBuilder location = new StringBuilder(Client.class.getProtectionDomain().getCodeSource().getLocation().toString());
-            location.delete(0, 6);
-            location.append("VLC/");
-            System.out.println(location);
-            NativeLibrary.addSearchPath("libvlc", location.toString());
-        }
+        StringBuilder location = new StringBuilder(Client.class.getProtectionDomain().getCodeSource().getLocation().toString());
+        location.delete(0, 6);
+        location.append("VLC/");
+        System.out.println(location);
+        NativeLibrary.addSearchPath("libvlc", location.toString());
 
         //File chooser settings init
-        fileChooser.setFileFilter(
-                new FileFilter());
-        fileChooser.setAcceptAllFileFilterUsed(
-                false);
+        fileChooser.setFileFilter(new FileFilter());
+        fileChooser.setAcceptAllFileFilterUsed(false);
 
         //Fullscreenplayer init
         fullscreenplayer = new FullScreenPlayer();
@@ -160,18 +134,29 @@ public class Client extends javax.swing.JFrame {
 
         //Set mediaplayer to surface
         videoSurface = mediaPlayerFactory.newVideoSurface(canvas);
-
         mediaPlayer.setVideoSurface(videoSurface);
         visualizeMode = false;
-
+        
         //Init empty canvas
         emptyCanvas = new EmptyCanvas();
 
-        this.mediaPlayerInit(mediaPlayer);
+        mediaPlayer.addMediaPlayerEventListener(new MediaPlayerEventAdapter() {
+            @Override
+            public void finished(MediaPlayer mediaPlayer) {
+                if (playlist.isEmpty()) {
+                    setLeftComponent(emptyCanvas);
+                }
+            }
 
+            @Override
+            public void stopped(MediaPlayer mediaPlayer) {
+                if (playlist.isEmpty()) {
+                    setLeftComponent(emptyCanvas);
+                }
+            }
+        });
         // Split panel inits
-        jSplitPane1.setDividerLocation(
-                0.7);
+        jSplitPane1.setDividerLocation(0.7);
         rightPanelMode = "chat";
 
         // Public playlist init
@@ -190,28 +175,6 @@ public class Client extends javax.swing.JFrame {
          buttonStream.setEnabled(false);
          }
          */
-    }
-
-    private void mediaPlayerInit(EmbeddedMediaPlayer mediaPlayer) {
-        mediaPlayer.addMediaPlayerEventListener(
-                new MediaPlayerEventAdapter() {
-                    @Override
-                    public void finished(MediaPlayer mediaPlayer
-                    ) {
-                        if (playlist.isEmpty()) {
-                            setLeftComponent(emptyCanvas);
-                        }
-                    }
-
-                    @Override
-                    public void stopped(MediaPlayer mediaPlayer
-                    ) {
-                        if (playlist.isEmpty()) {
-                            setLeftComponent(emptyCanvas);
-                        }
-                    }
-                }
-        );
     }
 
     public void persistClient(MediaPlayer mediaPlayer) {
@@ -257,6 +220,7 @@ public class Client extends javax.swing.JFrame {
                 updateRightPanel(getPlaylist());
                 break;
         }
+
     }
 
     /**
@@ -302,11 +266,13 @@ public class Client extends javax.swing.JFrame {
         scrollListPanel.setViewportView(listInScrollpane);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setBackground(new java.awt.Color(82, 68, 68));
+        setAlwaysOnTop(true);
+        setBackground(new java.awt.Color(102, 102, 102));
 
         panelChatt.setBackground(new java.awt.Color(102, 102, 102));
 
         textChatInput.setBackground(new java.awt.Color(102, 102, 102));
+        textChatInput.setCaretColor(new java.awt.Color(255, 255, 255));
         textChatInput.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 textChatInputKeyPressed(evt);
@@ -579,8 +545,7 @@ public class Client extends javax.swing.JFrame {
             mediaPlayer.stop();
         }
         if (pr.isHost()) {
-            //mediaServer.stop();
-            stm.stop();
+            mediaServer.stop();
         } else {
             stopped = true;
         }
@@ -634,11 +599,23 @@ public class Client extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItem3ActionPerformed
 
     private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
-        //Move to ActionExitToLobby
         // Remove client and its music from playlist.
-        ActionExitToLobby aetl = new ActionExitToLobby(pr, stm, mediaPlayer);
-        new Thread(aetl).start();
 
+        playlist.removefromPlaylist(pr.getNick());
+        //byt host
+        if (pr.isHost()) {
+         startStream();
+        }
+            Message msg = new Message();
+            msg.setType("removePeerbyNick");
+            msg.setName(pr.getNick());
+            pr.sendMsg(pr.getHost(), 4444, msg);
+        
+        if (mediaPlayer.isPlaying()) {
+            mediaPlayer.stop();
+        }
+        pr.com.clearOldCommunity();
+        pr.openLobby();
 
     }//GEN-LAST:event_jMenuItem4ActionPerformed
     private void jSlider1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlider1StateChanged
@@ -670,17 +647,6 @@ public class Client extends javax.swing.JFrame {
     }
 
     public void playMedia(String url) {
-
-        mediaPlayer.release();
-
-        mediaPlayerFactory.release();
-
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
         //String[] s = playlist.getNowPlaying().split("\\.");
         // media ends with mp3? Then we want a visualizer
         //if (s[s.length - 1].endsWith("mp3")) {
@@ -688,21 +654,17 @@ public class Client extends javax.swing.JFrame {
         if (mediaType.equals("visualize")) {
             // Check if visualizemode already set, else we need to set it to visualizemode
             // If not, its already in visualizemode and we can play media without any changes
+            if (!visualizeMode) {
+                visualizeMode = true;
+                // To set it to visualize mode we need to:
+                // Recreate the mediaPlayerFactory with visualizer options
+                mediaPlayerFactory = new MediaPlayerFactory("--audio-visual=visual", "--effect-list=spectrum");
+                mediaPlayer = mediaPlayerFactory.newEmbeddedMediaPlayer(new Win32FullScreenStrategy(fullscreenplayer.frame));
 
-            System.out.println("1");
-            // To set it to visualize mode we need to:
-            // Recreate the mediaPlayerFactory with visualizer options
-            mediaPlayerFactory = new MediaPlayerFactory("--audio-visual=visual", "--effect-list=spectrum");
-            System.out.println("2");
-            mediaPlayer = mediaPlayerFactory.newEmbeddedMediaPlayer(new Win32FullScreenStrategy(fullscreenplayer.frame));
-            System.out.println("3");
-            //Set visualizer mediaplayer to surface
-            videoSurface = mediaPlayerFactory.newVideoSurface(canvas);
-            System.out.println("4");
-            mediaPlayer.setVideoSurface(videoSurface);
-            System.out.println("5");
-            this.mediaPlayerInit(mediaPlayer);
-
+                //Set visualizer mediaplayer to surface
+                videoSurface = mediaPlayerFactory.newVideoSurface(canvas);
+                mediaPlayer.setVideoSurface(videoSurface);
+            }
             // Own visualizer stuff. dont remove pls
             // I think this gives us a audiostream to work with
             /*MediaPlayerFactory factory = new MediaPlayerFactory();
@@ -710,18 +672,17 @@ public class Client extends javax.swing.JFrame {
              audioPlayer.playMedia(url);*/
         } else {
             // Check if in visualizemode, if it is we need to recreate the mediaplayer
+            if (visualizeMode) {
+                visualizeMode = false;
+                // Recreate the mediaplayerfactory without visualizer options
+                //"--realrtsp-caching=1200", manual cache size. 
+                mediaPlayerFactory = new MediaPlayerFactory();
+                mediaPlayer = mediaPlayerFactory.newEmbeddedMediaPlayer(new Win32FullScreenStrategy(fullscreenplayer.frame));
 
-            System.out.println("1");
-            // Recreate the mediaplayerfactory without visualizer options
-            //"--realrtsp-caching=1200", manual cache size. 
-            mediaPlayerFactory = new MediaPlayerFactory();
-            mediaPlayer = mediaPlayerFactory.newEmbeddedMediaPlayer(new Win32FullScreenStrategy(fullscreenplayer.frame));
-
-            //Set mediaplayer without visualize options to surface
-            videoSurface = mediaPlayerFactory.newVideoSurface(canvas);
-            mediaPlayer.setVideoSurface(videoSurface);
-            this.mediaPlayerInit(mediaPlayer);
-
+                //Set mediaplayer without visualize options to surface
+                videoSurface = mediaPlayerFactory.newVideoSurface(canvas);
+                mediaPlayer.setVideoSurface(videoSurface);
+            }
         }
         // lastly, play the media in the mediaplayer with the apropriate options
         setLeftComponent(canvas);
@@ -730,11 +691,6 @@ public class Client extends javax.swing.JFrame {
 
     public void setMediaType(String text) {
         this.mediaType = text;
-
-    }
-
-    public void clearPlaylist() {
-      playlist.clear();
     }
 
     private class TestAudioCallbackAdapter extends DefaultAudioCallbackAdapter {
@@ -793,10 +749,8 @@ public class Client extends javax.swing.JFrame {
     }
 
     public void startStreamingServer() {
-
-        stm.startStream(playlist, this);
-        //mediaServer = new MediaServer(playlist, this);
-        //mediaServer.startStreamingServer();
+        mediaServer = new MediaServer(playlist, this);
+        mediaServer.startStreamingServer();
     }
 
     public void cleanStartOfPlaylist() {
@@ -827,13 +781,13 @@ public class Client extends javax.swing.JFrame {
             setLeftComponent(emptyCanvas);
         }
     }
-
+    
     void setLeftComponent(Canvas canvas) {
         int temp = jSplitPane1.getDividerLocation();
         jSplitPane1.setLeftComponent(canvas);
         jSplitPane1.setDividerLocation(temp);
     }
-
+    
     private void setLeftComponent(EmptyCanvas canvas) {
         int temp = jSplitPane1.getDividerLocation();
         jSplitPane1.setLeftComponent(canvas);
@@ -854,21 +808,16 @@ public class Client extends javax.swing.JFrame {
                 if ("Nimbus".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
-
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Client.class
-                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Client.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Client.class
-                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Client.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Client.class
-                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Client.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Client.class
-                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Client.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
@@ -932,31 +881,24 @@ public class Client extends javax.swing.JFrame {
                 if ("Nimbus".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
-
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Client.class
-                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Client.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Client.class
-                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Client.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Client.class
-                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Client.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Client.class
-                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Client.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         // Save java Look&Feel (L&F)
         LookAndFeel originalLaf = UIManager.getLookAndFeel();
         try {
             // Switch to Windows L&F
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-
         } catch (Exception ex) {
-            Logger.getLogger(Client.class
-                    .getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         //Create the Windows L&F file chooser
@@ -965,10 +907,8 @@ public class Client extends javax.swing.JFrame {
         try {
             //Flick the L&F back to the default
             UIManager.setLookAndFeel(originalLaf);
-
         } catch (UnsupportedLookAndFeelException ex) {
-            Logger.getLogger(Client.class
-                    .getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -1032,7 +972,6 @@ public class Client extends javax.swing.JFrame {
     void setPlayList(PublicPlaylist playlist) {
         this.playlist = playlist;
         setMode("playlist");
-
     }
 
     class FullScreenPlayer {

@@ -64,7 +64,7 @@ class PeerClientThread extends Thread {
             //System.exit(1);
             connected = false;
         }
-        System.err.println("msg sender: Sender " + msg.getType());
+        System.err.println("msg sender: Sender");
 
         if (connected) {
             try {

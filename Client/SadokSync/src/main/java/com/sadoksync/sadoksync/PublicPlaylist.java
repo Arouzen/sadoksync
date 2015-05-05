@@ -181,10 +181,7 @@ public class PublicPlaylist implements Serializable {
     public void removeFirstInQueue() {
         lock.lock();
         try {
-            if(playlist.size() != 0){
-                playlist.remove(0);
-            }
-            
+            playlist.remove(0);
 
             ocupied.signalAll();
         } finally {
@@ -204,18 +201,6 @@ public class PublicPlaylist implements Serializable {
             lock.unlock();
         }
         return ret;
-    }
-
-    void clear() {
-        boolean ret;
-        lock.lock();
-        try {
-            playlist = new ArrayList<Pair>();
-
-            ocupied.signalAll();
-        } finally {
-            lock.unlock();
-        }
     }
 
     public static class Pair implements Serializable {

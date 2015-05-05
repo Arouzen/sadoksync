@@ -13,9 +13,9 @@ public class ActionSetName implements Runnable {
 
     Peer pr;
     String nick;
-    Lobby lb;
+    Newlobby lb;
 
-    public ActionSetName(Peer pr, String nick, Lobby lb) {
+    public ActionSetName(Peer pr, String nick, Newlobby lb) {
         this.pr = pr;
         this.nick = nick;
         this.lb = lb;
@@ -28,8 +28,8 @@ public class ActionSetName implements Runnable {
 
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                lb.jButton3.setEnabled(true);
-                lb.jButton4.setEnabled(false);
+                lb.jButton2.setEnabled(true);
+                lb.jButton1.setEnabled(false);
             }
         });
 
