@@ -648,6 +648,10 @@ public class Client extends javax.swing.JFrame {
 //                System.out.println("BEFORE: " + pair.getKey());
 //            }
             pr.removePeerbyNick(pr.getNick());
+            Message removeHost = new Message();
+            removeHost.setType("removePeerFromCommunity");
+            removeHost.setName(pr.getNick());
+            pr.sendMsgToComunity(removeHost);
 //            Iterator it = pr.com.pMap.entrySet().iterator();
 //            while (it.hasNext()) {
 //                Map.Entry pair = (Map.Entry) it.next();
