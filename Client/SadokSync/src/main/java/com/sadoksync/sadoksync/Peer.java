@@ -515,5 +515,10 @@ public class Peer {
             System.out.println("Tried to remove someone who did not exist");
         }
     }
+       
+       void removePeerFromCommunity(String nick) {
+           System.out.println("Starting to remove host from community list!");
+           com.removePeerByName(nick);
+       }
 
 }

@@ -129,6 +129,9 @@ public class ConnectionHandler extends Thread {
                     case "removePeerbyNick":
                         pr.removePeerbyNick(msg.name);
                         break;
+                    case "removePeerFromCommunity":
+                        pr.removePeerFromCommunity(msg.getName());
+                        break;
                 }
             }
 
