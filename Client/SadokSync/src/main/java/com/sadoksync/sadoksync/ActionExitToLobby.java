@@ -50,7 +50,13 @@ public class ActionExitToLobby implements Runnable {
                 pr.sendMsgToComunity(removeHost);
 
                 //Simply to migrate the stream
-                pr.getClient().startStream();
+                if(pr.getClient().isPlaylistEmpty()){
+                    pr.Ping(pr.com.getNextPeerIP(), "Move Host");
+                    
+                }else{
+                    pr.getClient().startStream();
+                }
+                
             };
 
             //pr.SendPMap(pr.getMyIp());

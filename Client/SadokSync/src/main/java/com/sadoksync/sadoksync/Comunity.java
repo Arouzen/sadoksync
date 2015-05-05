@@ -272,13 +272,30 @@ public class Comunity {
         boolean ret;
         lock.lock();
         try {
-            
-            if(pMap.size()==0){
+
+            if (pMap.size() == 0) {
                 ret = true;
-            }else{
+            } else {
                 ret = false;
             }
-            
+
+            ocupied.signalAll();
+        } finally {
+            lock.unlock();
+        }
+        return ret;
+    }
+
+    public String getNextPeerIP() {
+        String ret;
+        lock.lock();
+        try {
+            System.out.println(pMap.size());
+            Iterator it = pMap.entrySet().iterator();
+
+            Map.Entry pair = (Map.Entry) it.next();
+            ret = (String)pair.getValue();
+
             ocupied.signalAll();
         } finally {
             lock.unlock();
