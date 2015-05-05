@@ -294,8 +294,8 @@ public class Comunity {
             Iterator it = pMap.entrySet().iterator();
 
             Map.Entry pair = (Map.Entry) it.next();
-            ret = (String)pair.getValue();
-
+            PeerReg pr = (PeerReg)pair.getValue();
+            ret = pr.getAddr();
             ocupied.signalAll();
         } finally {
             lock.unlock();
