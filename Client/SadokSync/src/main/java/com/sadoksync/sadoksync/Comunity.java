@@ -261,10 +261,28 @@ public class Comunity {
             lock.unlock();
         }
     }
-    
+
     void clearOldCommunity() {
         this.topic = "";
         this.pMap = Collections.synchronizedMap(new HashMap<String, PeerReg>());
         this.host = "";
+    }
+
+    public boolean isEmpty() {
+        boolean ret;
+        lock.lock();
+        try {
+            
+            if(pMap.size()==0){
+                ret = true;
+            }else{
+                ret = false;
+            }
+            
+            ocupied.signalAll();
+        } finally {
+            lock.unlock();
+        }
+        return ret;
     }
 }

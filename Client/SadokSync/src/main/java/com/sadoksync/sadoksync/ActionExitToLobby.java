@@ -29,13 +29,29 @@ public class ActionExitToLobby implements Runnable {
         //byt host
         if (pr.isHost()) {
             pr.removePeerbyNick(pr.getNick());
-            Message removeHost = new Message();
-            removeHost.setType("removePeerFromCommunity");
-            removeHost.setName(pr.getNick());
-            pr.sendMsgToComunity(removeHost);
-            pr.SendPMap(pr.getMyIp());
             stm.killStream();
-            pr.getClient().startStream();
+            if (pr.com.isEmpty()) {
+                //deregister from registry
+                
+                Message deRegister = new Message();
+                deRegister.setType("deRegister");
+                deRegister.setName(pr.com.getComunityName());
+                
+                pr.sendMsg(pr.com.getRegistryAddr(), 3333, deRegister);
+                
+            } else {
+                Message removeHost = new Message();
+                removeHost.setType("removePeerFromCommunity");
+                removeHost.setName(pr.getNick());
+                pr.sendMsgToComunity(removeHost);
+
+                //Simply to migrate the stream
+                pr.getClient().startStream();
+            };
+
+            //pr.SendPMap(pr.getMyIp());
+            
+            
         } else {
             Message msg = new Message();
             msg.setType("removePeerbyNick");

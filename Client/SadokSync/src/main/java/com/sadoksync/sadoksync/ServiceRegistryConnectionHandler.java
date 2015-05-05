@@ -53,8 +53,8 @@ class ServiceRegistryConnectionHandler extends Thread {
                     case "Register Client":
                         System.out.println("Register Client: Error Wrong Handler");
                         break;
-                    case "Join Comunity":
-                        System.out.println("Join Comunity: Error Wrong Handler");
+                    case "deRegister":
+                        cMap.remove(msg.getName());
                         break;
                     case "Find All":
                         System.out.println("Find All");

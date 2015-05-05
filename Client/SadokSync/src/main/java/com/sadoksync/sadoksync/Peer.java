@@ -67,7 +67,7 @@ public class Peer {
         msg.setipAddr(this.getMyIp());
         msg.setType("Find All");
         msg.setName(this.getNick());
-        this.sendMsg(rhost, 3333, msg);
+        this.sendMsg(rhost, port, msg);
     }
     /*
      void joinComunity(String cname, String addr, int port) {
