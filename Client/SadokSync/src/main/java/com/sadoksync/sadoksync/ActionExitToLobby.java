@@ -25,12 +25,15 @@ public class ActionExitToLobby implements Runnable {
 
     @Override
     public void run() {
+        System.out.println("ActionExitToLobby: run()");
         pr.getClient().getPublicPlaylist().removefromPlaylist(pr.getNick());
         //byt host
         if (pr.isHost()) {
+            System.out.println("ActionExitToLobby: if isHost()");
             pr.removePeerbyNick(pr.getNick());
             stm.killStream();
             if (pr.com.isEmpty()) {
+                System.out.println("ActionExitToLobby: if pr.com.isEmpty()");
                 //deregister from registry
                 
                 Message deRegister = new Message();
@@ -40,6 +43,7 @@ public class ActionExitToLobby implements Runnable {
                 pr.sendMsg(pr.com.getRegistryAddr(), 3333, deRegister);
                 
             } else {
+                System.out.println("ActionExitToLobby: else pr.com.isEmpty()");
                 Message removeHost = new Message();
                 removeHost.setType("removePeerFromCommunity");
                 removeHost.setName(pr.getNick());
@@ -53,6 +57,7 @@ public class ActionExitToLobby implements Runnable {
             
             
         } else {
+            System.out.println("ActionExitToLobby: else isHost()");
             Message msg = new Message();
             msg.setType("removePeerbyNick");
             msg.setName(pr.getNick());
