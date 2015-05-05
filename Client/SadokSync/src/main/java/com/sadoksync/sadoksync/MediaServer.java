@@ -126,23 +126,6 @@ public class MediaServer {
                                 playlist.removeFirstInQueue();
                                 client.setMode("playlist");
                                 
-                                /*if (!playlist.isEmpty()) {
-                                 String ip = client.pr.com.getPeerIP(playlist.getFirstInListOwner());
-                                 if (!client.pr.getMyIp().equals(ip)) {
-                                 if (release) {
-                                 serverMediaPlayer.release();
-                                 }
-                                 }
-
-                                 streamNextMedia(client.mediaPlayer);
-
-                                 } else {
-                                 System.out.println("[Server] No more media in list");
-                                 if (release) {
-                                 serverMediaPlayer.release();
-                                 }
-                                 //serverMediaPlayerFactory.release();
-                                 }*/
                                 
                                 client.startStream();
                                 kill(release);
@@ -214,14 +197,14 @@ public class MediaServer {
                                 Media media = playlist.getFirstInList();
 
                                 //get the ip of the owner of the next media.
-                                String ip = client.pr.com.getPeerIP(playlist.getFirstInListOwner());
+                                String ip = playlist.getFirstInListOwner();
 
                                 if (client.pr.getMyIp().equals(ip) /*|| !media.getType().equals("local file")*/) {
                                     streamMedia(serverMediaPlayer, media.getPath(), media, "");
                                 } else {
                                     //mediaPlayer.release();
                                     //serverMediaPlayerFactory.release();
-                                    client.pr.Ping(ip, "Move Host");
+                                    client.pr.ping(ip, "Move Host");
                                 }
                             }
                         });

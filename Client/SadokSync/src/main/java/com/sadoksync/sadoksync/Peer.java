@@ -367,14 +367,6 @@ public class Peer {
         this.sendMsgToComunity(msgret);
     }
 
-    void Ping(String ipAddr, String why) {
-        System.out.println("Ping from: " + this.getMyIp() + " to " + ipAddr);
-        Message msgret = new Message();
-        //msgret.setipAddr(this.getMyIp());
-        msgret.setType("Ping");
-        msgret.setText(why);
-        this.sendMsg(ipAddr, 4444, msgret);
-    }
 
     boolean isHost() {
         return this.isHost;

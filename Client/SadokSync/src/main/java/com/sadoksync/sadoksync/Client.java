@@ -557,7 +557,7 @@ public class Client extends javax.swing.JFrame {
         int returnVal = fileChooser.showOpenDialog(this);
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             File selectedMedia = fileChooser.getSelectedFile();
-            playlist.addToPlaylist(pr.getNick(), selectedMedia);
+            playlist.addToPlaylist(pr.getMyIp(), selectedMedia);
             setMode("playlist");
         }
     }//GEN-LAST:event_OpenActionPerformed
@@ -674,7 +674,7 @@ public class Client extends javax.swing.JFrame {
         //String[] s = playlist.getNowPlaying().split("\\.");
         // media ends with mp3? Then we want a visualizer
         //if (s[s.length - 1].endsWith("mp3")) {
-        System.out.println("[Client.PlayMedia] mediaType: " + mediaType + ", url: " + url);
+        System.out.println("[Client.PlayMedia] mediaType: " + ", url: " + url);
         if (mediaType.equals("visualize")) {
             // Check if visualizemode already set, else we need to set it to visualizemode
             // If not, its already in visualizemode and we can play media without any changes
@@ -784,7 +784,7 @@ public class Client extends javax.swing.JFrame {
                  pr.DeliverStreamToComunity(pr.getMyIp(), "demo");
                  */
             } else {
-                pr.Ping(ip, "Move Host");
+                pr.ping(ip, "Move Host");
             }
         } else {
             System.out.println("[Client.startStream] No more media in list!");
@@ -978,7 +978,7 @@ public class Client extends javax.swing.JFrame {
                 }
                 for (File file : data) {
                     if (filefilter.accept(file)) {
-                        playlist.addToPlaylist(pr.getNick(), file);
+                        playlist.addToPlaylist(pr.getMyIp(), file);
                     } else {
                         displayDropLocation("Does only accept media files.");
                     }

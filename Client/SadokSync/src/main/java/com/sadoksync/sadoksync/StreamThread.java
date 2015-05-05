@@ -49,7 +49,7 @@ public class StreamThread extends Thread {
                     client.rightPanelMode = "playlist";
 
                     if (!playlist.isEmpty()) {
-                        String ip = client.pr.com.getPeerIP(playlist.getFirstInListOwner());
+                        String ip = playlist.getFirstInListOwner();
                         if (!client.pr.getMyIp().equals(ip)) {
 
                             //serverMediaPlayer.release();
@@ -74,7 +74,7 @@ public class StreamThread extends Thread {
                     client.rightPanelMode = "playlist";
 
                     if (!playlist.isEmpty()) {
-                        String ip = client.pr.com.getPeerIP(playlist.getFirstInListOwner());
+                       String ip = playlist.getFirstInListOwner();
                         if (!client.pr.getMyIp().equals(ip)) {
 
                             //serverMediaPlayer.release();
@@ -159,14 +159,14 @@ public class StreamThread extends Thread {
                     Media media = playlist.getFirstInList();
 
                     //get the ip of the owner of the next media.
-                    String ip = client.pr.com.getPeerIP(playlist.getFirstInListOwner());
+                    String ip = playlist.getFirstInListOwner();
 
                     if (client.pr.getMyIp().equals(ip) /*|| !media.getType().equals("local file")*/) {
                         streamMedia(serverMediaPlayer, media.getPath(), media, "");
                     } else {
                         //mediaPlayer.release();
                         //serverMediaPlayerFactory.release();
-                        client.pr.Ping(ip, "Move Host");
+                        client.pr.ping(ip, "Move Host");
                     }
                 }
             });

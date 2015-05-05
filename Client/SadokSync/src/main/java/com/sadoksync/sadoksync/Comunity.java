@@ -43,9 +43,7 @@ public class Comunity {
         pMap.put(peer.getAddr(), peer);
     }
 
-    String getPeerIP(String nowPlayingOwner) {
-        return pMap.get(nowPlayingOwner).getAddr();
-    }
+
 
     void create(String cname, String myIP, String topic, String nick) {
         System.out.println("Comunity: create: " + cname + ", " + topic + ", @" + myIP);
