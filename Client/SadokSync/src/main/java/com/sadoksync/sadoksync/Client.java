@@ -647,6 +647,7 @@ public class Client extends javax.swing.JFrame {
             removeHost.setName(pr.getNick());
             pr.sendMsgToComunity(removeHost);
             pr.SendPMap(pr.getMyIp());
+            stm.killStream();
             startStream();
         } else {
             Message msg = new Message();
