@@ -479,7 +479,8 @@ public class Peer {
     void removePeerbyIp(String ipAddr) {
         System.out.println("Peer.removePeer: Starting removePeer");
         String nick = com.getNickByIp(ipAddr);
-
+        removePeerbyNick(nick);
+/*
         if (!nick.equals("")) {
 
             //remove nick from comunity.
@@ -494,6 +495,7 @@ public class Peer {
             System.out.println("Peer.removePeer: else");
             System.out.println("Tried to remove someone who did not exist");
         }
+        */
     }
 
     void removePeerbyNick(String nick) {
