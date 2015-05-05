@@ -457,10 +457,10 @@ public class Peer {
 
     void connectionEvent(String ipAddr, String ce) {
         System.out.println("Peer.connectionEvent: Starting");
-        
+
         if (ce.equals("connect")) {
             System.out.println("Peer.connectionEvent: Connection refused: connect");
-            
+
             if (this.isHost()) {
                 System.out.println("Peer.connectionEvent: isHost()");
                 System.out.println("PEER TO BE REMOVED: " + ipAddr);
@@ -484,9 +484,9 @@ public class Peer {
 
             //remove nick from comunity.
             System.out.println("Peer.removePeer: removing from comunity by nick: " + nick);
-            
+
             com.removePeerByName(nick);
-            
+
             //Remove ipAdd/nick from playlist
             System.out.println("Peer.removePeer: removing from playlist by nick: " + nick);
             cli.getPublicPlaylist().removefromPlaylist(nick);
@@ -495,8 +495,8 @@ public class Peer {
             System.out.println("Tried to remove someone who did not exist");
         }
     }
-    
-       void removePeerbyNick(String nick) {
+
+    void removePeerbyNick(String nick) {
         System.out.println("Peer.removePeer: Starting removePeer");
 
         System.out.println("Peer.removePeer: about to enter if");
@@ -507,6 +507,13 @@ public class Peer {
             System.out.println("Peer.removePeer: removing from comunity by nick: " + nick);
             com.removePeerByName(nick);
 
+            if (this.isHost()) {
+                Message msg = new Message();
+                msg.setName(nick);
+                msg.setType("removePeerbyNick");
+                this.sendMsgToComunity(msg);
+            }
+
             //Remove ipAdd/nick from playlist
             System.out.println("Peer.removePeer: removing from playlist by nick: " + nick);
             cli.getPublicPlaylist().removefromPlaylist(nick);
@@ -514,17 +521,12 @@ public class Peer {
             System.out.println("Peer.removePeer: else");
             System.out.println("Tried to remove someone who did not exist");
         }
+
     }
-       
-       void removePeerFromCommunity(String nick) {
-           System.out.println("Starting to remove host from community list!");
-           com.removePeerByName(nick);
-           if(this.isHost()){
-               Message msg = new Message();
-               msg.setName(nick);
-               msg.setType("removePeerFromCommunity");                       
-               this.sendMsgToComunity(msg);
-           }
-       }
+
+    void removePeerFromCommunity(String nick) {
+        System.out.println("Starting to remove host from community list!");
+        com.removePeerByName(nick);
+    }
 
 }
