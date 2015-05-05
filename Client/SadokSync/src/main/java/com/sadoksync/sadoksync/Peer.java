@@ -88,7 +88,7 @@ public class Peer {
         Message msg = new Message();
         msg.setType("Join Confirmed");
         msg.setText(ip);
-        this.sendMsg(ip, 5555, msg);
+        this.sendMsg(ip, 4444, msg);
     }
 
     void setLobby(Lobby lb) {
@@ -252,14 +252,14 @@ public class Peer {
             System.out.println("This is host. Sending to community");
             com.addPeer(msg.getName(), ipAdr);
 
-            msg.setType("Register Client: " + msg.getName() + "@" + ipAdr);
+            msg.setType("Register Client");
             msg.setText(ipAdr);
 
             this.deliverStream(ipAdr, "demo");
 
-            this.sendPMap();
+            this.sendPMap(ipAdr);
 
-            //this.sendMsgToComunity(msg);
+            this.sendMsgToComunity(msg);
             //When a new client joins the Comunity it neads to know where the stream is currently
             this.deliverPlaylist(ipAdr);
         } else {
@@ -302,7 +302,7 @@ public class Peer {
         }
     }
 
-    void sendPMap() {
+    void sendPMap(String ipAdr) {
         if (this.isHost()) {
             Map m = com.getComunityPeers();
             System.out.println("SendPMap:");
@@ -311,6 +311,8 @@ public class Peer {
             PeerReg opr;
             Message msg = new Message();
             msg.setType("Register");
+            
+            
             synchronized (m) {  // Synchronizing on m, not s!
                 Iterator i = s.iterator(); // Must be in synchronized block
                 while (i.hasNext()) {
@@ -320,11 +322,11 @@ public class Peer {
 
                     //msg.setipAddr(opr.getAddr());
                     msg.setName(opr.getNick());
+                    msg.setText(opr.getAddr());
                     
-                    //Work is needed here
                     if (!opr.getAddr().equals(this.getMyIp())) {
-                        System.out.println("sending Pmap to: " + opr.getAddr());
-                        this.sendMsg(opr.getAddr(), 4444, msg);
+                        System.out.println("sending Register to: " + opr.getAddr() + ":: N =" + opr.getNick() + " ip=" + ipAdr);
+                        this.sendMsg(ipAdr, 4444, msg);
                     }
                 }
             }
