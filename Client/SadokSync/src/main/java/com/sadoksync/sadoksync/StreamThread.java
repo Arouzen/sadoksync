@@ -43,74 +43,28 @@ public class StreamThread extends Thread {
             serverMediaPlayer = serverMediaPlayerFactory.newHeadlessMediaPlayer();
 
             serverMediaPlayer.addMediaPlayerEventListener(new MediaPlayerEventAdapter() {
-                public void mediaStopped(MediaPlayer serverMediaPlayer) {
-                    playlist.removeFirstInQueue();
-                    client.updateRightPanel(client.getPlaylist());
-                    client.rightPanelMode = "playlist";
-
-                    if (!playlist.isEmpty()) {
-                        String ip = client.pr.com.getPeerIP(playlist.getFirstInListOwner());
-                        if (!client.pr.getMyIp().equals(ip)) {
-
-                            //serverMediaPlayer.release();
-                            //serverMediaPlayerFactory.release();
-                        }
-                        client.startStream();
-                        //streamNextMedia(client.mediaPlayer);
-
-                    } else {
-                        System.out.println("[Server] No more media in list");
-
-                        //serverMediaPlayer.release();
-                        //serverMediaPlayerFactory.release();
-                    }
-
-                    //kill();
-                }
-
-                public void mediaFinished(MediaPlayer serverMediaPlayer) {
-                    playlist.removeFirstInQueue();
-                    client.updateRightPanel(client.getPlaylist());
-                    client.rightPanelMode = "playlist";
-
-                    if (!playlist.isEmpty()) {
-                        String ip = client.pr.com.getPeerIP(playlist.getFirstInListOwner());
-                        if (!client.pr.getMyIp().equals(ip)) {
-
-                            //serverMediaPlayer.release();
-                            //serverMediaPlayerFactory.release();
-                        }
-                        client.startStream();
-                        //streamNextMedia(client.mediaPlayer);
-
-                    } else {
-                        System.out.println("[Server] No more media in list");
-
-                        //serverMediaPlayer.release();
-                        //serverMediaPlayerFactory.release();
-                    }
-
-                    //kill(true);
-                }
 
                 @Override
                 public void finished(MediaPlayer serverMediaPlayer) {
                     System.out.println("Event: Finished");
-                    if (playlist.getFirstInList().type.equals("youtube")) {
-                        // This is key...
-                        //
-                        // On receipt of a "finished" event, check if sub-items have been created...
-                        List<String> subItems = serverMediaPlayer.subItems();
-                        System.out.println("subItems=" + subItems);
-                        // If sub-items were created...
-                        if (subItems == null || subItems.isEmpty()) {
-                            System.out.println("utube done? maybe");
-                            mediaFinished(serverMediaPlayer);
-                        }
-                    } else {
-                        System.out.println("not utube");
-                        mediaFinished(serverMediaPlayer);
-                    }
+                    mediaEnded(serverMediaPlayer);
+                    /*
+                     if (playlist.getFirstInList().type.equals("youtube")) {
+                     // This is key...
+                     //
+                     // On receipt of a "finished" event, check if sub-items have been created...
+                     List<String> subItems = serverMediaPlayer.subItems();
+                     System.out.println("subItems=" + subItems);
+                     // If sub-items were created...
+                     if (subItems == null || subItems.isEmpty()) {
+                     System.out.println("utube done? maybe");
+                     mediaEnded(serverMediaPlayer);
+                     }
+                     } else {
+                     System.out.println("not utube");
+                     mediaEnded(serverMediaPlayer);
+                     }
+                     */
                 }
 
                 @Override
@@ -123,7 +77,7 @@ public class StreamThread extends Thread {
                 @Override
                 public void stopped(MediaPlayer serverMediaPlayer) {
                     System.out.println("Event: Stopped");
-                    mediaStopped(serverMediaPlayer);
+                    mediaEnded(serverMediaPlayer);
                 }
 
                 @Override
@@ -177,22 +131,23 @@ public class StreamThread extends Thread {
             ex.printStackTrace();
         }
     }
-
-    public void stopMedia() {
-        System.out.println("StreamThread: stopMedia:");
-        if (serverMediaPlayer != null) {
-            System.out.println("StreamThread: stopMedia: 1");
-            if (serverMediaPlayer.isPlaying()) {
-                System.out.println("StreamThread: stopMedia: 2");
-                serverMediaPlayer.stop();
-                System.out.println("StreamThread: stopMedia: 3");
-            }
-        }
-    }
+    /*
+     public void stopMedia() {
+     System.out.println("StreamThread: stopMedia:");
+     if (serverMediaPlayer != null) {
+     System.out.println("StreamThread: stopMedia: 1");
+     if (serverMediaPlayer.isPlaying()) {
+     System.out.println("StreamThread: stopMedia: 2");
+     //serverMediaPlayer.stop();
+     System.out.println("StreamThread: stopMedia: 3");
+     }
+     }
+     }
+     */
 
     public void kill() {
         System.out.println("StreamThread: kill:");
-        this.stopMedia();
+        //this.stopMedia();
         System.out.println("StreamThread: kill: 1");
         if (serverMediaPlayer != null) {
             System.out.println("StreamThread: kill: 2");
@@ -231,7 +186,7 @@ public class StreamThread extends Thread {
 
         //Let the stream startup
         try {
-            Thread.sleep(4000);
+            Thread.sleep(1000);
         } catch (InterruptedException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -263,5 +218,33 @@ public class StreamThread extends Thread {
         client.playMedia(client.getRtspUrl());
         client.pr.DeliverStreamToComunity(client.pr.getMyIp(), "demo", mediaType);
         client.pr.DeliverPlaylistToComunity();
+    }
+
+    private void mediaEnded(MediaPlayer serverMediaPlayer) {
+        //kill stream if we alway kill the strea and re-start it. always?
+        kill();
+
+        playlist.removeFirstInQueue();
+        client.updateRightPanel(client.getPlaylist());
+        client.rightPanelMode = "playlist";
+
+        if (!playlist.isEmpty()) {
+            String ip = client.pr.com.getPeerIP(playlist.getFirstInListOwner());
+            if (!client.pr.getMyIp().equals(ip)) {
+                //kill stream if we are reusing the stream
+            }
+            //Tests if we should start the next or if someone eles should.
+            client.startStream();
+            //streamNextMedia(client.mediaPlayer);
+
+        } else {
+            System.out.println("[Server] No more media in list");
+
+            //kill stream if we are reusing the stream
+        }
+    }
+
+    public void endMedia() {
+        mediaEnded(serverMediaPlayer);
     }
 }

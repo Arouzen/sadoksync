@@ -34,7 +34,7 @@ public class StreamThreadManager {
         killStream();
 
         try {
-            Thread.sleep(4000);
+            Thread.sleep(1000);
         } catch (InterruptedException ex) {
             Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -49,6 +49,7 @@ public class StreamThreadManager {
         System.out.println("StreamThreadManager: killStream");
         //Make sure that there is a stream to kill.
         if (st != null) {
+            System.out.println("st not null");
             if (st.isAlive()) {
                 System.out.println("Killing stream");
                 st.kill();
@@ -60,15 +61,27 @@ public class StreamThreadManager {
                     Logger.getLogger(StreamThreadManager.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
+        }else{
+            System.out.println("st is null");
         }
     }
 
+    boolean isAlive(){
+        boolean ret = false;
+        if (st != null) {
+            ret =  st.isAlive();  
+        }
+        return ret;
+    }
+    
     void stop() {
-        st.stopMedia();
+        //st.stopMedia();
         //this.killStream();
         //playlist.removeFirstInQueue();
         //cli.setMode("playlist");
-        cli.startStream();
+        //cli.startStream();
+        
+        st.endMedia();
 
     }
 }

@@ -218,10 +218,8 @@ public class Client extends javax.swing.JFrame {
         System.out.println("Playing next video after 5sec...(client)");
         try {
             Thread.sleep(5000);
-
         } catch (InterruptedException ex) {
-            Logger.getLogger(Client.class
-                    .getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
         playMedia(getRtspUrl());
     }
@@ -258,7 +256,7 @@ public class Client extends javax.swing.JFrame {
                 this.rightPanelMode = mode;
                 updateRightPanel(getPlaylist());
                 break;
-        } 
+        }
     }
 
     /**
@@ -699,9 +697,11 @@ public class Client extends javax.swing.JFrame {
 
     public void playMedia(String url) {
 
+        mediaPlayer.release();
+
         mediaPlayerFactory.release();
 
-        mediaPlayer.release();
+
 
         try {
             Thread.sleep(5000);
@@ -718,7 +718,7 @@ public class Client extends javax.swing.JFrame {
             // If not, its already in visualizemode and we can play media without any changes
 
             System.out.println("1");
-                // To set it to visualize mode we need to:
+            // To set it to visualize mode we need to:
             // Recreate the mediaPlayerFactory with visualizer options
             mediaPlayerFactory = new MediaPlayerFactory("--audio-visual=visual", "--effect-list=spectrum");
             System.out.println("2");
