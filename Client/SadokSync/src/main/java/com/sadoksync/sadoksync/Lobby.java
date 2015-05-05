@@ -6,6 +6,7 @@
 package com.sadoksync.sadoksync;
 
 import java.awt.event.KeyEvent;
+import javax.swing.DefaultListModel;
 
 /**
  *
@@ -315,8 +316,8 @@ public class Lobby extends javax.swing.JFrame {
     }//GEN-LAST:event_jTextField1KeyPressed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-            ActionDirectConnect adc = new ActionDirectConnect(pr, jTdc.getText() );
-            new Thread(adc).start();      
+        ActionDirectConnect adc = new ActionDirectConnect(pr, jTdc.getText());
+        new Thread(adc).start();
     }//GEN-LAST:event_jButton5ActionPerformed
 
 
@@ -339,4 +340,17 @@ public class Lobby extends javax.swing.JFrame {
     private javax.swing.JTextField jTextFieldNick;
     private javax.swing.JTextField jTextFieldRegistryAddr;
     // End of variables declaration//GEN-END:variables
+
+    void clearList() {
+
+
+        final DefaultListModel flm = new DefaultListModel();
+
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                jList1.setModel(flm);
+            }
+        });
+
+    }
 }
