@@ -50,7 +50,7 @@ public class StreamThreadManager {
         //Make sure that there is a stream to kill.
         if (st != null) {
             System.out.println("st not null");
-            if (st.isAlive()) {
+            //if (st.isAlive()) {
                 System.out.println("Killing stream");
                 st.kill();
                 try {
@@ -60,7 +60,7 @@ public class StreamThreadManager {
                 } catch (InterruptedException ex) {
                     Logger.getLogger(StreamThreadManager.class.getName()).log(Level.SEVERE, null, ex);
                 }
-            }
+            //}
         }else{
             System.out.println("st is null");
         }
