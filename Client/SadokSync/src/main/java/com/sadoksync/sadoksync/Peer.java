@@ -251,8 +251,8 @@ public class Peer {
         if (this.isHost()) {
             System.out.println("This is host. Sending to community");
             com.addPeer(msg.getName(), ipAdr);
-
-            msg.setType("Register Client");
+            
+            msg.setType("Register");
             msg.setText(ipAdr);
 
             this.deliverStream(ipAdr, "demo");

@@ -82,6 +82,7 @@ public class ConnectionHandler extends Thread {
                             System.out.println("No longer alone! They see me @" + msg.getText());
                             pr.setMyIP(msg.getText()); //This is not looking good
                             pr.com.removePeer("127.0.0.1");
+                            pr.com.setHost(msg.getText());
                             pr.regPeer(new PeerReg(pr.getNick(), msg.getText()));
                         }
                         System.out.println("Join Comunity " + clientSocket.getInetAddress().toString().substring(1) + " end.");
