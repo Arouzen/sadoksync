@@ -305,7 +305,6 @@ public class Peer {
         Message msgret = new Message();
         switch (msg.getText()) {
             case "Move Host":
-
                 msgret.setType("Pong");
                 msgret.setText("Move Host");
                 break;
@@ -320,8 +319,9 @@ public class Peer {
             case "Move Host":
                 msgret.setName(this.com.getComunityName());
                 msgret.setType("Set Host");
-                this.setHostB(false);
+                this.setHostB(false);        
                 this.sendMsg(ip, 4444, msgret);
+                System.out.println("No longer host!");
                 break;
         }
     }
@@ -400,7 +400,8 @@ public class Peer {
         return this.isHost;
     }
 
-    void setHost(String ipAddr) {
+    void setHost() {
+        String ipAddr = this.getMyIp();
         com.setHost(ipAddr);
         System.out.println("Host changed to: " + ipAddr);
         if (ipAddr.equals(this.getMyIp())) {
