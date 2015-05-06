@@ -1,6 +1,7 @@
 package com.sadoksync.sadoksync;
 
 import com.sadoksync.sadoksync.PublicPlaylist.Pair;
+import com.sun.jna.Native;
 import com.sun.jna.NativeLibrary;
 import java.awt.Canvas;
 import java.awt.GraphicsDevice;
@@ -15,9 +16,9 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.Iterator;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -41,6 +42,7 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import org.json.simple.parser.ParseException;
 import sun.misc.Launcher;
+import uk.co.caprica.vlcj.binding.LibVlc;
 import uk.co.caprica.vlcj.binding.internal.libvlc_media_t;
 import uk.co.caprica.vlcj.player.MediaPlayer;
 import uk.co.caprica.vlcj.player.MediaPlayerEventAdapter;
@@ -51,6 +53,7 @@ import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
 import uk.co.caprica.vlcj.player.embedded.videosurface.CanvasVideoSurface;
 import uk.co.caprica.vlcj.player.embedded.windows.Win32FullScreenStrategy;
 import uk.co.caprica.vlcj.player.headless.HeadlessMediaPlayer;
+import uk.co.caprica.vlcj.runtime.RuntimeUtil;
 
 /**
  *
@@ -128,14 +131,18 @@ public class Client extends javax.swing.JFrame {
         final File jarFile = new File(getClass().getProtectionDomain().getCodeSource().getLocation().getPath());
         if (jarFile.isFile()) { // Run with JAR
             String tmpDir = System.getProperty("java.io.tmpdir");
-            String VLCDir = tmpDir + "VLC\\";
+            String VLCDir = tmpDir + "VLC";
             try {
                 new ExtractDirFromJar("/VLC", VLCDir);
             } catch (IOException ex) {
                 Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
             }
-            NativeLibrary.addSearchPath("libvlc", VLCDir);
             System.out.println(VLCDir);
+            NativeLibrary.addSearchPath(
+                    RuntimeUtil.getLibVlcLibraryName(), VLCDir
+            );
+            Native.loadLibrary(RuntimeUtil.getLibVlcLibraryName(), LibVlc.class);
+
         } else { // Run with IDE
             System.out.println("IDE");
             StringBuilder location = new StringBuilder(Client.class.getProtectionDomain().getCodeSource().getLocation().toString());
@@ -734,7 +741,7 @@ public class Client extends javax.swing.JFrame {
     }
 
     public void clearPlaylist() {
-      playlist.clear();
+        playlist.clear();
     }
 
     private class TestAudioCallbackAdapter extends DefaultAudioCallbackAdapter {
