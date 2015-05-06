@@ -522,6 +522,7 @@ public class Peer {
 
             //Remove ipAdd/nick from playlist
             System.out.println("Peer.removePeer: removing from playlist by nick: " + nick);
+            System.out.println("RETARD 0.5");
             cli.getPublicPlaylist().removefromPlaylist(nick);
         } else {
             System.out.println("Peer.removePeer: else");

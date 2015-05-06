@@ -102,8 +102,10 @@ public class PublicPlaylist implements Serializable {
     // Remove all elements from the arraylist (playlist) containing the key (user).
     public void removefromPlaylist(String name) {
         lock.lock();
+        System.out.println("RETARD 0.8");
         try {
             if (pr.isHost()) {
+                System.out.println("RETARD 0.9");
 
                 //Temporary list containing indexes to remove. 
                 ArrayList<Integer> save = new ArrayList<Integer>();
@@ -122,10 +124,12 @@ public class PublicPlaylist implements Serializable {
 
                 pr.DeliverPlaylistToComunity();
             } else {
+                System.out.println("RETARD 1.0");
                 Message msg = new Message();
                 msg.setType("removefromlist");
                 msg.setName(name);
                 pr.sendMsg(pr.getHost(), 4444, msg);
+                System.out.println("RETARD 2.0");
             }
         } finally {
             lock.unlock();

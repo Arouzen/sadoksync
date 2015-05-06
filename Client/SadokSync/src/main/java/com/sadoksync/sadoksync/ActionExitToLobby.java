@@ -26,9 +26,9 @@ public class ActionExitToLobby implements Runnable {
     @Override
     public void run() {
         System.out.println("ActionExitToLobby: run()");
-        pr.getClient().getPublicPlaylist().removefromPlaylist(pr.getNick());
         //byt host
         if (pr.isHost()) {
+            System.out.println("RETARD HOST");
             System.out.println("ActionExitToLobby: if isHost()");
             pr.removePeerbyNick(pr.getNick());
             stm.killStream();
@@ -41,7 +41,6 @@ public class ActionExitToLobby implements Runnable {
                 deRegister.setName(pr.com.getComunityName());
                 
                 pr.sendMsg(pr.com.getRegistryAddr(), 3333, deRegister);
-                
             } else {
                 System.out.println("ActionExitToLobby: else pr.com.isEmpty()");
                 Message removeHost = new Message();
@@ -56,18 +55,21 @@ public class ActionExitToLobby implements Runnable {
                 }else{
                     pr.getClient().startStream();
                 }
-                
             };
+            System.out.println("RETARD HOST END");
 
             //pr.SendPMap(pr.getMyIp());
             
             
         } else {
+            System.out.println("RETARD CLIENT");
+            pr.getClient().getPublicPlaylist().removefromPlaylist(pr.getNick());
             System.out.println("ActionExitToLobby: else isHost()");
             Message msg = new Message();
             msg.setType("removePeerbyNick");
             msg.setName(pr.getNick());
             pr.sendMsg(pr.getHost(), 4444, msg);
+            System.out.println("RETARD CLIENT END");
         }
         if (mediaPlayer.isPlaying()) {
             mediaPlayer.stop();
