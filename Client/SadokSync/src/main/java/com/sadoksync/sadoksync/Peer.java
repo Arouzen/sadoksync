@@ -79,7 +79,7 @@ public class Peer {
         msg.setName(nick);
         msg.setText(addr);
         //msg.setText(cname);
-        System.out.println("JoiningComunity");
+        System.out.println("Joining Comunity");
         this.sendMsg(addr, 4444, msg);
         this.openClient();
     }
@@ -362,14 +362,14 @@ public class Peer {
         //msgret.setipAddr(this.getMyIp());
         msgret.setType("Set Stream");
         msgret.setName(path);
+        msgret.setText("video");
         this.sendMsg(ipAddr, 4444, msgret);
     }
 
     void deliverStreamToComunity(String mediaType) {
         //Delives a message that set where the stream is currently.
-        System.out.println("deliverPlaylistToComunity()");
         Message msgret = new Message();
-        // msgret.setipAddr(this.getMyIp());
+       
         msgret.setType("Set Stream");
         msgret.setName("demo");
         msgret.setText(mediaType);
