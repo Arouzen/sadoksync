@@ -23,7 +23,7 @@ public class Comunity {
     String topic;
     String cname;
     String host;
-
+    String RegistryAddr;
     final Lock lock;
     final Condition ocupied;
     Map<String, PeerReg> pMap;
@@ -43,7 +43,19 @@ public class Comunity {
         pMap.put(peer.getAddr(), peer);
     }
 
+    void setHost(String host) {
+        lock.lock();
+        try {
+            this.host = host;
+            ocupied.signalAll();
+        } finally {
+            lock.unlock();
+        }
+    }
 
+    String getRegistryAddr() {
+        return RegistryAddr;
+    }
 
     void create(String cname, String myIP, String topic, String nick) {
         System.out.println("Comunity: create: " + cname + ", " + topic + ", @" + myIP);
@@ -58,10 +70,6 @@ public class Comunity {
         } finally {
             lock.unlock();
         }
-    }
-
-    void setHost(String host) {
-        this.host = host;
     }
 
     void setTopic(String topic) {
@@ -100,7 +108,9 @@ public class Comunity {
         pMap.put(ipAddr, new PeerReg(nick, ipAddr));
     }
 
-   
+    void setRegistryAddr(String rhost) {
+        this.RegistryAddr = rhost;
+    }
 
     void removePeer(String ip) {
         lock.lock();

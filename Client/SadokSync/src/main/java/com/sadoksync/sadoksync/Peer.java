@@ -58,6 +58,7 @@ public class Peer {
     }
 
     void registerComunity(String rhost, int port) {
+        com.setRegistryAddr(rhost);
         Message msg = new Message(com);
         this.sendMsg(rhost, 3333, msg);
     }
@@ -319,7 +320,7 @@ public class Peer {
             case "Move Host":
                 msgret.setName(this.com.getComunityName());
                 msgret.setType("Set Host");
-                this.setHost(false);
+                this.setHostB(false);
                 this.sendMsg(ip, 4444, msgret);
                 break;
         }
@@ -399,7 +400,34 @@ public class Peer {
         return this.isHost;
     }
 
-    void setHost(Boolean isHost) {
+    void setHost(String ipAddr) {
+        com.setHost(ipAddr);
+        System.out.println("Host changed to: " + ipAddr);
+        if (ipAddr.equals(this.getMyIp())) {
+            this.cli.setHost(this.getMyIp());
+            //send message to all with new host.
+            Message msgret = new Message();
+
+            msgret.setType("Set Host");
+
+            this.sendMsgToComunity(msgret);
+
+            //Reregister comunity. 
+            this.registerComunity(com.getRegistryAddr(), 3333);
+
+            if (!this.cli.isPlaylistEmpty()) {
+                //clean start of playlist
+                System.out.println("Calling cleanStartOfPlaylist");
+                this.cli.cleanStartOfPlaylist();
+
+                //start stream
+                System.out.println("Calling startStream");
+                this.cli.startStream();
+            }
+
+        }
+    }
+    void setHostB(Boolean isHost) {
         this.isHost = isHost;
     }
 

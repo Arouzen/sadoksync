@@ -60,7 +60,7 @@ public class ConnectionHandler extends Thread {
                         System.out.println("Setting comunity name");
                         //pr.setComunityName(msg.getName());
                         System.out.println("Setting host");
-                        pr.setHost(true);
+                        pr.setHostB(true);
                         pr.com.setHost(msg.getText());
                         break;
                     case "Set Stream":
