@@ -295,12 +295,13 @@ public class Peer {
     void ping(String ipAddr, String why) {
         System.out.println("Ping from: " + this.getMyIp() + " to " + ipAddr);
         Message msgret = new Message();
+        msgret.setName(ipAddr);
         msgret.setType("Ping");
         msgret.setText(why);
         this.sendMsg(ipAddr, 4444, msgret);
     }
 
-    void Pong(Message msg, String ip) {
+    void pong(Message msg, String ip) {
         System.out.println("Pong from: " + this.getMyIp() + " to " + ip);
         Message msgret = new Message();
         switch (msg.getText()) {
@@ -317,7 +318,9 @@ public class Peer {
         Message msgret = new Message();
         switch (msg.getText()) {
             case "Move Host":
-                msgret.setName(this.com.getComunityName());
+                //msgret.setName(this.com.getComunityName());
+                
+                msgret.setText(msg.getName());
                 msgret.setType("Set Host");
                 this.setHostB(false);        
                 this.sendMsg(ip, 4444, msgret);
@@ -400,19 +403,16 @@ public class Peer {
         return this.isHost;
     }
 
-    void setHost() {
-        String ipAddr = this.getMyIp();
+    void setHost(String ipAddr) {
         com.setHost(ipAddr);
         System.out.println("Host changed to: " + ipAddr);
         if (ipAddr.equals(this.getMyIp())) {
-            this.cli.setHost(this.getMyIp());
+            this.setHostB(true);
+            this.cli.setHost("127.0.0.1");
             //send message to all with new host.
             Message msgret = new Message();
 
             msgret.setType("Set Host");
-
-            this.sendMsgToComunity(msgret);
-
             //Reregister comunity. 
             this.registerComunity(com.getRegistryAddr(), 3333);
 
@@ -425,6 +425,7 @@ public class Peer {
                 System.out.println("Calling startStream");
                 this.cli.startStream();
             }
+            this.sendMsgToComunity(msgret);
 
         }
     }

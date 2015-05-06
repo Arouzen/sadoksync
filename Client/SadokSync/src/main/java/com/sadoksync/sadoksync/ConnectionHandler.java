@@ -59,8 +59,8 @@ public class ConnectionHandler extends Thread {
                     case "Set Host":
                         //pr.setComunityName(msg.getName());
                         System.out.println("Setting host");
-                        pr.setHostB(true);
-                        pr.setHost();
+                        
+                        pr.setHost(msg.getName());
                         break;
                     case "Set Stream":
                         System.out.println("Set Stream");
@@ -119,7 +119,7 @@ public class ConnectionHandler extends Thread {
                         });
                         break;
                     case "Ping":
-                        pr.Pong(msg, clientSocket.getInetAddress().toString().substring(1));
+                        pr.pong(msg, clientSocket.getInetAddress().toString().substring(1));
                         break;
                     case "Pong":
                         pr.handlePong(msg, clientSocket.getInetAddress().toString().substring(1));
