@@ -293,7 +293,7 @@ public class Peer {
     }
 
     void ping(String ipAddr, String why) {
-        System.out.println("Ping from: " + this.getMyIp() + " to " + ipAddr + " why:" + why);
+        System.out.println("Ping: from: " + this.getMyIp() + " to " + ipAddr + " why:" + why);
         Message msgret = new Message();
         msgret.setName(ipAddr);
         msgret.setType("Ping");
@@ -302,11 +302,12 @@ public class Peer {
     }
 
     void pong(Message msg, String ip) {
-        System.out.println("Pong from: " + this.getMyIp() + " to " + ip);
+        System.out.println("Pong: from: " + this.getMyIp() + " to " + ip);
         Message msgret = new Message();
         switch (msg.getText()) {
             case "Move Host":
                 msgret.setType("Pong");
+                msgret.setName(ip);
                 msgret.setText("Move Host");
                 break;
         }
