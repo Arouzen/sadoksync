@@ -411,8 +411,9 @@ public class Peer {
             this.cli.setHost("127.0.0.1");
             //send message to all with new host.
             Message msgret = new Message();
-
+            
             msgret.setType("Set Host");
+            msgret.setName(ipAddr);
             //Reregister comunity. 
             this.registerComunity(com.getRegistryAddr(), 3333);
 

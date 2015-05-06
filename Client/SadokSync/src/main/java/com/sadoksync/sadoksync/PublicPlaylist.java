@@ -169,6 +169,7 @@ public class PublicPlaylist implements Serializable {
         try {
             pair = playlist.get(0);
             key = pair.key();
+            System.out.println("PublicplayList.getFirstInLine: " + key);
             ocupied.signalAll();
         } finally {
             lock.unlock();
