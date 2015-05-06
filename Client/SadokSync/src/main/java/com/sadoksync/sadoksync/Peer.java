@@ -11,6 +11,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -51,7 +52,8 @@ public class Peer {
 
     //del?
     void createComunity(String cname, String topic) {
-        com.create(cname, myIP, topic, nick);
+        String uniqueID = UUID.randomUUID().toString();
+        com.create(cname, myIP, topic, nick, uniqueID);
     }
 
     void registerComunity(String rhost, int port) {
@@ -220,6 +222,8 @@ public class Peer {
     }
 
     void sendMsg(String host, int port, Message msg) {
+        String uuid = com.getUUID();
+        msg.setUUID(uuid);
         executor.execute(new PeerClientThread(host, port, msg, this));
     }
 
