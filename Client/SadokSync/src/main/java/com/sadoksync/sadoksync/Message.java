@@ -18,6 +18,7 @@ public class Message implements Serializable {
     String type;
     String ipAddr;
     String text;
+    String uuid;
     List li = null;
     PublicPlaylist.Pair pair;
     PublicPlaylist playlist;
@@ -31,6 +32,7 @@ public class Message implements Serializable {
         this.type = "Comunity Registration";
         this.ipAddr = com.getHost();
         this.text = com.getTopic();
+        this.uuid = com.getUUID();
     }
 
     public void setType(String type) {
@@ -86,6 +88,14 @@ public class Message implements Serializable {
     }
     PublicPlaylist getPlaylist(){
         return this.playlist;
+    }
+
+    String getUUID() {
+        return uuid;
+    }
+
+    void setUUID(String uuid) {
+        this.uuid = uuid;
     }
     
 }

@@ -81,7 +81,7 @@ class ServiceRegistryConnectionHandler extends Thread {
                         break;
                     case "Comunity Registration":
                         System.out.println("Comunity Registration: " + msg.getName()+ " @" + msg.getipAddr());
-                        cMap.put(msg.getName(), new ComunityRegistration(msg.getName(), msg.getipAddr(), msg.getText()));
+                        cMap.put(msg.getUUID(), new ComunityRegistration(msg.getName(), msg.getipAddr(), msg.getText(), msg.getUUID()));
                         break;
                 }
             }

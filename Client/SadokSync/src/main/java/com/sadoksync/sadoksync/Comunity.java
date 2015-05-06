@@ -23,6 +23,7 @@ public class Comunity {
     String cname;
     String RegistryAddr;
     String host;
+    String uuid;
     //ClientRemoteInterface host;
 
     Map<String, PeerReg> pMap;
@@ -59,10 +60,11 @@ public class Comunity {
         }
     }
 
-    void create(String cname, String myIP, String topic, String nick) {
+    void create(String cname, String myIP, String topic, String nick, String uuid) {
         System.out.println("Comunity: create: " + cname + ", " + topic + ", @" + myIP);
         lock.lock();
         try {
+            this.uuid = uuid;
             this.cname = cname;
             this.host = myIP;
             this.topic = topic;
@@ -302,5 +304,9 @@ public class Comunity {
             lock.unlock();
         }
         return ret;
+    }
+
+    String getUUID() {
+        return uuid;
     }
 }
