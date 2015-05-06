@@ -191,6 +191,17 @@ public class PublicPlaylist implements Serializable {
 
     }
 
+    void clear() {
+        lock.lock();
+        try {
+            playlist = new ArrayList<Pair>();
+
+            ocupied.signalAll();
+        } finally {
+            lock.unlock();
+        }
+    }
+    
     public boolean isEmpty() {
         boolean ret;
         lock.lock();

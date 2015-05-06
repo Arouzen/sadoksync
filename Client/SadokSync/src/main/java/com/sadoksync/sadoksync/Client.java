@@ -12,17 +12,10 @@ import java.awt.event.KeyEvent;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.Iterator;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.AbstractAction;
@@ -41,6 +34,8 @@ import javax.swing.UnsupportedLookAndFeelException;
 import uk.co.caprica.vlcj.player.MediaPlayer;
 import uk.co.caprica.vlcj.player.MediaPlayerEventAdapter;
 import uk.co.caprica.vlcj.player.MediaPlayerFactory;
+import uk.co.caprica.vlcj.player.directaudio.DefaultAudioCallbackAdapter;
+import uk.co.caprica.vlcj.player.directaudio.DirectAudioPlayer;
 import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
 import uk.co.caprica.vlcj.player.embedded.videosurface.CanvasVideoSurface;
 import uk.co.caprica.vlcj.player.embedded.windows.Win32FullScreenStrategy;
@@ -83,6 +78,7 @@ public class Client extends javax.swing.JFrame {
     private String rtspPath;
 
     // Socket variables
+    private boolean isHost;
     Peer pr;
 
     // Mode
@@ -117,14 +113,7 @@ public class Client extends javax.swing.JFrame {
         this.pr = pr;
 
         //VLCLibrary init
-        final File jarFile = new File(getClass().getProtectionDomain().getCodeSource().getLocation().getPath());
-
-        System.out.println("IDE");
-        StringBuilder location = new StringBuilder(Client.class.getProtectionDomain().getCodeSource().getLocation().toString());
-        location.delete(0, 6);
-        location.append("VLC/");
-        System.out.println(location);
-        NativeLibrary.addSearchPath("libvlc", location.toString());
+        NativeLibrary.addSearchPath("libvlc", "VLC");
 
         //File chooser settings init
         fileChooser.setFileFilter(
@@ -199,10 +188,8 @@ public class Client extends javax.swing.JFrame {
         System.out.println("Playing next video after 5sec...(client)");
         try {
             Thread.sleep(5000);
-
         } catch (InterruptedException ex) {
-            Logger.getLogger(Client.class
-                    .getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
         }
         playMedia(getRtspUrl());
     }
@@ -617,9 +604,11 @@ public class Client extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItem3ActionPerformed
 
     private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
+        //Move to ActionExitToLobby
         // Remove client and its music from playlist.
         ActionExitToLobby aetl = new ActionExitToLobby(pr, stm, mediaPlayer);
         new Thread(aetl).start();
+
 
     }//GEN-LAST:event_jMenuItem4ActionPerformed
     private void jSlider1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlider1StateChanged
@@ -652,9 +641,9 @@ public class Client extends javax.swing.JFrame {
 
     public void playMedia(String url) {
 
-        mediaPlayerFactory.release();
-
         mediaPlayer.release();
+
+        mediaPlayerFactory.release();
 
         try {
             Thread.sleep(1000);
@@ -665,7 +654,7 @@ public class Client extends javax.swing.JFrame {
         //String[] s = playlist.getNowPlaying().split("\\.");
         // media ends with mp3? Then we want a visualizer
         //if (s[s.length - 1].endsWith("mp3")) {
-        System.out.println("[Client.PlayMedia] mediaType: " + ", url: " + url);
+        System.out.println("[Client.PlayMedia] mediaType: " + mediaType + ", url: " + url);
         if (mediaType.equals("visualize")) {
             // Check if visualizemode already set, else we need to set it to visualizemode
             // If not, its already in visualizemode and we can play media without any changes
@@ -714,6 +703,35 @@ public class Client extends javax.swing.JFrame {
 
     }
 
+    public void clearPlaylist() {
+        playlist.clear();
+    }
+
+    private class TestAudioCallbackAdapter extends DefaultAudioCallbackAdapter {
+
+        /**
+         * Output stream.
+         */
+        private final BufferedOutputStream out;
+
+        /**
+         * Create an audio callback.
+         */
+        public TestAudioCallbackAdapter() {
+            super(4); // 4 is the block size for the audio samples
+            out = new BufferedOutputStream(System.out);
+        }
+
+        @Override
+        protected void onPlay(DirectAudioPlayer mediaPlayer, byte[] data, int sampleCount, long pts) {
+            try {
+                out.write(data);
+            } catch (IOException ex) {
+                Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+
     public void updateRightPanel(ArrayList<String> elements) {
         DefaultListModel model = (DefaultListModel) listInScrollpane.getModel();
         model.clear();
@@ -731,7 +749,7 @@ public class Client extends javax.swing.JFrame {
     public void addToChat(String text) {
         if (!text.isEmpty()) {
             Message msg = new Message();
-            //msg.setipAddr(pr.getMyIp());
+            
             // TODO - validate IP with nick for security
             msg.setType("chat message");
             msg.setText(pr.getNick() + ": " + text);
@@ -763,7 +781,6 @@ public class Client extends javax.swing.JFrame {
 
     public void startStream() {
         if (!playlist.isEmpty()) {
-            System.out.println("[Client.startStream ] " + playlist.getFirstInListOwner());
             String ip = playlist.getFirstInListOwner();
             if (pr.getMyIp().equals(ip)) {
                 startStreamingServer();
@@ -841,8 +858,9 @@ public class Client extends javax.swing.JFrame {
         ArrayList<String> list = new ArrayList<String>();
         Map map = pr.com.getComunityPeers();
 
-        for (Object entry : map.values()) {
-            list.add(((PeerReg) entry).nick + "(" + ((PeerReg) entry).ipAddr + ")");
+        for (Object entry : map.keySet()) {
+            String key = entry.toString();
+            list.add(key);
         }
 
         return list;
@@ -870,7 +888,6 @@ public class Client extends javax.swing.JFrame {
 
     public void addtoPlaylist(PublicPlaylist.Pair pair) {
         playlist.addToPlaylist(pair);
-        System.out.println("Adding pair" + pair.key());
         updateRightPanel(getPlaylist());
     }
 
