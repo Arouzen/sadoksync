@@ -74,6 +74,7 @@ public class ConnectionHandler extends Thread {
                     case "Join Confirmed":
                         System.out.println("Join confirmed from:   " + clientSocket.getInetAddress().toString().substring(1) + " end.");
                         pr.setMyIP(msg.getText());
+                        pr.com.setHost(clientSocket.getInetAddress().toString().substring(1));
                         break;
 
                     case "Join Comunity":
