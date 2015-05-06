@@ -53,6 +53,9 @@ class ServiceRegistryConnectionHandler extends Thread {
                     case "Register Client":
                         System.out.println("Register Client: Error Wrong Handler");
                         break;
+                    case "deRegister":
+                        cMap.remove(msg.getName());
+                        break;
                     case "Join Comunity":
                         System.out.println("Join Comunity: Error Wrong Handler");
                         break;
@@ -72,11 +75,8 @@ class ServiceRegistryConnectionHandler extends Thread {
                                 retList.add(opr);
                             }
                         }
-                        //String retIP = clientSocket.getRemoteSocketAddress().toString().substring(1);
                         String retIP = clientSocket.getInetAddress().toString().substring(1);
-                        //System.out.println("Find all retIP:" + retIP);
-                        /////////////////// ALOT OF SHIT HERER //// TESTING!!!!!!!!!!!!!!!!!!!!!!!!
-                        //Create return message
+
                         msg = new Message();
                         msg.setName(retIP);
                         msg.setType("Comunity List");
@@ -84,7 +84,7 @@ class ServiceRegistryConnectionHandler extends Thread {
                         pr.sendMsg(retIP, 4444, msg);
                         break;
                     case "Comunity Registration":
-                        System.out.println("Comunity Registration");
+                        System.out.println("Comunity Registration: " + msg.getName() + " @" + clientSocket.getInetAddress().toString().substring(1));
                         cMap.put(msg.getName(), new ComunityRegistration(msg.getName(), msg.getName(), msg.getText()));
                         break;
                 }

@@ -89,7 +89,6 @@ public class PublicPlaylist implements Serializable {
                 msg.setType("Playlist");
                 msg.setText("add");
                 msg.setPair(pair);
-                
                 pr.sendMsg(pr.getHost(), 4444, msg);
             }
 
