@@ -56,7 +56,12 @@ public class ConnectionHandler extends Thread {
                             //Relay message
                         }
                         break;
-
+                    case "Set Host":
+                        System.out.println("Setting comunity name");
+                        //pr.setComunityName(msg.getName());
+                        System.out.println("Setting host");
+                        pr.com.setHost(msg.getText());
+                        break;
                     case "Set Stream":
                         System.out.println("Set Stream");
                         pr.getClient().setHost(clientSocket.getInetAddress().toString().substring(1));
@@ -91,11 +96,10 @@ public class ConnectionHandler extends Thread {
                         pr.confirmJoin(clientSocket.getInetAddress().toString().substring(1));
 
                         //If comunity Host register the peer
-                        //If not comunity Host, send this to comunity Host
+                        //If not comunity Host, send this to comunity Host <------------
                         break;
                     case "Comunity List":
                         System.out.println("Comunity List");
-
                         List<ComunityRegistration> li = (List<ComunityRegistration>) msg.getList();
 
                         DefaultListModel lm = new DefaultListModel();
@@ -128,6 +132,12 @@ public class ConnectionHandler extends Thread {
                         break;
                     case "chat message":
                         pr.getClient().addToChatOutput(msg.getText());
+                        break;
+                    case "removefromlist":
+                        pr.getClient().getPublicPlaylist().removefromPlaylist(msg.getName());
+                        break;
+                    case "removePeer":
+                        pr.removePeerFromCommunity(msg.getName());
                         break;
                 }
             }

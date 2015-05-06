@@ -222,7 +222,7 @@ public class Peer {
             while (i.hasNext()) {
                 key = (String) i.next();
                 opr = (PeerReg) m.get(key);
-                
+
                 //Work is needed here
                 if (!this.getMyIp().equals(opr.getAddr())) {
                     System.out.println("sendMsgToComunity(loop):  " + opr.getAddr() + " From:" + this.getMyIp());
@@ -246,12 +246,34 @@ public class Peer {
         cMap.put(cm.getName(), cm);
     }
 
+    void connectionEvent(String ipAddr, String ce) {
+        System.out.println("Peer.connectionEvent: Starting");
+
+        if (ce.equals("connect")) {
+            System.out.println("Peer.connectionEvent: Connection refused: connect");
+
+            if (this.isHost()) {
+                System.out.println("Peer.connectionEvent: isHost()");
+                System.out.println("PEER TO BE REMOVED: " + ipAddr);
+                System.out.println("SIZE: " + com.pMap.size());
+                removePeerFromCommunity(ipAddr);
+
+                //com.removePeerByIp(ipAddr);
+            } else {
+                System.out.println("Peer.connectionEvent: else");
+                //Check with other peers if the host is lost
+            }
+        }
+
+    }
+
     //Add ip here   
+
     void peerToJoin(Message msg, String ipAdr) {
         if (this.isHost()) {
             System.out.println("This is host. Sending to community");
             com.addPeer(msg.getName(), ipAdr);
-            
+
             msg.setType("Register");
             msg.setText(ipAdr);
 
@@ -311,8 +333,7 @@ public class Peer {
             PeerReg opr;
             Message msg = new Message();
             msg.setType("Register");
-            
-            
+
             synchronized (m) {  // Synchronizing on m, not s!
                 Iterator i = s.iterator(); // Must be in synchronized block
                 while (i.hasNext()) {
@@ -323,7 +344,7 @@ public class Peer {
                     //msg.setipAddr(opr.getAddr());
                     msg.setName(opr.getNick());
                     msg.setText(opr.getAddr());
-                    
+
                     if (!opr.getAddr().equals(this.getMyIp())) {
                         System.out.println("sending Register to: " + opr.getAddr() + ":: N =" + opr.getNick() + " ip=" + ipAdr);
                         this.sendMsg(ipAdr, 4444, msg);
@@ -403,5 +424,9 @@ public class Peer {
         msgret.setType("Set Playlist");
         msgret.setList(li);
         this.sendMsg(ipAddr, 4444, msgret);
+    }
+
+    void removePeerFromCommunity(String ip) {
+        com.removePeer(ip);
     }
 }
