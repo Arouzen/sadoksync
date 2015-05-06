@@ -272,7 +272,7 @@ public class Peer {
 
     void peerToJoin(Message msg, String ipAdr) {
         if (this.isHost()) {
-            System.out.println("This is host. Sending to community");
+            System.out.println("PeerToJoin: This is host. Sending to community");
             com.addPeer(msg.getName(), ipAdr);
 
             msg.setType("Register");
@@ -293,7 +293,7 @@ public class Peer {
     }
 
     void ping(String ipAddr, String why) {
-        System.out.println("Ping from: " + this.getMyIp() + " to " + ipAddr);
+        System.out.println("Ping from: " + this.getMyIp() + " to " + ipAddr + " why:" + why);
         Message msgret = new Message();
         msgret.setName(ipAddr);
         msgret.setType("Ping");
