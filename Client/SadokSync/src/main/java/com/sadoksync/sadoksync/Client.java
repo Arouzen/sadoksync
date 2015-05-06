@@ -83,7 +83,6 @@ public class Client extends javax.swing.JFrame {
     private String rtspPath;
 
     // Socket variables
-    private boolean isHost;
     Peer pr;
 
     // Mode
@@ -119,15 +118,13 @@ public class Client extends javax.swing.JFrame {
 
         //VLCLibrary init
         final File jarFile = new File(getClass().getProtectionDomain().getCodeSource().getLocation().getPath());
-     
- 
-            System.out.println("IDE");
-            StringBuilder location = new StringBuilder(Client.class.getProtectionDomain().getCodeSource().getLocation().toString());
-            location.delete(0, 6);
-            location.append("VLC/");
-            System.out.println(location);
-            NativeLibrary.addSearchPath("libvlc", location.toString());
-        
+
+        System.out.println("IDE");
+        StringBuilder location = new StringBuilder(Client.class.getProtectionDomain().getCodeSource().getLocation().toString());
+        location.delete(0, 6);
+        location.append("VLC/");
+        System.out.println(location);
+        NativeLibrary.addSearchPath("libvlc", location.toString());
 
         //File chooser settings init
         fileChooser.setFileFilter(
@@ -242,7 +239,7 @@ public class Client extends javax.swing.JFrame {
                 this.rightPanelMode = mode;
                 updateRightPanel(getPlaylist());
                 break;
-        } 
+        }
     }
 
     /**
@@ -621,7 +618,8 @@ public class Client extends javax.swing.JFrame {
 
     private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
         // Remove client and its music from playlist.
-
+        ActionExitToLobby aetl = new ActionExitToLobby(pr, stm, mediaPlayer);
+        new Thread(aetl).start();
 
     }//GEN-LAST:event_jMenuItem4ActionPerformed
     private void jSlider1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlider1StateChanged
@@ -673,7 +671,7 @@ public class Client extends javax.swing.JFrame {
             // If not, its already in visualizemode and we can play media without any changes
 
             System.out.println("1");
-                // To set it to visualize mode we need to:
+            // To set it to visualize mode we need to:
             // Recreate the mediaPlayerFactory with visualizer options
             mediaPlayerFactory = new MediaPlayerFactory("--audio-visual=visual", "--effect-list=spectrum");
             System.out.println("2");
@@ -844,7 +842,7 @@ public class Client extends javax.swing.JFrame {
         Map map = pr.com.getComunityPeers();
 
         for (Object entry : map.values()) {
-            list.add(((PeerReg)entry).nick + "(" + ((PeerReg)entry).ipAddr + ")");
+            list.add(((PeerReg) entry).nick + "(" + ((PeerReg) entry).ipAddr + ")");
         }
 
         return list;

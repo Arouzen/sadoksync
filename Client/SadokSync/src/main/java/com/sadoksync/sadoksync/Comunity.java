@@ -43,6 +43,24 @@ public class Comunity {
         pMap.put(peer.getAddr(), peer);
     }
 
+    public boolean isEmpty() {
+        boolean ret;
+        lock.lock();
+        try {
+
+            if (pMap.size() == 0) {
+                ret = true;
+            } else {
+                ret = false;
+            }
+
+            ocupied.signalAll();
+        } finally {
+            lock.unlock();
+        }
+        return ret;
+    }
+
     void setHost(String host) {
         lock.lock();
         try {
@@ -138,5 +156,22 @@ public class Comunity {
         this.topic = "";
         this.pMap = Collections.synchronizedMap(new HashMap<String, PeerReg>());
         this.host = "";
+    }
+    public String getNextPeerIP() {
+        String ret;
+        lock.lock();
+        try {
+            System.out.println(pMap.size());
+            Iterator it = pMap.entrySet().iterator();
+
+            Map.Entry pair = (Map.Entry) it.next();
+            PeerReg pr = (PeerReg)pair.getValue();
+            ret = pr.getAddr();
+            System.out.println("[Community] get next IP: " + pr.getAddr());
+            ocupied.signalAll();
+        } finally {
+            lock.unlock();
+        }
+        return ret;
     }
 }
