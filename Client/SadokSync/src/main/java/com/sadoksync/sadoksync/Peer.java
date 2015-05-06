@@ -321,6 +321,7 @@ public class Peer {
             case "Move Host":
                 //msgret.setName(this.com.getComunityName());
                 
+                msgret.setName(ip);
                 msgret.setType("Set Host");
                 this.setHostB(false);        
                 this.sendMsg(ip, 4444, msgret);
