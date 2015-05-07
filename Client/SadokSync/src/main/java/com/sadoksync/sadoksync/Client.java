@@ -741,7 +741,6 @@ public class Client extends javax.swing.JFrame {
         }
 
         int temp = jSplitPane1.getDividerLocation();
-        scrollListPanel.setSize(jSplitPane1.getRightComponent().getSize());
         jSplitPane1.setRightComponent(scrollListPanel);
         jSplitPane1.setDividerLocation(temp);
     }
