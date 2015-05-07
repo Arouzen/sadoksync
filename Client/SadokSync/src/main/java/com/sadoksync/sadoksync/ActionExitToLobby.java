@@ -29,11 +29,9 @@ public class ActionExitToLobby implements Runnable {
         pr.getClient().getPublicPlaylist().removefromPlaylist(pr.getNick());
         //byt host
         if (pr.isHost()) {
-            stm.killStream();
-            
             System.out.println("ActionExitToLobby: if isHost()");
             pr.removePeerbyNick(pr.getNick());
-            
+            stm.killStream();
             if (pr.com.isEmpty()) {
                 System.out.println("ActionExitToLobby: if pr.com.isEmpty()");
                 //deregister from registry
@@ -46,11 +44,9 @@ public class ActionExitToLobby implements Runnable {
                 
             } else {
                 System.out.println("ActionExitToLobby: else pr.com.isEmpty()");
-                
                 Message removeHost = new Message();
                 removeHost.setType("removePeerFromCommunity");
                 removeHost.setName(pr.getNick());
-                
                 pr.sendMsgToComunity(removeHost);
 
                 //Simply to migrate the stream

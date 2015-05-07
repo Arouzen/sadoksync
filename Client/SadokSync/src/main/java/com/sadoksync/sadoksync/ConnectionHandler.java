@@ -60,11 +60,9 @@ public class ConnectionHandler extends Thread {
                         }
                         break;
                     case "Ping":
-                        System.out.println("Recived Ping");
                         pr.Pong(msg);
                         break;
                     case "Pong":
-                        System.out.println("Reciving Pong");
                         pr.handlePong(msg);
                         break;
                     case "Set Stream":
@@ -80,7 +78,7 @@ public class ConnectionHandler extends Thread {
                         System.out.println("Setting comunity name");
                         pr.setComunityName(msg.getName());
                         System.out.println("Setting host");
-                        pr.setHost(msg.getipAddr(), msg.getUUID());
+                        pr.setHost(msg.getipAddr());
                         break;
                     case "Register Client":
                         System.out.println("Register Client: " + msg.getName());
@@ -127,19 +125,15 @@ public class ConnectionHandler extends Thread {
                         System.out.println("Comunity Registration: ERROR. Wrong handler");
                         break;
                     case "chat message":
-                        System.out.println("Reciving chat message " + msg.getText());
                         pr.getClient().addToChatOutput(msg.getText());
                         break;
                     case "removefromlist":
-                        System.out.println("Reciving removefromlist message: " + msg.getName());
-                        pr.getClient().getPublicPlaylist().removefrommyPlaylist(msg.getName());
+                        pr.getClient().getPublicPlaylist().removefromPlaylist(msg.getName());
                         break;
                     case "removePeerbyNick":
-                        System.out.println("Reciving removePeerbyNick message: " + msg.getName() );
-                        pr.removePeerbyNick(msg.getName());
+                        pr.removePeerbyNick(msg.name);
                         break;
                     case "removePeerFromCommunity":
-                        System.out.println("Reciving removePeerFromCommunity message");
                         pr.removePeerFromCommunity(msg.getName());
                         break;
                 }

@@ -309,8 +309,4 @@ public class Comunity {
     String getUUID() {
         return uuid;
     }
-
-    void setUUID(String uuid) {
-        this.uuid = uuid;
-    }
 }

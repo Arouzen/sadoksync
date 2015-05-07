@@ -431,10 +431,9 @@ public class Peer {
     void setComunityName(String name) {
         com.setComunityName(name);
     }
-    
-    void setHost(String ipAddr, String uuid) {
+
+    void setHost(String ipAddr) {
         com.setHost(ipAddr);
-        com.setUUID(uuid);
         System.out.println("Host changed to: " + ipAddr);
         if (ipAddr.equals(this.getMyIp())) {
             this.cli.setHost(this.getMyIp());
@@ -507,18 +506,15 @@ public class Peer {
     void removePeerbyNick(String nick) {
         System.out.println("Peer.removePeer: Starting removePeer");
 
-        System.out.println("Peer.removePeer: about to enter if with the nick " + nick);
+        System.out.println("Peer.removePeer: about to enter if");
         if (!nick.equals("")) {
             System.out.println("Peer.removePeer: nick not empty");
 
+            //remove nick from comunity.
             System.out.println("Peer.removePeer: removing from comunity by nick: " + nick);
-            
-            //remove nick from comunity. Dose not propagate to the rest of the comunity.
             com.removePeerByName(nick);
 
-            //Do propagate to the rest of the comunity.
             if (this.isHost()) {
-                System.out.println("Sending removePeerbyNick message");
                 Message msg = new Message();
                 msg.setName(nick);
                 msg.setType("removePeerbyNick");
@@ -529,8 +525,7 @@ public class Peer {
             System.out.println("Peer.removePeer: removing from playlist by nick: " + nick);
             cli.getPublicPlaylist().removefromPlaylist(nick);
         } else {
-            System.out.println("Peer.removePeer: nick is empty");
-            
+            System.out.println("Peer.removePeer: else");
             System.out.println("Tried to remove someone who did not exist");
         }
 
@@ -540,8 +535,5 @@ public class Peer {
         System.out.println("Starting to remove host from community list!");
         com.removePeerByName(nick);
     }
-
-   
-
 
 }

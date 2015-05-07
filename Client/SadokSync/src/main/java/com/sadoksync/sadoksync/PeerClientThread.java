@@ -31,7 +31,7 @@ class PeerClientThread extends Thread {
         this.pr = pr;
         this.host = host;
         this.port = port;
-        System.err.println("Initializing msg sender: " + msg.getType());
+        System.err.println("Initializing msg sender");
 
     }
 
