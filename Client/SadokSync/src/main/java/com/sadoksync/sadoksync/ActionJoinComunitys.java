@@ -12,17 +12,17 @@ package com.sadoksync.sadoksync;
 class ActionJoinComunitys implements Runnable {
     Peer pr;
     String addr;
-    String cname;
-    public ActionJoinComunitys(Peer pr, String addr, String cname) {
+    String uuid;
+    public ActionJoinComunitys(Peer pr, String addr, String uuid) {
         this.pr = pr;
         this.addr = addr;
-        this.cname = cname;
+        this.uuid = uuid;
     }
     
     
 
     @Override
     public void run() {
-       pr.joinComunity(cname);
+       pr.joinComunity(uuid);
     }
 }

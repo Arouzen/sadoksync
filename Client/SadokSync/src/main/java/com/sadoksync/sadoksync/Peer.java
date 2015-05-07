@@ -37,6 +37,7 @@ public class Peer {
     Properties prop;
 
     //SynchReg synchMap;
+    //Key is UUID, ComunityRegistration is a comunity registration
     Map<String, ComunityRegistration> cMap;
 
     public Peer() {
@@ -81,8 +82,8 @@ public class Peer {
      }
      */
 
-    void joinComunity(String cname) {
-        ComunityRegistration cr = cMap.get(cname);
+    void joinComunity(String uuid) {
+        ComunityRegistration cr = cMap.get(uuid);
 
         Message msg = new Message();
         msg.setipAddr(this.getMyIp());
@@ -264,7 +265,7 @@ public class Peer {
     }
 
     void addKnownComunity(ComunityRegistration cm) {
-        cMap.put(cm.getName(), cm);
+        cMap.put(cm.getUUID(), cm);
     }
 
     void PeerToJoin(Message msg) {
