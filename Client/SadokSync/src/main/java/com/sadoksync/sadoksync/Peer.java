@@ -204,10 +204,9 @@ public class Peer {
         });
     }
 
-    void run() {
+    void run(boolean gui) {
         this.startServiceRegistry();
         this.startServer();
-
         com = new Comunity();
 
         try {
@@ -215,15 +214,16 @@ public class Peer {
         } catch (Exception ex) {
             myIP = JOptionPane.showInputDialog("Could not find your public IP. Please enter it (http://www.whatsmyip.org/)");
         }
+        if (gui) {
+            //this.setProp(new Properties(this));
+            this.setLobby(new Lobby(this));
+            this.setClient(new Client(this));
 
-        //this.setProp(new Properties(this));
-        this.setLobby(new Lobby(this));
-        this.setClient(new Client(this));
-
-        //synchMap = new SynchReg();
-        this.openLobby();
+            //synchMap = new SynchReg();
+            this.openLobby();
+        }
     }
-    
+
     public static String getIp() throws Exception {
         URL whatismyip = new URL("http://checkip.amazonaws.com");
         BufferedReader in = null;

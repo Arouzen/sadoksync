@@ -14,15 +14,20 @@ public class Driver {
     Peer pr;
 
     public static void main(String[] args) {
-        new Driver();
+        boolean gui = true;
+        for (String arg : args) {
+            if (arg.equals("nogui")) {
+                System.out.println("NO GUI");
+                gui = false;
+            }
+        }
+        new Driver(gui);
     }
 
-    public Driver() {
-        
-        
+    public Driver(boolean gui) {
+
         pr = new Peer();
-        pr.run();
-        
+        pr.run(gui);
 
     }
 }
