@@ -25,7 +25,7 @@ public class Comunity {
     String host;
     String uuid;
     //ClientRemoteInterface host;
-
+    
     Map<String, PeerReg> pMap;
 
     public Comunity() {
@@ -268,7 +268,7 @@ public class Comunity {
         this.topic = "";
         this.pMap = Collections.synchronizedMap(new HashMap<String, PeerReg>());
         this.host = "";
-        
+
     }
 
     public boolean isEmpty() {
@@ -297,7 +297,7 @@ public class Comunity {
             Iterator it = pMap.entrySet().iterator();
 
             Map.Entry pair = (Map.Entry) it.next();
-            PeerReg pr = (PeerReg)pair.getValue();
+            PeerReg pr = (PeerReg) pair.getValue();
             ret = pr.getAddr();
             ocupied.signalAll();
         } finally {
@@ -313,4 +313,6 @@ public class Comunity {
     void setUUID(String uuid) {
         this.uuid = uuid;
     }
+
+
 }

@@ -41,45 +41,65 @@ public class ConnectionHandler extends Thread {
             if (msgObj instanceof Message) {
                 Message msg = ((Message) msgObj);
                 switch (msg.getType()) {
-                    case "your ip":
-                        //Get name should be a uuid
-                        pr.setMyIP(msg.getipAddr());
-                        break;
+                    /*
+                     case "your ip":
+                     //Get name should be a uuid
+                     System.out.println("My IP is: " + msg.getipAddr());
+                     pr.setMyIP(msg.getipAddr());
+                     break;
+                     */
                     case "Set Playlist":
                         System.out.println("Message: Set Playlist");
-                        PublicPlaylist pl = new PublicPlaylist(pr, msg.getList());
-                        pr.getClient().setPlayList(pl);
+                        if (pr.com.getUUID().equals(msg.getUUID())) {
+                            PublicPlaylist pl = new PublicPlaylist(pr, msg.getList());
+                            pr.getClient().setPlayList(pl);
+                        }
+
                         break;
 
                     case "Playlist":
                         System.out.println("Message: Playlist");
-                        if (msg.getText().equals("add") && pr.isHost()) {
-                            System.out.println("Message: Playlist: Adding: ");
-                            pr.getClient().addtoPlaylist(msg.getPair());
+                        if (pr.com.getUUID().equals(msg.getUUID())) {
 
-                            //pr.DeliverPlaylistToComunity();
-                        } else if (msg.getText().equals("add") && !pr.isHost()) {
-                            //Relay message
+                            if (msg.getText().equals("add") && pr.isHost()) {
+                                System.out.println("Message: Playlist: Adding: ");
+                                pr.getClient().addtoPlaylist(msg.getPair());
+
+                                //pr.DeliverPlaylistToComunity();
+                            } else if (msg.getText().equals("add") && !pr.isHost()) {
+                                //Relay message
+                            }
                         }
+
                         break;
                     case "Ping":
                         System.out.println("Recived Ping");
-                        pr.Pong(msg);
+                        if (pr.com.getUUID().equals(msg.getUUID())) {
+                            pr.Pong(msg);
+                        }
+
                         break;
                     case "Pong":
                         System.out.println("Reciving Pong");
-                        pr.handlePong(msg);
+                        if (pr.com.getUUID().equals(msg.getUUID())) {
+                            pr.handlePong(msg);
+                        }
+
                         break;
                     case "Set Stream":
                         System.out.println("Set Stream");
-                        //pr.com.setHost(msg.getipAddr());
-                        pr.getClient().setHost(msg.getipAddr());
-                        pr.getClient().setPort("5555");
-                        pr.getClient().setRtspPath(msg.getName());
-                        pr.getClient().setMediaType(msg.getText());
-                        pr.getClient().connectToRtsp();
+                        if (pr.com.getUUID().equals(msg.getUUID())) {
+                            //pr.com.setHost(msg.getipAddr());
+                            pr.getClient().setHost(msg.getipAddr());
+                            pr.getClient().setPort("5555");
+                            pr.getClient().setRtspPath(msg.getName());
+                            pr.getClient().setMediaType(msg.getText());
+                            pr.getClient().connectToRtsp();
+                        }
+
                         break;
                     case "Set Host":
+                        //Should be done regardles off UUID
                         System.out.println("Setting comunity name");
                         pr.setComunityName(msg.getName());
                         System.out.println("Setting host");
@@ -87,26 +107,26 @@ public class ConnectionHandler extends Thread {
                         break;
                     case "Register Client":
                         System.out.println("Register Client: " + msg.getName());
-                        pr.PeerToJoin(msg);
+                        if (pr.com.getUUID().equals(msg.getUUID())) {
+                            pr.PeerToJoin(msg);
+                        }
+
                         break;
                     case "Join Comunity":
+                        //Should be done regardles off UUID
                         System.out.println("Join Comunity");
-                        
-                        Message retmsg = new Message();
-                        String cip = clientSocket.getInetAddress().toString();
-                        retmsg.setType("your ip");
-                        retmsg.setipAddr(cip);
-                        pr.sendMsg(cip, 4444, retmsg);
-                        
-                        msg.setipAddr(cip);
+
                         if (pr.isHost()) {
                             pr.PeerToJoin(msg);
-                        } //Can not redirect the message since then the ip returned will be wrong
+                        } else {
+                            pr.sendToHost(msg);
+                        }
 
                         //If comunity Host register the peer
                         //If not comunity Host, send this to comunity Host
                         break;
                     case "Comunity List":
+                        //Should be done regardles off UUID
                         System.out.println("Comunity List");
                         List<ComunityRegistration> li = (List<ComunityRegistration>) msg.getList();
 
@@ -136,20 +156,32 @@ public class ConnectionHandler extends Thread {
                         System.out.println("Comunity Registration: ERROR. Wrong handler");
                         break;
                     case "chat message":
-                        System.out.println("Reciving chat message " + msg.getText());
-                        pr.getClient().addToChatOutput(msg.getText());
+                        if (pr.com.getUUID().equals(msg.getUUID())) {
+                            System.out.println("Reciving chat message " + msg.getText());
+                            pr.getClient().addToChatOutput(msg.getText());
+                        }
+
                         break;
                     case "removefromlist":
-                        System.out.println("Reciving removefromlist message: " + msg.getName());
-                        pr.getClient().getPublicPlaylist().removefrommyPlaylist(msg.getName());
+                        if (pr.com.getUUID().equals(msg.getUUID())) {
+                            System.out.println("Reciving removefromlist message: " + msg.getName());
+                            pr.getClient().getPublicPlaylist().removefrommyPlaylist(msg.getName());
+                        }
+
                         break;
                     case "removePeerbyNick":
-                        System.out.println("Reciving removePeerbyNick message: " + msg.getName());
-                        pr.removePeerbyNick(msg.getName());
+                        if (pr.com.getUUID().equals(msg.getUUID())) {
+                            System.out.println("Reciving removePeerbyNick message: " + msg.getName());
+                            pr.removePeerbyNick(msg.getName());
+                        }
+
                         break;
                     case "removePeerFromCommunity":
-                        System.out.println("Reciving removePeerFromCommunity message");
-                        pr.removePeerFromCommunity(msg.getName());
+                        if (pr.com.getUUID().equals(msg.getUUID())) {
+                            System.out.println("Reciving removePeerFromCommunity message");
+                            pr.removePeerFromCommunity(msg.getName());
+                        }
+
                         break;
                 }
             }

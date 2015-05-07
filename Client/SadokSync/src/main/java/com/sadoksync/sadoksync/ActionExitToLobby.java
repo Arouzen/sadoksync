@@ -80,6 +80,7 @@ public class ActionExitToLobby implements Runnable {
         pr.getClient().clearPlaylist();
         pr.getLobby().clearList();
         pr.openLobby();
+        pr.setisConnected(false);
         
     }
 }

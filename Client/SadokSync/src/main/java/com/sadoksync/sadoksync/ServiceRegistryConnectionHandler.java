@@ -59,12 +59,13 @@ class ServiceRegistryConnectionHandler extends Thread {
                         break;
                     case "Find All":
                         System.out.println("Find All");
+                        /*
                         msg = new Message();
                         String cip = clientSocket.getInetAddress().toString();
                         msg.setType("your ip");
                         msg.setipAddr(cip);
                         pr.sendMsg(cip, 4444, msg);
-
+                        */
                         //Turn Map into List
                         List retList = new LinkedList();
                         Set s = cMap.keySet(); // Needn't be in synchronized block
@@ -78,12 +79,12 @@ class ServiceRegistryConnectionHandler extends Thread {
                                 retList.add(opr);
                             }
                         }
-                        //String retIP = msg.getipAddr();
+                        String retIP = msg.getipAddr();
                         //Create return message
                         msg = new Message();
                         msg.setType("Comunity List");
                         msg.setList(retList);
-                        pr.sendMsg(cip, 4444, msg);
+                        pr.sendMsg(retIP, 4444, msg);
                         break;
                     case "Comunity Registration":
                         System.out.println("Comunity Registration: " + msg.getName() + " @" + msg.getipAddr());

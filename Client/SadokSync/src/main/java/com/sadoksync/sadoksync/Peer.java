@@ -5,6 +5,10 @@
  */
 package com.sadoksync.sadoksync;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -14,6 +18,9 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -29,12 +36,13 @@ public class Peer {
     String myIP;
 
     Comunity com;
+    boolean isConnected;
 
     //ClientInterface cri;
     ServiceRegistry sr;
     Lobby lb;
     Client cli;
-    Properties prop;
+    //Properties prop;
 
     //SynchReg synchMap;
     //Key is UUID, ComunityRegistration is a comunity registration
@@ -93,6 +101,7 @@ public class Peer {
 
         this.sendMsg(cr.getHost(), 4444, msg);
         this.openClient();
+
     }
 
     void directConnect(String ip) {
@@ -120,10 +129,11 @@ public class Peer {
     void setLobby(Lobby lb) {
         this.lb = lb;
     }
-
-    void setProp(Properties prop) {
-        this.prop = prop;
-    }
+    /*
+     void setProp(Properties prop) {
+     this.prop = prop;
+     }
+     */
 
     void setClient(Client cli) {
         this.cli = cli;
@@ -156,39 +166,39 @@ public class Peer {
 
     void openLobby() {
         final Lobby flb = lb;
-        final Properties fprop = prop;
+        //final Properties fprop = prop;
         final Client fcli = cli;
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 flb.setVisible(true);
                 fcli.setVisible(false);
-                fprop.setVisible(false);
+                //fprop.setVisible(false);
             }
         });
     }
 
     void openProperties() {
         final Lobby flb = lb;
-        final Properties fprop = prop;
+        //final Properties fprop = prop;
         final Client fcli = cli;
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 flb.setVisible(false);
                 fcli.setVisible(false);
-                fprop.setVisible(true);
+                //fprop.setVisible(true);
             }
         });
     }
 
     void openClient() {
         final Lobby flb = lb;
-        final Properties fprop = prop;
+        //final Properties fprop = prop;
         final Client fcli = cli;
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 flb.setVisible(false);
                 fcli.setVisible(true);
-                fprop.setVisible(false);
+                //fprop.setVisible(false);
             }
         });
     }
@@ -199,12 +209,36 @@ public class Peer {
 
         com = new Comunity();
 
-        this.setProp(new Properties(this));
+        try {
+            myIP = this.getIp();
+        } catch (Exception ex) {
+            myIP = JOptionPane.showInputDialog("Could not find your public IP. Please enter it (http://www.whatsmyip.org/)");
+        }
+
+        //this.setProp(new Properties(this));
         this.setLobby(new Lobby(this));
         this.setClient(new Client(this));
 
         //synchMap = new SynchReg();
-        this.openProperties();
+        this.openLobby();
+    }
+    
+    public static String getIp() throws Exception {
+        URL whatismyip = new URL("http://checkip.amazonaws.com");
+        BufferedReader in = null;
+        try {
+            in = new BufferedReader(new InputStreamReader(whatismyip.openStream()));
+            String ip = in.readLine();
+            return ip;
+        } finally {
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     void RegPeer(PeerReg peerReg) {
@@ -431,8 +465,9 @@ public class Peer {
     void setComunityName(String name) {
         com.setComunityName(name);
     }
-    
+
     void setHost(String ipAddr, String uuid) {
+        isConnected = true;
         com.setHost(ipAddr);
         com.setUUID(uuid);
         System.out.println("Host changed to: " + ipAddr);
@@ -467,17 +502,20 @@ public class Peer {
         if (ce.equals("connect")) {
             System.out.println("Peer.connectionEvent: Connection refused: connect");
 
-            if (this.isHost()) {
-                System.out.println("Peer.connectionEvent: isHost()");
-                System.out.println("PEER TO BE REMOVED: " + ipAddr);
-                System.out.println("SIZE: " + com.pMap.size());
-                removePeerbyIp(ipAddr);
+            if (isConnected) {
+                if (this.isHost()) {
+                    System.out.println("Peer.connectionEvent: isHost()");
+                    System.out.println("PEER TO BE REMOVED: " + ipAddr);
+                    System.out.println("SIZE: " + com.pMap.size());
+                    removePeerbyIp(ipAddr);
 
-                //com.removePeerByIp(ipAddr);
-            } else {
-                System.out.println("Peer.connectionEvent: else");
-                //Check with other peers if the host is lost
+                    //com.removePeerByIp(ipAddr);
+                } else {
+                    System.out.println("Peer.connectionEvent: else");
+                    //Check with other peers if the host is lost
+                }
             }
+
         }
 
     }
@@ -486,22 +524,22 @@ public class Peer {
         System.out.println("Peer.removePeer: Starting removePeer");
         String nick = com.getNickByIp(ipAddr);
         removePeerbyNick(nick);
-/*
-        if (!nick.equals("")) {
+        /*
+         if (!nick.equals("")) {
 
-            //remove nick from comunity.
-            System.out.println("Peer.removePeer: removing from comunity by nick: " + nick);
+         //remove nick from comunity.
+         System.out.println("Peer.removePeer: removing from comunity by nick: " + nick);
 
-            com.removePeerByName(nick);
+         com.removePeerByName(nick);
 
-            //Remove ipAdd/nick from playlist
-            System.out.println("Peer.removePeer: removing from playlist by nick: " + nick);
-            cli.getPublicPlaylist().removefromPlaylist(nick);
-        } else {
-            System.out.println("Peer.removePeer: else");
-            System.out.println("Tried to remove someone who did not exist");
-        }
-        */
+         //Remove ipAdd/nick from playlist
+         System.out.println("Peer.removePeer: removing from playlist by nick: " + nick);
+         cli.getPublicPlaylist().removefromPlaylist(nick);
+         } else {
+         System.out.println("Peer.removePeer: else");
+         System.out.println("Tried to remove someone who did not exist");
+         }
+         */
     }
 
     void removePeerbyNick(String nick) {
@@ -512,7 +550,7 @@ public class Peer {
             System.out.println("Peer.removePeer: nick not empty");
 
             System.out.println("Peer.removePeer: removing from comunity by nick: " + nick);
-            
+
             //remove nick from comunity. Dose not propagate to the rest of the comunity.
             com.removePeerByName(nick);
 
@@ -530,7 +568,7 @@ public class Peer {
             cli.getPublicPlaylist().removefromPlaylist(nick);
         } else {
             System.out.println("Peer.removePeer: nick is empty");
-            
+
             System.out.println("Tried to remove someone who did not exist");
         }
 
@@ -541,7 +579,8 @@ public class Peer {
         com.removePeerByName(nick);
     }
 
-   
-
+    void setisConnected(boolean b) {
+        isConnected = b;
+    }
 
 }
