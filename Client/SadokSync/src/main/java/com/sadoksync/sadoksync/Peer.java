@@ -5,6 +5,7 @@
  */
 package com.sadoksync.sadoksync;
 
+import com.sadoksync.message.ComunityRegistration;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;

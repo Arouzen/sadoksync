@@ -3,9 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.sadoksync.sadoksync;
+package com.sadoksync.serviceregistry;
 
 import com.sadoksync.message.ComunityRegistration;
+import com.sadoksync.message.RegistryMessage;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.OptionalDataException;
@@ -24,15 +25,15 @@ class ServiceRegistryConnectionHandler extends Thread {
 
     SynchReg synchMap;
     Socket clientSocket;
-    Peer pr;
+
     ObjectInputStream in;
     Map<String, ComunityRegistration> cMap;
 
     //BufferedOutputStream out;
-    public ServiceRegistryConnectionHandler(Socket clientSocket, Map<String, ComunityRegistration> cMap, Peer pr) {
+    public ServiceRegistryConnectionHandler(Socket clientSocket, Map<String, ComunityRegistration> cMap) {
         this.cMap = cMap;
         this.clientSocket = clientSocket;
-        this.pr = pr;
+
         //this.synchMap = pr.getSynchReg();
     }
 
@@ -48,8 +49,8 @@ class ServiceRegistryConnectionHandler extends Thread {
 
             msgObj = in.readObject();
 
-            if (msgObj instanceof Message) {
-                Message msg = ((Message) msgObj);
+            if (msgObj instanceof RegistryMessage) {
+                RegistryMessage msg = ((RegistryMessage) msgObj);
                 switch (msg.getType()) {
                     case "Register Client":
                         System.out.println("Register Client: Error Wrong Handler");
@@ -61,12 +62,12 @@ class ServiceRegistryConnectionHandler extends Thread {
                     case "Find All":
                         System.out.println("Find All");
                         /*
-                        msg = new Message();
-                        String cip = clientSocket.getInetAddress().toString();
-                        msg.setType("your ip");
-                        msg.setipAddr(cip);
-                        pr.sendMsg(cip, 4444, msg);
-                        */
+                         msg = new Message();
+                         String cip = clientSocket.getInetAddress().toString();
+                         msg.setType("your ip");
+                         msg.setipAddr(cip);
+                         pr.sendMsg(cip, 4444, msg);
+                         */
                         //Turn Map into List
                         List retList = new LinkedList();
                         Set s = cMap.keySet(); // Needn't be in synchronized block
@@ -82,7 +83,7 @@ class ServiceRegistryConnectionHandler extends Thread {
                         }
                         String retIP = msg.getipAddr();
                         //Create return message
-                        msg = new Message();
+                        msg = new RegistryMessage();
                         msg.setType("Comunity List");
                         msg.setList(retList);
                         pr.sendMsg(retIP, 4444, msg);
@@ -110,4 +111,9 @@ class ServiceRegistryConnectionHandler extends Thread {
 
     }
 
+    void sendMsg(String host, int port, RegistryMessage msg) {
+        String uuid = com.getUUID();
+        msg.setUUID(uuid);
+        executor.execute(new PeerClientThread(host, port, msg, this));
+    }
 }

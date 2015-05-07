@@ -1,4 +1,4 @@
-package com.sadoksync.serviceregistry;
+package com.sadoksync.message;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -7,8 +7,7 @@ package com.sadoksync.serviceregistry;
  */
 
 
-import com.sadoksync.msg.ClientRemoteInterface;
-import com.sadoksync.msg.ClientRemoteInterface;
+
 import java.io.Serializable;
 
 /**
@@ -16,35 +15,42 @@ import java.io.Serializable;
  * @author Pontus
  */
 public class ComunityRegistration implements Serializable {
-    ClientRemoteInterface cri;
+    String ipAddr;
     String topic;
     String name;
-    public ComunityRegistration(String name, ClientRemoteInterface cri, String topic){
+    String uuid;
+    public ComunityRegistration(String name, String ipAddr, String topic, String uuid){
         this.name = name;
-        this.cri = cri;
+        this.ipAddr = ipAddr;
         this.topic = topic;
+        this.uuid = uuid;
     }
 
-    public ClientRemoteInterface getHost() {
-        return this.cri;
+    public String getHost() {
+        return this.ipAddr;
     }
     
     public String getTopic(){
-        return topic;
+        return this.topic;
     }
     
     public String getName(){
-        return name;
+        return this.name;
     }
     
     public void setName(){
         this.name = name;
     }
     
-    public void setHost(ClientRemoteInterface cri){
-        this.cri = cri;
+    public void setHost(String ipAddr){
+        this.ipAddr = ipAddr;
     }
     public void setTopic(String topic){
         this.topic = topic;
+    }
+    
+    //shoul not be posible to change.
+    public String getUUID(){
+        return uuid;
     }
 }

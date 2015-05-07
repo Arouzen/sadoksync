@@ -7,7 +7,8 @@ package com.sadoksync.serviceregistry;
  */
 
 
-import com.sadoksync.msg.ClientRemoteInterface;
+
+import com.sadoksync.message.ComunityRegistration;
 import java.io.Serializable;
 import java.util.ArrayList;
 
