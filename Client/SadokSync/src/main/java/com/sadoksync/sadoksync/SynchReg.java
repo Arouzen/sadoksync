@@ -8,7 +8,6 @@ package com.sadoksync.sadoksync;
 
 
 
-import com.sadoksync.message.ComunityRegistration;
 import java.io.Serializable;
 import java.util.ArrayList;
 

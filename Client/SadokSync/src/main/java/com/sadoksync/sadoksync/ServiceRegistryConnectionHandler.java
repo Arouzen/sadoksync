@@ -5,7 +5,6 @@
  */
 package com.sadoksync.sadoksync;
 
-import com.sadoksync.message.ComunityRegistration;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.OptionalDataException;
