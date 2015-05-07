@@ -54,6 +54,7 @@ class ServiceRegistryConnectionHandler extends Thread {
                         System.out.println("Register Client: Error Wrong Handler");
                         break;
                     case "deRegister":
+                        System.out.println("ServiceRegistry: deRegestring: " + msg.getName());
                         cMap.remove(msg.getName());
                         break;
                     case "Join Comunity":

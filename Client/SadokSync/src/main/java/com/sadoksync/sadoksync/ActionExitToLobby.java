@@ -46,7 +46,7 @@ public class ActionExitToLobby implements Runnable {
                 System.out.println("ActionExitToLobby: else pr.com.isEmpty()");
                 Message removeHost = new Message();
                 removeHost.setType("removePeerFromCommunity");
-                removeHost.setName(pr.getNick());
+                removeHost.setName(pr.getMyIp());
                 pr.sendMsgToComunity(removeHost);
 
                 //Simply to migrate the stream
