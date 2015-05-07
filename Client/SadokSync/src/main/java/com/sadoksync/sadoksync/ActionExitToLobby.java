@@ -40,7 +40,7 @@ public class ActionExitToLobby implements Runnable {
                 
                 Message deRegister = new Message();
                 deRegister.setType("deRegister");
-                deRegister.setName(pr.com.getComunityName());
+                deRegister.setName(pr.com.getUUID());
                 
                 pr.sendMsg(pr.com.getRegistryAddr(), 3333, deRegister);
                 

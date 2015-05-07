@@ -41,7 +41,10 @@ public class ConnectionHandler extends Thread {
             if (msgObj instanceof Message) {
                 Message msg = ((Message) msgObj);
                 switch (msg.getType()) {
-
+                    case "your ip":
+                        //Get name should be a uuid
+                        pr.setMyIP(msg.getipAddr());
+                        break;
                     case "Set Playlist":
                         System.out.println("Message: Set Playlist");
                         PublicPlaylist pl = new PublicPlaylist(pr, msg.getList());
@@ -88,11 +91,17 @@ public class ConnectionHandler extends Thread {
                         break;
                     case "Join Comunity":
                         System.out.println("Join Comunity");
+                        
+                        Message retmsg = new Message();
+                        String cip = clientSocket.getInetAddress().toString();
+                        retmsg.setType("your ip");
+                        retmsg.setipAddr(cip);
+                        pr.sendMsg(cip, 4444, retmsg);
+                        
+                        msg.setipAddr(cip);
                         if (pr.isHost()) {
                             pr.PeerToJoin(msg);
-                        } else {
-                            pr.sendToHost(msg);
-                        }
+                        } //Can not redirect the message since then the ip returned will be wrong
 
                         //If comunity Host register the peer
                         //If not comunity Host, send this to comunity Host
@@ -116,7 +125,7 @@ public class ConnectionHandler extends Thread {
                         java.awt.EventQueue.invokeLater(new Runnable() {
                             public void run() {
                                 pr.getLobby().jList1.setModel(flm);
-                                
+
                             }
                         });
                         break;
@@ -135,7 +144,7 @@ public class ConnectionHandler extends Thread {
                         pr.getClient().getPublicPlaylist().removefrommyPlaylist(msg.getName());
                         break;
                     case "removePeerbyNick":
-                        System.out.println("Reciving removePeerbyNick message: " + msg.getName() );
+                        System.out.println("Reciving removePeerbyNick message: " + msg.getName());
                         pr.removePeerbyNick(msg.getName());
                         break;
                     case "removePeerFromCommunity":

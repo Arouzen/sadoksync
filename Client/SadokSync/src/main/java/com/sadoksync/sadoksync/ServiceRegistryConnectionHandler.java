@@ -54,10 +54,16 @@ class ServiceRegistryConnectionHandler extends Thread {
                         System.out.println("Register Client: Error Wrong Handler");
                         break;
                     case "deRegister":
+                        //Get name should be a uuid
                         cMap.remove(msg.getName());
                         break;
                     case "Find All":
                         System.out.println("Find All");
+                        msg = new Message();
+                        String cip = clientSocket.getInetAddress().toString();
+                        msg.setType("your ip");
+                        msg.setipAddr(cip);
+                        pr.sendMsg(cip, 4444, msg);
 
                         //Turn Map into List
                         List retList = new LinkedList();
@@ -72,15 +78,15 @@ class ServiceRegistryConnectionHandler extends Thread {
                                 retList.add(opr);
                             }
                         }
-                        String retIP = msg.getipAddr();
+                        //String retIP = msg.getipAddr();
                         //Create return message
                         msg = new Message();
                         msg.setType("Comunity List");
                         msg.setList(retList);
-                        pr.sendMsg(retIP, 4444, msg);
+                        pr.sendMsg(cip, 4444, msg);
                         break;
                     case "Comunity Registration":
-                        System.out.println("Comunity Registration: " + msg.getName()+ " @" + msg.getipAddr());
+                        System.out.println("Comunity Registration: " + msg.getName() + " @" + msg.getipAddr());
                         cMap.put(msg.getUUID(), new ComunityRegistration(msg.getName(), msg.getipAddr(), msg.getText(), msg.getUUID()));
                         break;
                 }
