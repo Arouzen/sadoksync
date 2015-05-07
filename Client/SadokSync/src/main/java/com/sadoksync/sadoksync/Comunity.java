@@ -127,6 +127,7 @@ public class Comunity {
     }
 
     void setRegistryAddr(String rhost) {
+        System.out.println("Community: Setting RegistryAddr to: " +rhost);
         this.RegistryAddr = rhost;
     }
 
