@@ -6,7 +6,6 @@
 package com.sadoksync.sadoksync;
 
 import java.awt.event.KeyEvent;
-import java.util.ArrayList;
 import javax.swing.DefaultListModel;
 
 /**
@@ -14,16 +13,16 @@ import javax.swing.DefaultListModel;
  * @author Arouz
  */
 public class Lobby extends javax.swing.JFrame {
+
     Peer pr;
     Client cli;
-    ArrayList ali;
+
     /**
      * Creates new form panel
      */
     public Lobby(Peer pr/*, Client cli*/) {
         this.pr = pr;
         this.cli = cli;
-        this.ali = new ArrayList();
         initComponents();
     }
 
@@ -261,9 +260,8 @@ public class Lobby extends javax.swing.JFrame {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         int firstSelIx = jList1.getSelectedIndex();
-        //String sel = (String) jList1.getModel().getElementAt(firstSelIx);
-        String uuid = (String)ali.get(firstSelIx);
-        ActionJoinComunitys afac = new ActionJoinComunitys(pr, jTextFieldRegistryAddr.getText(), uuid);
+        String sel = (String) jList1.getModel().getElementAt(firstSelIx);
+        ActionJoinComunitys afac = new ActionJoinComunitys(pr, jTextFieldRegistryAddr.getText(), sel);
         new Thread(afac).start();
     }//GEN-LAST:event_jButton2ActionPerformed
 
@@ -345,7 +343,7 @@ public class Lobby extends javax.swing.JFrame {
 
     void clearList() {
 
-        ali = new ArrayList();
+
         final DefaultListModel flm = new DefaultListModel();
 
         java.awt.EventQueue.invokeLater(new Runnable() {

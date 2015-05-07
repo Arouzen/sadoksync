@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.OptionalDataException;
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.List;
 import javax.swing.DefaultListModel;
 
@@ -100,13 +99,11 @@ public class ConnectionHandler extends Thread {
                         List<ComunityRegistration> li = (List<ComunityRegistration>) msg.getList();
 
                         DefaultListModel lm = new DefaultListModel();
-                        pr.getLobby().ali = new ArrayList();
                         ComunityRegistration cm;
                         for (Object s : li) {
                             cm = (ComunityRegistration) s;
                             pr.addKnownComunity(cm);
                             lm.addElement(cm.getName());
-                            pr.getLobby().ali.add(cm.getUUID());
                         }
 
                         final DefaultListModel flm = lm;
@@ -114,7 +111,6 @@ public class ConnectionHandler extends Thread {
                         java.awt.EventQueue.invokeLater(new Runnable() {
                             public void run() {
                                 pr.getLobby().jList1.setModel(flm);
-                                
                             }
                         });
                         break;
