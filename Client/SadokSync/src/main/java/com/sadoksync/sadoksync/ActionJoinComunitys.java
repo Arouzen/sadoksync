@@ -25,6 +25,8 @@ class ActionJoinComunitys implements Runnable {
 
     @Override
     public void run() {
+        //Need rework here because of hardcoded lobby stuff
+       pr.com.setRegistryAddr(addr);
        pr.joinComunity(cname, addr, nick);
     }
 }
