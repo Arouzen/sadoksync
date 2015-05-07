@@ -194,7 +194,7 @@ public class Peer {
     }
 
     void run() {
-        this.stertServiceRegistry();
+        this.startServiceRegistry();
         this.startServer();
 
         com = new Comunity();
@@ -212,7 +212,7 @@ public class Peer {
         com.RegPeer(peerReg);
     }
 
-    private void stertServiceRegistry() {
+    private void startServiceRegistry() {
         sr = new ServiceRegistry(this);
         executor.execute(sr);
     }

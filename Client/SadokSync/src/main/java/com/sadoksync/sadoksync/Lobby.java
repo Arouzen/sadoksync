@@ -6,7 +6,14 @@
 package com.sadoksync.sadoksync;
 
 import java.awt.event.KeyEvent;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 
 /**
@@ -14,9 +21,11 @@ import javax.swing.DefaultListModel;
  * @author Arouz
  */
 public class Lobby extends javax.swing.JFrame {
+
     Peer pr;
     Client cli;
     ArrayList ali;
+
     /**
      * Creates new form panel
      */
@@ -262,7 +271,7 @@ public class Lobby extends javax.swing.JFrame {
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         int firstSelIx = jList1.getSelectedIndex();
         //String sel = (String) jList1.getModel().getElementAt(firstSelIx);
-        String uuid = (String)ali.get(firstSelIx);
+        String uuid = (String) ali.get(firstSelIx);
         ActionJoinComunitys afac = new ActionJoinComunitys(pr, jTextFieldRegistryAddr.getText(), uuid);
         new Thread(afac).start();
     }//GEN-LAST:event_jButton2ActionPerformed
@@ -276,6 +285,7 @@ public class Lobby extends javax.swing.JFrame {
             ActionSetName asn = new ActionSetName(pr, jTextFieldNick.getText(), this);
             jTextFieldNick.setEnabled(false);
             new Thread(asn).start();
+            connectToDefaultSR();
         }
     }//GEN-LAST:event_jButton4ActionPerformed
 
@@ -289,6 +299,7 @@ public class Lobby extends javax.swing.JFrame {
                 ActionSetName asn = new ActionSetName(pr, jTextFieldNick.getText(), this);
                 jTextFieldNick.setEnabled(false);
                 new Thread(asn).start();
+                connectToDefaultSR();
             }
         }
     }//GEN-LAST:event_jTextFieldNickKeyPressed
@@ -354,5 +365,26 @@ public class Lobby extends javax.swing.JFrame {
             }
         });
 
+    }
+
+    private void connectToDefaultSR() {
+        BufferedReader bufferedReader = null;
+        try {
+            bufferedReader = new BufferedReader(new InputStreamReader(new URL("http://sadoksync.site90.net/ip.html").openConnection().getInputStream()));
+            String ip = bufferedReader.readLine();
+            jTextFieldRegistryAddr.setText(ip);
+            ActionFindAllComunitys afac = new ActionFindAllComunitys(pr, ip);
+            new Thread(afac).start();
+        } catch (MalformedURLException ex) {
+            Logger.getLogger(Lobby.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(Lobby.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                bufferedReader.close();
+            } catch (IOException ex) {
+                Logger.getLogger(Lobby.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
     }
 }
