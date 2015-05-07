@@ -99,6 +99,34 @@ public class PublicPlaylist implements Serializable {
         }
     }
 
+    void removefrommyPlaylist(String name) {
+        lock.lock();
+        try {
+            if (pr.isHost()) {
+
+                //Temporary list containing indexes to remove. 
+                ArrayList<Integer> save = new ArrayList<Integer>();
+
+                //find indexes for all objects belonging to one person. 
+                for (int i = 0; i < playlist.size(); i++) {
+                    if (playlist.get(i).key().equals(name)) {
+                        save.add(i);
+                    }
+                }
+
+                for (int i = save.size(); i > 0; i--) {
+                    int j = save.get(i - 1);
+                    playlist.remove(j);
+                }
+
+                pr.DeliverPlaylistToComunity();
+            }
+        } finally {
+            lock.unlock();
+            pr.getClient().setMode("playlist");
+        }
+    }
+
     // Remove all elements from the arraylist (playlist) containing the key (user).
     public void removefromPlaylist(String name) {
         lock.lock();
@@ -107,7 +135,7 @@ public class PublicPlaylist implements Serializable {
 
                 //Temporary list containing indexes to remove. 
                 ArrayList<Integer> save = new ArrayList<Integer>();
-                
+
                 //find indexes for all objects belonging to one person. 
                 for (int i = 0; i < playlist.size(); i++) {
                     if (playlist.get(i).key().equals(name)) {
@@ -181,10 +209,9 @@ public class PublicPlaylist implements Serializable {
     public void removeFirstInQueue() {
         lock.lock();
         try {
-            if(playlist.size() != 0){
+            if (playlist.size() != 0) {
                 playlist.remove(0);
             }
-            
 
             ocupied.signalAll();
         } finally {
