@@ -57,8 +57,8 @@ public class MediaServer {
         System.out.println("[Client.streamMedia] Streaming '" + mrl + "' to '" + options + "'");
         serverMediaPlayer.playMedia(mrl,
                 options,
-                ":no-sout-rtp-sap",
-                ":no-sout-standard-sap",
+                //":no-sout-rtp-sap",
+                //":no-sout-standard-sap",
                 ":sout-all",
                 ":sout-keep"
         );
@@ -100,6 +100,7 @@ public class MediaServer {
     private static String formatRtspStream(String serverAddress, int serverPort, String id) {
         StringBuilder sb = new StringBuilder(60);
         sb.append(":sout=#rtp{sdp=rtsp://@");
+        //sb.append(":sout=#http{mux=wav");
         sb.append(serverAddress);
         sb.append(':');
         sb.append(serverPort);
