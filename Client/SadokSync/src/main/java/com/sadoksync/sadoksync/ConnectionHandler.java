@@ -91,7 +91,7 @@ public class ConnectionHandler extends Thread {
                         if (pr.com.getUUID().equals(msg.getUUID())) {
                             //pr.com.setHost(msg.getipAddr());
                             pr.getClient().setHost(msg.getipAddr());
-                            pr.getClient().setPort("5555");
+                            pr.getClient().setPort("554");
                             pr.getClient().setRtspPath(msg.getName());
                             pr.getClient().setMediaType(msg.getText());
                             pr.getClient().connectToRtsp();

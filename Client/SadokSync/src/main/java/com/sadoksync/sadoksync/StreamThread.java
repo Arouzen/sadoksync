@@ -182,7 +182,7 @@ public class StreamThread extends Thread {
     }
 
     public void streamMedia(MediaPlayer serverMediaPlayer, String mrl, Media media, String mediaType) {
-        final String options = formatRtspStream("@", 5555, "demo");
+        final String options = formatRtspStream("@", 554, "demo");
         dbs.println("[Client.streamMedia] Streaming '" + mrl + "' to '" + options + "'");
         //System.out.println("[Client.streamMedia] Streaming '" + mrl + "' to '" + options + "'");
         serverMediaPlayer.playMedia(mrl,
@@ -201,7 +201,7 @@ public class StreamThread extends Thread {
         }
 
         client.setHost("localhost");
-        client.setPort("5555");
+        client.setPort("554");
         client.setRtspPath("demo");
 
         if (mediaType.equals("")) {

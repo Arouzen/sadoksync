@@ -23,7 +23,7 @@ import javax.swing.DefaultListModel;
 public class Lobby extends javax.swing.JFrame {
 
     Peer pr;
-    Client cli;
+    //Client cli;
     ArrayList ali;
 
     /**
@@ -31,7 +31,7 @@ public class Lobby extends javax.swing.JFrame {
      */
     public Lobby(Peer pr/*, Client cli*/) {
         this.pr = pr;
-        this.cli = cli;
+        //this.cli = cli;
         this.ali = new ArrayList();
         initComponents();
     }
@@ -371,9 +371,16 @@ public class Lobby extends javax.swing.JFrame {
         BufferedReader bufferedReader = null;
         try {
             bufferedReader = new BufferedReader(new InputStreamReader(new URL("http://sadoksync.site90.net/ip.html").openConnection().getInputStream()));
-            String ip = bufferedReader.readLine();
-            jTextFieldRegistryAddr.setText(ip);
-            ActionFindAllComunitys afac = new ActionFindAllComunitys(pr, ip);
+
+            
+            final String fip = bufferedReader.readLine();
+            java.awt.EventQueue.invokeLater(new Runnable() {
+                public void run() {
+                    jTextFieldRegistryAddr.setText(fip);
+                }
+            });
+
+            ActionFindAllComunitys afac = new ActionFindAllComunitys(pr, fip);
             new Thread(afac).start();
         } catch (MalformedURLException ex) {
             Logger.getLogger(Lobby.class.getName()).log(Level.SEVERE, null, ex);

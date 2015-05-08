@@ -66,7 +66,7 @@ class ServiceRegistryConnectionHandler extends Thread {
                         String cip = clientSocket.getInetAddress().toString();
                         msg.setType("your ip");
                         msg.setipAddr(cip);
-                        pr.sendMsg(cip, 4444, msg);
+                        pr.sendMsg(cip, 40, msg);
                         */
                         //Turn Map into List
                         List retList = new LinkedList();
@@ -86,7 +86,7 @@ class ServiceRegistryConnectionHandler extends Thread {
                         msg = new Message();
                         msg.setType("Comunity List");
                         msg.setList(retList);
-                        pr.sendMsg(retIP, 4444, msg);
+                        pr.sendMsg(retIP, 40, msg);
                         break;
                     case "Comunity Registration":
                         pr.getDebugSys().println("Comunity Registration: " + msg.getName() + " @" + msg.getipAddr());
