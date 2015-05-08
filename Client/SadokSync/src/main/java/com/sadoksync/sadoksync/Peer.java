@@ -226,7 +226,7 @@ public class Peer {
         }
         if (gui) {
             //this.setProp(new Properties(this));
-            this.setLobby(new Lobby(this));
+            this.setLobby(new Lobby(this, myIP));
             this.setClient(new Client(this));
 
             //synchMap = new SynchReg();
