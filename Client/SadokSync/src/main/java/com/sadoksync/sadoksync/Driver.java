@@ -28,7 +28,7 @@ public class Driver {
     public Driver(boolean gui) {
         
         dbs = new DebugSys();
-        dbs.debug(true);
+        dbs.debug(false);
         pr = new Peer(dbs);
         pr.run(gui);
     }
