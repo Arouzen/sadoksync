@@ -207,6 +207,7 @@ public class Peer {
             public void run() {
                 flb.setVisible(false);
                 fcli.setVisible(true);
+                fcli.updateLabels();
                 //fprop.setVisible(false);
             }
         });
@@ -225,7 +226,7 @@ public class Peer {
         }
         if (gui) {
             //this.setProp(new Properties(this));
-            this.setLobby(new Lobby(this, myIP));
+            this.setLobby(new Lobby(this));
             this.setClient(new Client(this));
 
             //synchMap = new SynchReg();

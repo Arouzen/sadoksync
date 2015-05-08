@@ -258,6 +258,8 @@ public class Client extends javax.swing.JFrame {
         jSlider1 = new javax.swing.JSlider();
         labelVolume = new javax.swing.JLabel();
         buttonSendChat = new javax.swing.JButton();
+        labelIP = new javax.swing.JLabel();
+        labelCom = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         Open = new javax.swing.JMenuItem();
@@ -413,6 +415,10 @@ public class Client extends javax.swing.JFrame {
             }
         });
 
+        labelIP.setText("My IP: ");
+
+        labelCom.setText("Connected to X in X");
+
         jMenuBar1.setBackground(new java.awt.Color(102, 102, 102));
 
         jMenu1.setText("File");
@@ -473,7 +479,6 @@ public class Client extends javax.swing.JFrame {
                     .addComponent(jSplitPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1038, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(ButtonStop, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -481,8 +486,14 @@ public class Client extends javax.swing.JFrame {
                                 .addGap(11, 11, 11)
                                 .addComponent(labelVolume, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jSlider1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE)))
+                                .addComponent(jSlider1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 380, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(labelIP)
+                                    .addComponent(labelCom))))
+                        .addGap(0, 130, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(0, 0, Short.MAX_VALUE)
@@ -503,14 +514,21 @@ public class Client extends javax.swing.JFrame {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(buttonShowPlaylist, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(buttonShowChat, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(buttonShowUsers, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(buttonShowPlaylist, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(buttonShowChat, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(buttonShowUsers, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                            .addComponent(labelIP)
+                            .addGap(0, 0, Short.MAX_VALUE)
+                            .addComponent(labelCom))
+                        .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jSplitPane1)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -717,6 +735,11 @@ public class Client extends javax.swing.JFrame {
         playlist.clear();
     }
 
+    void updateLabels() {
+        labelIP.setText("My IP: " + pr.myIP);
+        labelCom.setText("Connected to " + pr.com.getComunityName() + "@Registry IP: " + pr.com.getRegistryAddr());
+    }
+
     private class TestAudioCallbackAdapter extends DefaultAudioCallbackAdapter {
 
         /**
@@ -823,51 +846,48 @@ public class Client extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
-    
-    
     /*
-    public static void main(String args[]) {
-        // Set the Nimbus look and feel
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        // If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-        // For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-        //
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
+     public static void main(String args[]) {
+     // Set the Nimbus look and feel
+     //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
+     // If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
+     // For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+     //
+     try {
+     for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+     if ("Nimbus".equals(info.getName())) {
+     javax.swing.UIManager.setLookAndFeel(info.getClassName());
+     break;
 
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Client.class
-                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Client.class
-                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Client.class
-                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Client.class
-                    .getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
+     }
+     }
+     } catch (ClassNotFoundException ex) {
+     java.util.logging.Logger.getLogger(Client.class
+     .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+     } catch (InstantiationException ex) {
+     java.util.logging.Logger.getLogger(Client.class
+     .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+     } catch (IllegalAccessException ex) {
+     java.util.logging.Logger.getLogger(Client.class
+     .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+     } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+     java.util.logging.Logger.getLogger(Client.class
+     .getName()).log(java.util.logging.Level.SEVERE, null, ex);
+     }
+     //</editor-fold>
 
-        //VLC now included in project instead
-        //NativeLibrary.addSearchPath("libvlc", "C:\\Program Files (x86)\\VideoLAN\\VLC");
+     //VLC now included in project instead
+     //NativeLibrary.addSearchPath("libvlc", "C:\\Program Files (x86)\\VideoLAN\\VLC");
 
-        // Create and display the form 
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                new Client(new Peer()).setVisible(true);
-            }
-        });
-    }
-*/
-
+     // Create and display the form 
+     java.awt.EventQueue.invokeLater(new Runnable() {
+     @Override
+     public void run() {
+     new Client(new Peer()).setVisible(true);
+     }
+     });
+     }
+     */
     private ArrayList<String> getUsers() {
         ArrayList<String> list = new ArrayList<String>();
         Map map = pr.com.getComunityPeers();
@@ -1106,6 +1126,8 @@ public class Client extends javax.swing.JFrame {
     private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JSlider jSlider1;
     private javax.swing.JSplitPane jSplitPane1;
+    private javax.swing.JLabel labelCom;
+    private javax.swing.JLabel labelIP;
     private javax.swing.JLabel labelVolume;
     private javax.swing.JList listInScrollpane;
     private javax.swing.JPanel panelChatt;

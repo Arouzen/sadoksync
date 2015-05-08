@@ -73,6 +73,9 @@ public class Comunity {
             this.cname = cname;
             this.host = myIP;
             this.topic = topic;
+            
+            setComunityName(cname);
+            
             ocupied.signalAll();
         } finally {
             lock.unlock();
