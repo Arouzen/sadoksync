@@ -27,8 +27,9 @@ import javax.swing.JOptionPane;
  * @author Pontus
  */
 public class Peer {
+
     DebugSys dbs;
-    
+
     ExecutorService executor;
     PeerServerThread pst;
 
@@ -59,7 +60,7 @@ public class Peer {
     void setComunityTopic(String topic) {
         //System.out.println("Peer: setComunityTopic:" + topic);
         dbs.println("Peer: setComunityTopic:" + topic);
-        
+
         com.setTopic(topic);
     }
 
@@ -67,11 +68,9 @@ public class Peer {
     void createComunity(String cname, String topic) {
         String uniqueID = UUID.randomUUID().toString();
         com.create(cname, myIP, topic, nick, uniqueID);
-        
-        
-          
+
         cMap.put(uniqueID, new ComunityRegistration(cname, myIP, topic, uniqueID));
-        
+
         this.joinComunity(uniqueID);
     }
 
@@ -322,7 +321,7 @@ public class Peer {
             //System.out.println("I am host and I am addinging: " + msg.getName() + " @" + msg.getipAddr());
 
             if (!this.cli.isPlaylistEmpty()) {
-                this.DeliverStream(msg.getipAddr(), "demo");
+                this.DeliverFirstStream(msg.getipAddr(), "demo");
             }
 
             Message sethostmsg = new Message();
@@ -375,6 +374,16 @@ public class Peer {
         Message msgret = new Message();
         msgret.setipAddr(this.getMyIp());
         msgret.setType("Set Stream");
+        msgret.setName(path);
+        msgret.setText("video");
+        this.sendMsg(ipAddr, 40, msgret);
+    }
+
+    private void DeliverFirstStream(String ipAddr, String path) {
+        //Delives a message that set where the stream is currently.
+        Message msgret = new Message();
+        msgret.setipAddr(this.getMyIp());
+        msgret.setType("Set First Stream");
         msgret.setName(path);
         msgret.setText("video");
         this.sendMsg(ipAddr, 40, msgret);
@@ -618,8 +627,8 @@ public class Peer {
     void setisConnected(boolean b) {
         isConnected = b;
     }
-    
-    public DebugSys getDebugSys(){
+
+    public DebugSys getDebugSys() {
         return dbs;
     }
 

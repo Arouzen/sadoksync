@@ -88,7 +88,9 @@ public class ConnectionHandler extends Thread {
                         break;
                     case "Set Stream":
                         System.out.println("Set Stream");
-                        if (pr.com.getUUID().equals(msg.getUUID())) {
+                        String comUUID = pr.com.getUUID();
+                        String msgUUID = msg.getUUID();
+                        if (comUUID.equals(msgUUID)) {
                             //pr.com.setHost(msg.getipAddr());
                             pr.getClient().setHost(msg.getipAddr());
                             pr.getClient().setPort("554");
@@ -98,6 +100,19 @@ public class ConnectionHandler extends Thread {
                         }
 
                         break;
+
+                    case "Set First Stream":
+                        System.out.println("Set Stream");
+
+                        //pr.com.setHost(msg.getipAddr());
+                        pr.getClient().setHost(msg.getipAddr());
+                        pr.getClient().setPort("554");
+                        pr.getClient().setRtspPath(msg.getName());
+                        pr.getClient().setMediaType(msg.getText());
+                        pr.getClient().connectToRtsp();
+
+                        break;
+
                     case "Set Host":
                         //Should be done regardles off UUID
                         System.out.println("Setting comunity name");
