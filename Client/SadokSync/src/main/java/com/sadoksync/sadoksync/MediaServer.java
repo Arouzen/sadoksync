@@ -57,10 +57,8 @@ public class MediaServer {
         System.out.println("[Client.streamMedia] Streaming '" + mrl + "' to '" + options + "'");
         serverMediaPlayer.playMedia(mrl,
                 options,
-                ":no-sout-rtp-sap",
-                ":no-sout-standard-sap",
-                ":sout-all",
-                ":sout-keep"
+                ":sout-keep",
+                ":sout-avcodec-keyint=10"
         );
         try {
             Thread.sleep(4000);
