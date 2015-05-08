@@ -26,7 +26,7 @@ public class Comunity {
     String host;
     String uuid;
     //ClientRemoteInterface host;
-
+    int streamiteration;
     Map<String, PeerReg> pMap;
 
     public Comunity(DebugSys dbs) {

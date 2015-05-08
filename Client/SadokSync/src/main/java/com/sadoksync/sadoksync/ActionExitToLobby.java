@@ -75,7 +75,7 @@ public class ActionExitToLobby implements Runnable {
             Message msg = new Message();
             msg.setType("removePeerbyNick");
             msg.setName(pr.getNick());
-            pr.sendMsg(pr.getHost(), 4444, msg);
+            pr.sendMsg(pr.getHost(), 40, msg);
         }
         if (mediaPlayer.isPlaying()) {
             mediaPlayer.stop();

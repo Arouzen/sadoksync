@@ -1,3 +1,8 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package com.sadoksync.sadoksync;
 
 import java.awt.event.KeyEvent;
@@ -18,17 +23,18 @@ import javax.swing.DefaultListModel;
 public class Lobby extends javax.swing.JFrame {
 
     Peer pr;
-    Client cli;
+    //Client cli;
     ArrayList ali;
 
     /**
      * Creates new form panel
      */
-    public Lobby(Peer pr, String myIP) {
+    public Lobby(Peer pr, String myip) {
         this.pr = pr;
+        //this.cli = cli;
         this.ali = new ArrayList();
         initComponents();
-        labelMyIp.setText("My Public IP: " + myIP);
+        
     }
 
     /**
@@ -57,8 +63,6 @@ public class Lobby extends javax.swing.JFrame {
         jLabel5 = new javax.swing.JLabel();
         jTdc = new javax.swing.JTextField();
         jButton5 = new javax.swing.JButton();
-        labelMyIp = new javax.swing.JLabel();
-        jSeparator2 = new javax.swing.JSeparator();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -151,8 +155,6 @@ public class Lobby extends javax.swing.JFrame {
             }
         });
 
-        labelMyIp.setText("My Public IP:");
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -194,13 +196,7 @@ public class Lobby extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(jButton2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE))
-                        .addGap(15, 15, 15))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(labelMyIp)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jSeparator2)
-                        .addContainerGap())))
+                        .addGap(15, 15, 15))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -222,11 +218,7 @@ public class Lobby extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton3)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(labelMyIp)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 193, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 238, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
@@ -357,15 +349,14 @@ public class Lobby extends javax.swing.JFrame {
     public javax.swing.JList jList1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
-    private javax.swing.JSeparator jSeparator2;
     private javax.swing.JTextField jTdc;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextFieldNick;
     private javax.swing.JTextField jTextFieldRegistryAddr;
-    private javax.swing.JLabel labelMyIp;
     // End of variables declaration//GEN-END:variables
 
     void clearList() {
+
         ali = new ArrayList();
         final DefaultListModel flm = new DefaultListModel();
 
@@ -374,15 +365,23 @@ public class Lobby extends javax.swing.JFrame {
                 jList1.setModel(flm);
             }
         });
+
     }
 
     private void connectToDefaultSR() {
         BufferedReader bufferedReader = null;
         try {
             bufferedReader = new BufferedReader(new InputStreamReader(new URL("http://sadoksync.site90.net/ip.html").openConnection().getInputStream()));
-            String ip = bufferedReader.readLine();
-            jTextFieldRegistryAddr.setText(ip);
-            ActionFindAllComunitys afac = new ActionFindAllComunitys(pr, ip);
+
+            
+            final String fip = bufferedReader.readLine();
+            java.awt.EventQueue.invokeLater(new Runnable() {
+                public void run() {
+                    jTextFieldRegistryAddr.setText(fip);
+                }
+            });
+
+            ActionFindAllComunitys afac = new ActionFindAllComunitys(pr, fip);
             new Thread(afac).start();
         } catch (MalformedURLException ex) {
             Logger.getLogger(Lobby.class.getName()).log(Level.SEVERE, null, ex);

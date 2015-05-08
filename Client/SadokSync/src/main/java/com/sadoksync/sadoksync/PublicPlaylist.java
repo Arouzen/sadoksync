@@ -91,7 +91,7 @@ public class PublicPlaylist implements Serializable {
                 msg.setType("Playlist");
                 msg.setText("add");
                 msg.setPair(pair);
-                pr.sendMsg(pr.getHost(), 4444, msg);
+                pr.sendMsg(pr.getHost(), 40, msg);
             }
 
             ocupied.signalAll();
@@ -155,7 +155,7 @@ public class PublicPlaylist implements Serializable {
                 Message msg = new Message();
                 msg.setType("removefromlist");
                 msg.setName(name);
-                pr.sendMsg(pr.getHost(), 4444, msg);
+                pr.sendMsg(pr.getHost(), 40, msg);
             }
         } finally {
             lock.unlock();

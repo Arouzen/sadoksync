@@ -26,11 +26,11 @@ class PeerServerThread extends Thread {
     public PeerServerThread(Peer pr) {
         this.pr = pr;
         try {
-            serverSocket = new ServerSocket(4444);
+            serverSocket = new ServerSocket(40);
             listening = true;
         } catch (IOException e) {
-            pr.getDebugSys().println("Could not listen on port: 4444.");
-            //System.err.println("Could not listen on port: 4444.");
+            pr.getDebugSys().println("Could not listen on port: 40.");
+            //System.err.println("Could not listen on port: 40.");
             //System.exit(1);
         }
 

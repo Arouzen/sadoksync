@@ -109,7 +109,7 @@ public class Peer {
         msg.setName(this.getNick());
         //msg.setText(cname);
 
-        this.sendMsg(cr.getHost(), 4444, msg);
+        this.sendMsg(cr.getHost(), 40, msg);
         this.openClient();
 
     }
@@ -122,7 +122,7 @@ public class Peer {
         msg.setName(this.getNick());
         //msg.setText(cname);
 
-        this.sendMsg(ip, 4444, msg);
+        this.sendMsg(ip, 40, msg);
         this.openClient();
     }
     /*
@@ -329,7 +329,7 @@ public class Peer {
             sethostmsg.setipAddr(this.getMyIp());
             sethostmsg.setName(this.com.getComunityName());
             sethostmsg.setType("Set Host");
-            this.sendMsg(msg.getipAddr(), 4444, sethostmsg);
+            this.sendMsg(msg.getipAddr(), 40, sethostmsg);
 
             //send cMap to list to msg.getipAddr()
             this.SendPMap(msg.getipAddr());
@@ -363,7 +363,7 @@ public class Peer {
                 msg.setType("Register Client");
                 msg.setName(opr.getNick());
                 if (!this.getMyIp().equals(ipAddr)) {
-                    this.sendMsg(ipAddr, 4444, msg);
+                    this.sendMsg(ipAddr, 40, msg);
                 }
 
             }
@@ -377,7 +377,7 @@ public class Peer {
         msgret.setType("Set Stream");
         msgret.setName(path);
         msgret.setText("video");
-        this.sendMsg(ipAddr, 4444, msgret);
+        this.sendMsg(ipAddr, 40, msgret);
     }
 
     void DeliverStreamToComunity(String ipAddr, String path, String mediaType) {
@@ -417,7 +417,7 @@ public class Peer {
         msgret.setipAddr(this.getMyIp());
         msgret.setType("Set Playlist");
         msgret.setList(li);
-        this.sendMsg(ipAddr, 4444, msgret);
+        this.sendMsg(ipAddr, 40, msgret);
     }
 
     void DeliverPlaylistToComunity() {
@@ -447,7 +447,7 @@ public class Peer {
         msgret.setipAddr(this.getMyIp());
         msgret.setType("Ping");
         msgret.setText(why);
-        this.sendMsg(ipAddr, 4444, msgret);
+        this.sendMsg(ipAddr, 40, msgret);
     }
 
     void Pong(Message msg) {
@@ -462,7 +462,7 @@ public class Peer {
                 msgret.setText("Move Host");
                 break;
         }
-        this.sendMsg(ipAddr, 4444, msgret);
+        this.sendMsg(ipAddr, 40, msgret);
     }
 
     void handlePong(Message msg) {
@@ -474,7 +474,7 @@ public class Peer {
                 msgret.setipAddr(msg.getipAddr());
                 msgret.setName(this.com.getComunityName());
                 msgret.setType("Set Host");
-                this.sendMsg(msg.getipAddr(), 4444, msgret);
+                this.sendMsg(msg.getipAddr(), 40, msgret);
                 break;
         }
 
