@@ -74,6 +74,8 @@ public class Comunity {
             this.host = myIP;
             this.topic = topic;
             
+            this.addPeer(nick, myIP);
+            
             ocupied.signalAll();
         } finally {
             lock.unlock();
