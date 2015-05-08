@@ -29,11 +29,12 @@ public class Lobby extends javax.swing.JFrame {
     /**
      * Creates new form panel
      */
-    public Lobby(Peer pr/*, Client cli*/) {
+    public Lobby(Peer pr, String myip) {
         this.pr = pr;
         //this.cli = cli;
         this.ali = new ArrayList();
         initComponents();
+        
     }
 
     /**
