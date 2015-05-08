@@ -131,7 +131,7 @@ public class Peer {
      this.openClient();
      com.setHost(host);
 
-     this.joinComunity(com.getComunityName(), host, 4444);
+     this.joinComunity(com.getComunityName(), host, 40);
      }
      */
 
@@ -287,14 +287,14 @@ public class Peer {
                 key = (String) i.next();
                 opr = (PeerReg) m.get(key);
                 if (!this.getMyIp().equals(opr.getAddr())) {
-                    this.sendMsg(opr.getAddr(), 4444, msg);
+                    this.sendMsg(opr.getAddr(), 40, msg);
                 }
             }
         }
     }
 
     void sendToHost(Message msg) {
-        this.sendMsg(this.com.getHost(), 4444, msg);
+        this.sendMsg(this.com.getHost(), 40, msg);
     }
 
     /*

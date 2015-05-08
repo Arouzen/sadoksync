@@ -50,16 +50,16 @@ public class ConnectionHandler extends Thread {
                      */
                     case "Set Playlist":
                         System.out.println("Message: Set Playlist");
-                        //if (pr.com.getUUID().equals(msg.getUUID())) {
+                        if (pr.com.getUUID().equals(msg.getUUID())) {
                             PublicPlaylist pl = new PublicPlaylist(pr, msg.getList());
                             pr.getClient().setPlayList(pl);
-                        //}
+                        }
 
                         break;
 
                     case "Playlist":
                         System.out.println("Message: Playlist");
-                        //if (pr.com.getUUID().equals(msg.getUUID())) {
+                        if (pr.com.getUUID().equals(msg.getUUID())) {
 
                             if (msg.getText().equals("add") && pr.isHost()) {
                                 System.out.println("Message: Playlist: Adding: ");
@@ -69,35 +69,35 @@ public class ConnectionHandler extends Thread {
                             } else if (msg.getText().equals("add") && !pr.isHost()) {
                                 //Relay message
                             }
-                        //}
+                        }
 
                         break;
                     case "Ping":
                         System.out.println("Recived Ping");
-                        //if (pr.com.getUUID().equals(msg.getUUID())) {
+                        if (pr.com.getUUID().equals(msg.getUUID())) {
                             pr.Pong(msg);
-                        //}
+                        }
 
                         break;
                     case "Pong":
                         System.out.println("Reciving Pong");
-                        //if (pr.com.getUUID().equals(msg.getUUID())) {
+                        if (pr.com.getUUID().equals(msg.getUUID())) {
                             pr.handlePong(msg);
-                        //}
+                        }
 
                         break;
                     case "Set Stream":
                         System.out.println("Set Stream");
-                        //String comUUID = pr.com.getUUID();
-                        //String msgUUID = msg.getUUID();
-                        //if (comUUID.equals(msgUUID)) {
+                        String comUUID = pr.com.getUUID();
+                        String msgUUID = msg.getUUID();
+                        if (comUUID.equals(msgUUID)) {
                             //pr.com.setHost(msg.getipAddr());
                             pr.getClient().setHost(msg.getipAddr());
                             pr.getClient().setPort("554");
                             pr.getClient().setRtspPath(msg.getName());
                             pr.getClient().setMediaType(msg.getText());
                             pr.getClient().connectToRtsp();
-                        //}
+                        }
 
                         break;
 
@@ -122,9 +122,9 @@ public class ConnectionHandler extends Thread {
                         break;
                     case "Register Client":
                         System.out.println("Register Client: " + msg.getName());
-                        //if (pr.com.getUUID().equals(msg.getUUID())) {
+                        if (pr.com.getUUID().equals(msg.getUUID())) {
                             pr.PeerToJoin(msg);
-                        //}
+                        }
 
                         break;
                     case "Join Comunity":
@@ -171,31 +171,31 @@ public class ConnectionHandler extends Thread {
                         System.out.println("Comunity Registration: ERROR. Wrong handler");
                         break;
                     case "chat message":
-                        //if (pr.com.getUUID().equals(msg.getUUID())) {
+                        if (pr.com.getUUID().equals(msg.getUUID())) {
                             System.out.println("Reciving chat message " + msg.getText());
                             pr.getClient().addToChatOutput(msg.getText());
-                        //}
+                        }
 
                         break;
                     case "removefromlist":
-                        //if (pr.com.getUUID().equals(msg.getUUID())) {
+                        if (pr.com.getUUID().equals(msg.getUUID())) {
                             System.out.println("Reciving removefromlist message: " + msg.getName());
                             pr.getClient().getPublicPlaylist().removefrommyPlaylist(msg.getName());
-                        //}
+                        }
 
                         break;
                     case "removePeerbyNick":
-                        //if (pr.com.getUUID().equals(msg.getUUID())) {
+                        if (pr.com.getUUID().equals(msg.getUUID())) {
                             System.out.println("Reciving removePeerbyNick message: " + msg.getName());
                             pr.removePeerbyNick(msg.getName());
-                        //}
+                        }
 
                         break;
                     case "removePeerFromCommunity":
-                        //if (pr.com.getUUID().equals(msg.getUUID())) {
+                        if (pr.com.getUUID().equals(msg.getUUID())) {
                             System.out.println("Reciving removePeerFromCommunity message");
                             pr.removePeerFromCommunity(msg.getName());
-                        //}
+                        }
 
                         break;
                 }
