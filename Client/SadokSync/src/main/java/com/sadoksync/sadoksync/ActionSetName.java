@@ -23,7 +23,8 @@ public class ActionSetName implements Runnable {
 
     @Override
     public void run() {
-        System.out.println("Nick set t: " + nick);
+        pr.getDebugSys().println("Nick set t: " + nick);
+        //System.out.println("Nick set t: " + nick);
         pr.setNick(nick);
 
         java.awt.EventQueue.invokeLater(new Runnable() {

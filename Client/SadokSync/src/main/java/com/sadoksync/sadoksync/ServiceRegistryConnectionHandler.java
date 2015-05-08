@@ -5,7 +5,6 @@
  */
 package com.sadoksync.sadoksync;
 
-import com.sadoksync.message.ComunityRegistration;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.OptionalDataException;
@@ -52,14 +51,16 @@ class ServiceRegistryConnectionHandler extends Thread {
                 Message msg = ((Message) msgObj);
                 switch (msg.getType()) {
                     case "Register Client":
-                        System.out.println("Register Client: Error Wrong Handler");
+                        pr.getDebugSys().println("Register Client: Error Wrong Handler");
+                        //System.out.println("Register Client: Error Wrong Handler");
                         break;
                     case "deRegister":
                         //Get name should be a uuid
                         cMap.remove(msg.getName());
                         break;
                     case "Find All":
-                        System.out.println("Find All");
+                        pr.getDebugSys().println("Find All");
+                        //System.out.println("Find All");
                         /*
                         msg = new Message();
                         String cip = clientSocket.getInetAddress().toString();
@@ -88,7 +89,8 @@ class ServiceRegistryConnectionHandler extends Thread {
                         pr.sendMsg(retIP, 4444, msg);
                         break;
                     case "Comunity Registration":
-                        System.out.println("Comunity Registration: " + msg.getName() + " @" + msg.getipAddr());
+                        pr.getDebugSys().println("Comunity Registration: " + msg.getName() + " @" + msg.getipAddr());
+                        //System.out.println("Comunity Registration: " + msg.getName() + " @" + msg.getipAddr());
                         cMap.put(msg.getUUID(), new ComunityRegistration(msg.getName(), msg.getipAddr(), msg.getText(), msg.getUUID()));
                         break;
                 }
@@ -98,13 +100,16 @@ class ServiceRegistryConnectionHandler extends Thread {
             clientSocket.close();
 
         } catch (ClassNotFoundException cnfe) {
-            System.out.println(cnfe.toString());
+            pr.getDebugSys().println(cnfe.toString());
+            //System.out.println(cnfe.toString());
             return;
         } catch (OptionalDataException ode) {
-            System.out.println(ode.toString());
+            pr.getDebugSys().println(ode.toString());
+            //System.out.println(ode.toString());
             return;
         } catch (IOException ioe) {
-            System.out.println(ioe.toString());
+            pr.getDebugSys().println(ioe.toString());
+            //System.out.println(ioe.toString());
             return;
         }
 

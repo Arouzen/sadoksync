@@ -12,6 +12,7 @@ package com.sadoksync.sadoksync;
 public class Driver {
 
     Peer pr;
+    DebugSys dbs;
 
     public static void main(String[] args) {
         new Driver();
@@ -19,8 +20,9 @@ public class Driver {
 
     public Driver() {
         
-        
-        pr = new Peer();
+        dbs = new DebugSys();
+        dbs.debug(true);
+        pr = new Peer(dbs);
         pr.run();
         
 

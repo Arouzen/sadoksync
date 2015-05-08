@@ -5,7 +5,6 @@
  */
 package com.sadoksync.sadoksync;
 
-import com.sadoksync.message.ComunityRegistration;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -34,14 +33,16 @@ public class ServiceRegistry extends Thread {
             serverSocket = new ServerSocket(3333);
             listening = true;
         } catch (IOException e) {
-            System.err.println("Could not listen on port: 3333.");
+            pr.getDebugSys().println("Could not listen on port: 3333.");
+            //System.err.println("Could not listen on port: 3333.");
             //System.exit(1);
         }
     }
 
     @Override
     public void run() {
-        System.out.println("Starting Server Socket Thread");
+        pr.getDebugSys().println("Starting Server Socket Thread");
+        //System.out.println("Starting Server Socket Thread");
         while (listening) {
             Socket clientSocket;
             try {

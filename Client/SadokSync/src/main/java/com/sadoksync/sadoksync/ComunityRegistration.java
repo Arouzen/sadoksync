@@ -1,4 +1,4 @@
-package com.sadoksync.message;
+package com.sadoksync.sadoksync;
 
 /*
  * To change this license header, choose License Headers in Project Properties.

@@ -5,7 +5,6 @@
  */
 package com.sadoksync.sadoksync;
 
-import com.sadoksync.message.ComunityRegistration;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -28,7 +27,8 @@ import javax.swing.JOptionPane;
  * @author Pontus
  */
 public class Peer {
-
+    DebugSys dbs;
+    
     ExecutorService executor;
     PeerServerThread pst;
 
@@ -49,7 +49,8 @@ public class Peer {
     //Key is UUID, ComunityRegistration is a comunity registration
     Map<String, ComunityRegistration> cMap;
 
-    public Peer() {
+    public Peer(DebugSys dbs) {
+        this.dbs = dbs;
         executor = Executors.newFixedThreadPool(50);
         this.cMap = Collections.synchronizedMap(new HashMap<String, ComunityRegistration>());
     }
@@ -57,6 +58,8 @@ public class Peer {
     //del?
     void setComunityTopic(String topic) {
         //System.out.println("Peer: setComunityTopic:" + topic);
+        dbs.println("Peer: setComunityTopic:" + topic);
+        
         com.setTopic(topic);
     }
 
@@ -64,6 +67,12 @@ public class Peer {
     void createComunity(String cname, String topic) {
         String uniqueID = UUID.randomUUID().toString();
         com.create(cname, myIP, topic, nick, uniqueID);
+        
+        
+          
+        cMap.put(uniqueID, new ComunityRegistration(cname, myIP, topic, uniqueID));
+        
+        this.joinComunity(uniqueID);
     }
 
     void registerComunity(String rhost, int port) {
@@ -208,7 +217,7 @@ public class Peer {
         this.startServiceRegistry();
         this.startServer();
 
-        com = new Comunity();
+        com = new Comunity(dbs);
 
         try {
             myIP = this.getIp();
@@ -243,7 +252,8 @@ public class Peer {
     }
 
     void RegPeer(PeerReg peerReg) {
-        System.out.println("Peer: RegPeer: Registering " + peerReg.getNick() + " with comunity");
+        dbs.println("Peer: RegPeer: Registering " + peerReg.getNick() + " with comunity");
+        //System.out.println("Peer: RegPeer: Registering " + peerReg.getNick() + " with comunity");
         com.RegPeer(peerReg);
     }
 
@@ -307,7 +317,8 @@ public class Peer {
         com.addPeer(msg.getName(), msg.getipAddr());
         msg.setType("Register Client");
         if (this.isHost()) {
-            System.out.println("I am host and I am addinging: " + msg.getName() + " @" + msg.getipAddr());
+            dbs.println("I am host and I am addinging: " + msg.getName() + " @" + msg.getipAddr());
+            //System.out.println("I am host and I am addinging: " + msg.getName() + " @" + msg.getipAddr());
 
             if (!this.cli.isPlaylistEmpty()) {
                 this.DeliverStream(msg.getipAddr(), "demo");
@@ -345,7 +356,8 @@ public class Peer {
                 opr = (PeerReg) m.get(key);
 
                 Message msg = new Message();
-                System.out.println("Adding " + opr.getNick() + " @" + opr.getAddr() + " to list of users to be sent to " + ipAddr);
+                dbs.println("Adding " + opr.getNick() + " @" + opr.getAddr() + " to list of users to be sent to " + ipAddr);
+                //System.out.println("Adding " + opr.getNick() + " @" + opr.getAddr() + " to list of users to be sent to " + ipAddr);
                 msg.setipAddr(opr.getAddr());
                 msg.setType("Register Client");
                 msg.setName(opr.getNick());
@@ -378,7 +390,8 @@ public class Peer {
     }
 
     boolean isHost() {
-        System.out.println("isHost: " + this.getMyIp() + " and " + com.getHost());
+        dbs.println("isHost: " + this.getMyIp() + " and " + com.getHost());
+        //System.out.println("isHost: " + this.getMyIp() + " and " + com.getHost());
         return this.getMyIp().equals(com.getHost());
     }
 
@@ -427,7 +440,8 @@ public class Peer {
     }
 
     void Ping(String ipAddr, String why) {
-        System.out.println("Ping from: " + this.getMyIp() + " to " + ipAddr);
+        dbs.println("Ping from: " + this.getMyIp() + " to " + ipAddr);
+        //System.out.println("Ping from: " + this.getMyIp() + " to " + ipAddr);
         Message msgret = new Message();
         msgret.setipAddr(this.getMyIp());
         msgret.setType("Ping");
@@ -436,7 +450,8 @@ public class Peer {
     }
 
     void Pong(Message msg) {
-        System.out.println("Pong from: " + this.getMyIp() + " to " + msg.getipAddr());
+        dbs.println("Pong from: " + this.getMyIp() + " to " + msg.getipAddr());
+        //System.out.println("Pong from: " + this.getMyIp() + " to " + msg.getipAddr());
         String ipAddr = msg.getipAddr();
         Message msgret = new Message();
         switch (msg.getText()) {
@@ -450,7 +465,8 @@ public class Peer {
     }
 
     void handlePong(Message msg) {
-        System.out.println("Handling pong from: " + msg.getipAddr());
+        dbs.println("Handling pong from: " + msg.getipAddr());
+        //System.out.println("Handling pong from: " + msg.getipAddr());
         Message msgret = new Message();
         switch (msg.getText()) {
             case "Move Host":
@@ -471,7 +487,8 @@ public class Peer {
         isConnected = true;
         com.setHost(ipAddr);
         com.setUUID(uuid);
-        System.out.println("Host changed to: " + ipAddr);
+        dbs.println("Host changed to: " + ipAddr);
+        //System.out.println("Host changed to: " + ipAddr);
         if (ipAddr.equals(this.getMyIp())) {
             this.cli.setHost(this.getMyIp());
             //send message to all with new host.
@@ -486,11 +503,13 @@ public class Peer {
 
             if (!this.cli.isPlaylistEmpty()) {
                 //clean start of playlist
-                System.out.println("Calling cleanStartOfPlaylist");
+                dbs.println("Calling cleanStartOfPlaylist");
+                //System.out.println("Calling cleanStartOfPlaylist");
                 this.cli.cleanStartOfPlaylist();
 
                 //start stream
-                System.out.println("Calling startStream");
+                dbs.println("Calling startStream");
+                //System.out.println("Calling startStream");
                 this.cli.startStream();
             }
 
@@ -498,21 +517,27 @@ public class Peer {
     }
 
     void connectionEvent(String ipAddr, String ce) {
-        System.out.println("Peer.connectionEvent: Starting");
+        dbs.println("Peer.connectionEvent: Starting");
+        //System.out.println("Peer.connectionEvent: Starting");
 
         if (ce.equals("connect")) {
-            System.out.println("Peer.connectionEvent: Connection refused: connect");
+            dbs.println("Peer.connectionEvent: Connection refused: connect");
+            //System.out.println("Peer.connectionEvent: Connection refused: connect");
 
             if (isConnected) {
                 if (this.isHost()) {
-                    System.out.println("Peer.connectionEvent: isHost()");
-                    System.out.println("PEER TO BE REMOVED: " + ipAddr);
-                    System.out.println("SIZE: " + com.pMap.size());
+                    dbs.println("Peer.connectionEvent: isHost()");
+                    //System.out.println("Peer.connectionEvent: isHost()");
+                    dbs.println("PEER TO BE REMOVED: " + ipAddr);
+                    //System.out.println("PEER TO BE REMOVED: " + ipAddr);
+                    dbs.println("SIZE: " + com.pMap.size());
+                    //System.out.println("SIZE: " + com.pMap.size());
                     removePeerbyIp(ipAddr);
 
                     //com.removePeerByIp(ipAddr);
                 } else {
-                    System.out.println("Peer.connectionEvent: else");
+                    dbs.println("Peer.connectionEvent: else");
+                    //System.out.println("Peer.connectionEvent: else");
                     //Check with other peers if the host is lost
                 }
             }
@@ -522,7 +547,8 @@ public class Peer {
     }
 
     void removePeerbyIp(String ipAddr) {
-        System.out.println("Peer.removePeer: Starting removePeer");
+        dbs.println("Peer.removePeer: Starting removePeer");
+        //System.out.println("Peer.removePeer: Starting removePeer");
         String nick = com.getNickByIp(ipAddr);
         removePeerbyNick(nick);
         /*
@@ -544,20 +570,24 @@ public class Peer {
     }
 
     void removePeerbyNick(String nick) {
-        System.out.println("Peer.removePeer: Starting removePeer");
+        dbs.println("Peer.removePeer: Starting removePeer");
+        //System.out.println("Peer.removePeer: Starting removePeer");
 
-        System.out.println("Peer.removePeer: about to enter if with the nick " + nick);
+        dbs.println("Peer.removePeer: about to enter if with the nick " + nick);
+        //System.out.println("Peer.removePeer: about to enter if with the nick " + nick);
         if (!nick.equals("")) {
-            System.out.println("Peer.removePeer: nick not empty");
-
-            System.out.println("Peer.removePeer: removing from comunity by nick: " + nick);
+            dbs.println("Peer.removePeer: nick not empty");
+            //System.out.println("Peer.removePeer: nick not empty");
+            dbs.println("Peer.removePeer: removing from comunity by nick: " + nick);
+            //System.out.println("Peer.removePeer: removing from comunity by nick: " + nick);
 
             //remove nick from comunity. Dose not propagate to the rest of the comunity.
             com.removePeerByName(nick);
 
             //Do propagate to the rest of the comunity.
             if (this.isHost()) {
-                System.out.println("Sending removePeerbyNick message");
+                dbs.println("Sending removePeerbyNick message");
+                //System.out.println("Sending removePeerbyNick message");
                 Message msg = new Message();
                 msg.setName(nick);
                 msg.setType("removePeerbyNick");
@@ -565,23 +595,31 @@ public class Peer {
             }
 
             //Remove ipAdd/nick from playlist
-            System.out.println("Peer.removePeer: removing from playlist by nick: " + nick);
+            dbs.println("Peer.removePeer: removing from playlist by nick: " + nick);
+            //System.out.println("Peer.removePeer: removing from playlist by nick: " + nick);
             cli.getPublicPlaylist().removefromPlaylist(nick);
         } else {
-            System.out.println("Peer.removePeer: nick is empty");
+            dbs.println("Peer.removePeer: nick is empty");
+            //System.out.println("Peer.removePeer: nick is empty");
 
-            System.out.println("Tried to remove someone who did not exist");
+            dbs.println("Tried to remove someone who did not exist");
+            //System.out.println("Tried to remove someone who did not exist");
         }
 
     }
 
     void removePeerFromCommunity(String nick) {
-        System.out.println("Starting to remove host from community list!");
+        dbs.println("Starting to remove host from community list!");
+        //System.out.println("Starting to remove host from community list!");
         com.removePeerByName(nick);
     }
 
     void setisConnected(boolean b) {
         isConnected = b;
+    }
+    
+    public DebugSys getDebugSys(){
+        return dbs;
     }
 
 }

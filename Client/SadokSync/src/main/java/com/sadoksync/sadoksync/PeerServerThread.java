@@ -29,7 +29,8 @@ class PeerServerThread extends Thread {
             serverSocket = new ServerSocket(4444);
             listening = true;
         } catch (IOException e) {
-            System.err.println("Could not listen on port: 4444.");
+            pr.getDebugSys().println("Could not listen on port: 4444.");
+            //System.err.println("Could not listen on port: 4444.");
             //System.exit(1);
         }
 
@@ -37,7 +38,8 @@ class PeerServerThread extends Thread {
 
     @Override
     public void run() {
-        System.out.println("Starting Server Socket Thread");
+        pr.getDebugSys().println("Starting Server Socket Thread");
+        //System.out.println("Starting Server Socket Thread");
         while (listening) {
             Socket clientSocket;
             try {

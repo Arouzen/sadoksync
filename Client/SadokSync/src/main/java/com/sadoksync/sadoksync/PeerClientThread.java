@@ -31,7 +31,8 @@ class PeerClientThread extends Thread {
         this.pr = pr;
         this.host = host;
         this.port = port;
-        System.err.println("Initializing msg sender: " + msg.getType());
+        pr.getDebugSys().println("Initializing msg sender: " + msg.getType());
+        //System.err.println("Initializing msg sender: " + msg.getType());
 
     }
 
@@ -41,13 +42,19 @@ class PeerClientThread extends Thread {
             clientSocket = new Socket(host, port);
             connected = true;
         } catch (UnknownHostException e) {
-            System.out.println("Don't know about host: " + host + ".");
-            System.out.println(e.getMessage());
+            pr.getDebugSys().println("Don't know about host: " + host + ".");
+            //System.out.println("Don't know about host: " + host + ".");
+
+            pr.getDebugSys().println(e.getMessage());
+            //System.out.println(e.getMessage());
             //System.exit(1);
             connected = false;
         } catch (IOException e) {
-            System.out.println("Couldn't get I/O for " + "the connection to: " + host + "");
-            System.out.println(e.getMessage());
+            pr.getDebugSys().println("Couldn't get I/O for " + "the connection to: " + host + "");
+            //System.out.println("Couldn't get I/O for " + "the connection to: " + host + "");
+
+            pr.getDebugSys().println(e.getMessage());
+            //System.out.println(e.getMessage());
 
             //To often?
             pr.connectionEvent(host, "connect");
@@ -64,7 +71,8 @@ class PeerClientThread extends Thread {
             //System.exit(1);
             connected = false;
         }
-        System.err.println("msg sender: Sender " + msg.getType());
+        pr.getDebugSys().println("msg sender: Sender " + msg.getType());
+        //System.err.println("msg sender: Sender " + msg.getType());
 
         if (connected) {
             try {
@@ -83,8 +91,11 @@ class PeerClientThread extends Thread {
                 clientSocket.close();  // close connection
 
             } catch (IOException e) {
-                System.out.println(e.toString());
-                System.out.println("Could not send " + msg.getType() + " to " + clientSocket.getInetAddress().toString());
+                pr.getDebugSys().println(e.toString());
+                //System.out.println(e.toString());
+                
+                pr.getDebugSys().println("Could not send " + msg.getType() + " to " + clientSocket.getInetAddress().toString());
+                //System.out.println("Could not send " + msg.getType() + " to " + clientSocket.getInetAddress().toString());
                 //System.exit(1);
             }
 

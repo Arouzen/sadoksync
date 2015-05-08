@@ -21,21 +21,23 @@ import uk.co.caprica.vlcj.player.headless.HeadlessMediaPlayer;
  * @author Pontus
  */
 public class StreamThread extends Thread {
-
+    DebugSys dbs;
     PublicPlaylist playlist;
     HeadlessMediaPlayer serverMediaPlayer;
     MediaPlayerFactory serverMediaPlayerFactory;
     Client client;
 
-    public StreamThread(PublicPlaylist playlist, Client client) {
+    public StreamThread(PublicPlaylist playlist, Client client, DebugSys dbs) {
         this.playlist = playlist;
         this.client = client;
+        this.dbs = dbs;
     }
 
     @Override
     public void run() {
         try {
-            System.out.println("[MediaServer.startStreamingServer] Starting thread");
+            dbs.println("[MediaServer.startStreamingServer] Starting thread");
+            //System.out.println("[MediaServer.startStreamingServer] Starting thread");
             Media media = playlist.getFirstInList();
             //No ip address here, only an @. 
 
@@ -46,7 +48,8 @@ public class StreamThread extends Thread {
 
                 @Override
                 public void finished(MediaPlayer serverMediaPlayer) {
-                    System.out.println("Event: Finished");
+                    dbs.println("Event: Finished");
+                    //System.out.println("Event: Finished");
                     mediaEnded(serverMediaPlayer);
                     /*
                      if (playlist.getFirstInList().type.equals("youtube")) {
@@ -71,19 +74,22 @@ public class StreamThread extends Thread {
                 public void error(MediaPlayer mediaPlayer) {
                     // For some reason, even if things work, you get an error... you have to ignore
                     // this error - but that of course makes handling real errors tricky
-                    System.out.println("Error!!!");
+                    dbs.println("Error!!!");
+                    //System.out.println("Error!!!");
                 }
 
                 @Override
                 public void stopped(MediaPlayer serverMediaPlayer) {
-                    System.out.println("Event: Stopped");
+                    dbs.println("Event: Stopped");
+                    //System.out.println("Event: Stopped");
                     mediaEnded(serverMediaPlayer);
                 }
 
                 @Override
                 public void mediaSubItemAdded(MediaPlayer serverMediaPlayer, libvlc_media_t subItem) {
                     List<String> subItems = serverMediaPlayer.subItems();
-                    System.out.println("subItems=" + subItems);
+                    dbs.println("subItems=" + subItems);
+                    //System.out.println("subItems=" + subItems);
                     // If sub-items were created...
                     if (subItems != null && !subItems.isEmpty()) {
                         // Pick the first sub-item, and play it...
@@ -107,7 +113,8 @@ public class StreamThread extends Thread {
                 }
 
                 private void streamNextMedia(MediaPlayer serverMediaPlayer) {
-                    System.out.println("[Server] Media stopped/finished, moving next in list!");
+                    dbs.println("[Server] Media stopped/finished, moving next in list!");
+                    //System.out.println("[Server] Media stopped/finished, moving next in list!");
 
                     //get the next media object in list
                     Media media = playlist.getFirstInList();
@@ -146,18 +153,19 @@ public class StreamThread extends Thread {
      */
 
     public void kill() {
-        System.out.println("StreamThread: kill:");
+        dbs.println("StreamThread: kill:");
+        //System.out.println("StreamThread: kill:");
         //this.stopMedia();
-        System.out.println("StreamThread: kill: 1");
+        //System.out.println("StreamThread: kill: 1");
         if (serverMediaPlayer != null) {
-            System.out.println("StreamThread: kill: 2");
+            //System.out.println("StreamThread: kill: 2");
             serverMediaPlayer.release();
-            System.out.println("StreamThread: kill: 3");
+            //System.out.println("StreamThread: kill: 3");
         }
         if (serverMediaPlayerFactory != null) {
-            System.out.println("StreamThread: kill: 4");
+            //System.out.println("StreamThread: kill: 4");
             serverMediaPlayerFactory.release();
-            System.out.println("StreamThread: kill: 5");
+            //System.out.println("StreamThread: kill: 5");
         }
     }
 
@@ -175,7 +183,8 @@ public class StreamThread extends Thread {
 
     public void streamMedia(MediaPlayer serverMediaPlayer, String mrl, Media media, String mediaType) {
         final String options = formatRtspStream("@", 5555, "demo");
-        System.out.println("[Client.streamMedia] Streaming '" + mrl + "' to '" + options + "'");
+        dbs.println("[Client.streamMedia] Streaming '" + mrl + "' to '" + options + "'");
+        //System.out.println("[Client.streamMedia] Streaming '" + mrl + "' to '" + options + "'");
         serverMediaPlayer.playMedia(mrl,
                 options,
                 ":no-sout-rtp-sap",
@@ -238,7 +247,8 @@ public class StreamThread extends Thread {
             //streamNextMedia(client.mediaPlayer);
 
         } else {
-            System.out.println("[Server] No more media in list");
+            dbs.println("[Server] No more media in list");
+            //System.out.println("[Server] No more media in list");
 
             //kill stream if we are reusing the stream
         }

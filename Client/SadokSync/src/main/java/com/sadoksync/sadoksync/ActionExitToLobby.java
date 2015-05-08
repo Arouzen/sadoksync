@@ -25,17 +25,19 @@ public class ActionExitToLobby implements Runnable {
 
     @Override
     public void run() {
-        System.out.println("ActionExitToLobby: run()");
+        pr.getDebugSys().println("ActionExitToLobby: run()");
+        //System.out.println("ActionExitToLobby: run()");
         pr.getClient().getPublicPlaylist().removefromPlaylist(pr.getNick());
         //byt host
         if (pr.isHost()) {
             stm.killStream();
-            
-            System.out.println("ActionExitToLobby: if isHost()");
+            pr.getDebugSys().println("ActionExitToLobby: if isHost()");
+            //System.out.println("ActionExitToLobby: if isHost()");
             pr.removePeerbyNick(pr.getNick());
             
             if (pr.com.isEmpty()) {
-                System.out.println("ActionExitToLobby: if pr.com.isEmpty()");
+                pr.getDebugSys().println("ActionExitToLobby: if pr.com.isEmpty()");
+                //System.out.println("ActionExitToLobby: if pr.com.isEmpty()");
                 //deregister from registry
                 
                 Message deRegister = new Message();
@@ -45,7 +47,8 @@ public class ActionExitToLobby implements Runnable {
                 pr.sendMsg(pr.com.getRegistryAddr(), 3333, deRegister);
                 
             } else {
-                System.out.println("ActionExitToLobby: else pr.com.isEmpty()");
+                pr.getDebugSys().println("ActionExitToLobby: else pr.com.isEmpty()");
+                //System.out.println("ActionExitToLobby: else pr.com.isEmpty()");
                 
                 Message removeHost = new Message();
                 removeHost.setType("removePeerFromCommunity");
@@ -67,7 +70,8 @@ public class ActionExitToLobby implements Runnable {
             
             
         } else {
-            System.out.println("ActionExitToLobby: else isHost()");
+            pr.getDebugSys().println("ActionExitToLobby: else isHost()");
+            //ystem.out.println("ActionExitToLobby: else isHost()");
             Message msg = new Message();
             msg.setType("removePeerbyNick");
             msg.setName(pr.getNick());

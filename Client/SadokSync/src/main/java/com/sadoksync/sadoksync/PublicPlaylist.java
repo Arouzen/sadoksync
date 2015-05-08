@@ -62,7 +62,8 @@ public class PublicPlaylist implements Serializable {
     }
 
     public void addToPlaylist(Pair pair) {
-        System.out.println("Adding " + pair.value().getName() + " owned by " + pair.key());
+        pr.getDebugSys().println("Adding " + pair.value().getName() + " owned by " + pair.key());
+        //System.out.println("Adding " + pair.value().getName() + " owned by " + pair.key());
 
         lock.lock();
         try {
@@ -76,7 +77,8 @@ public class PublicPlaylist implements Serializable {
                     //pr.getClient().addtoPlaylist(msg.getPair());
 
                     //play next media
-                    System.out.println("{PublicPlaylist.addToPlaylist] Starting stream");
+                    pr.getDebugSys().println("{PublicPlaylist.addToPlaylist] Starting stream");
+                    //System.out.println("{PublicPlaylist.addToPlaylist] Starting stream");
                     pr.getClient().startStream();
                 } else {
                     playlist.add(pair);

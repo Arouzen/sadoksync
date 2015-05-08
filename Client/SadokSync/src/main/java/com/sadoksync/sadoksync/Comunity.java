@@ -17,6 +17,7 @@ public class Comunity {
     final Lock lock;
     final Condition ocupied;
 
+    DebugSys dbs;
     //String nick;
     //ClientRemoteInterface mycri;
     String topic;
@@ -25,13 +26,15 @@ public class Comunity {
     String host;
     String uuid;
     //ClientRemoteInterface host;
-    
+
     Map<String, PeerReg> pMap;
 
-    public Comunity() {
+    public Comunity(DebugSys dbs) {
+        this.dbs = dbs;
         lock = new ReentrantLock();
         ocupied = lock.newCondition();
-        System.out.println("Initializing Comunity View");
+        dbs.println("Initializing Comunity View");
+        //System.out.println("Initializing Comunity View");
         this.topic = "";
         this.pMap = Collections.synchronizedMap(new HashMap<String, PeerReg>());
     }
@@ -49,7 +52,8 @@ public class Comunity {
      */
 
     public void RegPeer(PeerReg peer) {
-        System.out.println("Comunity: RegPeer: " + peer.getNick());
+        dbs.println("Comunity: RegPeer: " + peer.getNick());
+        //System.out.println("Comunity: RegPeer: " + peer.getNick());
         //TO DO: Send registration of user to all other clients if this should be done. 
         lock.lock();
         try {
@@ -61,7 +65,8 @@ public class Comunity {
     }
 
     void create(String cname, String myIP, String topic, String nick, String uuid) {
-        System.out.println("Comunity: create: " + cname + ", " + topic + ", @" + myIP);
+        dbs.println("Comunity: create: " + cname + ", " + topic + ", @" + myIP);
+        //System.out.println("Comunity: create: " + cname + ", " + topic + ", @" + myIP);
         lock.lock();
         try {
             this.uuid = uuid;
@@ -176,11 +181,13 @@ public class Comunity {
     }
 
     void addPeer(String name, String ipAddr) {
-        System.out.println("Comunity: addPeer: Adding " + name + " @" + ipAddr);
+        dbs.println("Comunity: addPeer: Adding " + name + " @" + ipAddr);
+        //System.out.println("Comunity: addPeer: Adding " + name + " @" + ipAddr);
         lock.lock();
         try {
             pMap.put(name, new PeerReg(name, ipAddr));
-            System.out.println("pMap size after add: " + pMap.size());
+            dbs.println("pMap size after add: " + pMap.size());
+            //System.out.println("pMap size after add: " + pMap.size());
             ocupied.signalAll();
         } finally {
             lock.unlock();
@@ -249,14 +256,15 @@ public class Comunity {
             Iterator it = pMap.entrySet().iterator();
             while (it.hasNext()) {
                 Map.Entry pair = (Map.Entry) it.next();
-                System.out.println("BEFORE: " + pair.getKey());
+                dbs.println("BEFORE: " + pair.getKey());
+                //System.out.println("BEFORE: " + pair.getKey());
             }
             pMap.remove(nick);
             Iterator it2 = pMap.entrySet().iterator();
             while (it2.hasNext()) {
                 Map.Entry pair = (Map.Entry) it2.next();
-
-                System.out.println("AFTER: " + pair.getKey());
+                dbs.println("AFTER: " + pair.getKey());
+                //System.out.println("AFTER: " + pair.getKey());
             }
             ocupied.signalAll();
         } finally {
@@ -293,7 +301,8 @@ public class Comunity {
         String ret;
         lock.lock();
         try {
-            System.out.println(pMap.size());
+            dbs.println("" + pMap.size());
+            //System.out.println(pMap.size());
             Iterator it = pMap.entrySet().iterator();
 
             Map.Entry pair = (Map.Entry) it.next();
@@ -313,6 +322,5 @@ public class Comunity {
     void setUUID(String uuid) {
         this.uuid = uuid;
     }
-
 
 }
