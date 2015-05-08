@@ -58,7 +58,7 @@ public class MediaServer {
         serverMediaPlayer.playMedia(mrl,
                 options,
                 ":sout-keep",
-                "--sout-avcodec-keyint=10"
+                ":sout-avcodec-keyint=10"
         );
         try {
             Thread.sleep(4000);
