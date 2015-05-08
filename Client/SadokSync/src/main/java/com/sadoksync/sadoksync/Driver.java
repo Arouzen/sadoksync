@@ -15,16 +15,21 @@ public class Driver {
     DebugSys dbs;
 
     public static void main(String[] args) {
-        new Driver();
+        boolean gui = true;
+        for (String arg : args) {
+            if (arg.equals("nogui")) {
+                System.out.println("NO GUI");
+                gui = false;
+            }
+        }
+        new Driver(gui);
     }
 
-    public Driver() {
+    public Driver(boolean gui) {
         
         dbs = new DebugSys();
         dbs.debug(true);
         pr = new Peer(dbs);
-        pr.run();
-        
-
+        pr.run(gui);
     }
 }

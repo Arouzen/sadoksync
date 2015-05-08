@@ -92,6 +92,7 @@ public class Client extends javax.swing.JFrame {
 
     // init empty canvas
     final private EmptyCanvas emptyCanvas;
+    private boolean mediaReleased;
 
     /**
      * Creates new form Client
@@ -154,6 +155,7 @@ public class Client extends javax.swing.JFrame {
         setLeftComponent(emptyCanvas);
 
         stopped = false;
+        mediaReleased = false;
         /*
          this.isHost = pr.isHost();
          if (!isHost) {
@@ -545,14 +547,16 @@ public class Client extends javax.swing.JFrame {
     }//GEN-LAST:event_buttonPlayActionPerformed
 
     private void ButtonStopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonStopActionPerformed
-        if (mediaPlayer.isPlaying()) {
-            mediaPlayer.stop();
-        }
-        if (pr.isHost()) {
-            //mediaServer.stop();
-            stm.stop();
-        } else {
-            stopped = true;
+        if (!mediaReleased) {
+            if (mediaPlayer.isPlaying()) {
+                mediaPlayer.stop();
+            }
+            if (pr.isHost()) {
+                //mediaServer.stop();
+                stm.stop();
+            } else {
+                stopped = true;
+            }
         }
     }//GEN-LAST:event_ButtonStopActionPerformed
 
@@ -614,10 +618,13 @@ public class Client extends javax.swing.JFrame {
     private void jSlider1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlider1StateChanged
         Object source = evt.getSource();
         if (source instanceof JSlider) {
-            JSlider theJSlider = (JSlider) source;
-            System.out.println("Slider changed: " + theJSlider.getValue());
-            mediaPlayer.setVolume(theJSlider.getValue());
-            labelVolume.setText(theJSlider.getValue() + " %");
+            if (!mediaReleased) {
+                System.out.println(mediaPlayer.isPlayable());
+                JSlider theJSlider = (JSlider) source;
+                System.out.println("Slider changed: " + theJSlider.getValue());
+                mediaPlayer.setVolume(theJSlider.getValue());
+                labelVolume.setText(theJSlider.getValue() + " %");
+            }
         }
     }//GEN-LAST:event_jSlider1StateChanged
 
@@ -640,6 +647,7 @@ public class Client extends javax.swing.JFrame {
     }
 
     public void playMedia(String url) {
+        mediaReleased = true;
 
         mediaPlayer.release();
 
@@ -695,6 +703,8 @@ public class Client extends javax.swing.JFrame {
         }
         // lastly, play the media in the mediaplayer with the apropriate options
         setLeftComponent(canvas);
+        mediaReleased = false;
+        mediaPlayer.setVolume(jSlider1.getValue());
         mediaPlayer.playMedia(url);
     }
 
