@@ -93,7 +93,7 @@ public class ConnectionHandler extends Thread {
                         if (comUUID.equals(msgUUID)) {
                             //pr.com.setHost(msg.getipAddr());
                             pr.getClient().setHost(msg.getipAddr());
-                            pr.getClient().setPort("554");
+                            pr.getClient().setPort("1024");
                             pr.getClient().setRtspPath(msg.getName());
                             pr.getClient().setMediaType(msg.getText());
                             pr.getClient().connectToRtsp();
@@ -106,7 +106,7 @@ public class ConnectionHandler extends Thread {
 
                         //pr.com.setHost(msg.getipAddr());
                         pr.getClient().setHost(msg.getipAddr());
-                        pr.getClient().setPort("554");
+                        pr.getClient().setPort("1024");
                         pr.getClient().setRtspPath(msg.getName());
                         pr.getClient().setMediaType(msg.getText());
                         pr.getClient().connectToRtsp();

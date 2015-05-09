@@ -182,15 +182,13 @@ public class StreamThread extends Thread {
     }
 
     public void streamMedia(MediaPlayer serverMediaPlayer, String mrl, Media media, String mediaType) {
-        final String options = formatRtspStream("@", 554, "demo");
+        final String options = formatRtspStream("@", 1024, "demo");
         dbs.println("[Client.streamMedia] Streaming '" + mrl + "' to '" + options + "'");
         //System.out.println("[Client.streamMedia] Streaming '" + mrl + "' to '" + options + "'");
         serverMediaPlayer.playMedia(mrl,
                 options,
-                ":no-sout-rtp-sap",
-                ":no-sout-standard-sap",
-                ":sout-all",
-                ":sout-keep"
+                ":sout-keep",
+                ":sout-avcodec-keyint=10"
         );
 
         //Let the stream startup
@@ -201,7 +199,7 @@ public class StreamThread extends Thread {
         }
 
         client.setHost("localhost");
-        client.setPort("554");
+        client.setPort("1024");
         client.setRtspPath("demo");
 
         if (mediaType.equals("")) {
