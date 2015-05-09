@@ -10,6 +10,11 @@ import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
+import org.joda.time.Period;
+import org.joda.time.Seconds;
+import org.joda.time.format.ISOPeriodFormat;
+import org.joda.time.format.PeriodFormatter;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -87,11 +92,16 @@ class Media implements Serializable {
     }
 
     private void initYoutube(String id) {
-        JSONObject jsonRoot = readJsonFromUrl("http://gdata.youtube.com/feeds/api/videos/" + id + "?v=2&alt=json");
-        JSONObject jsonMediaGroup = (JSONObject) ((JSONObject) jsonRoot.get("entry")).get("media$group");
-       
-        this.length = Long.valueOf((String) ((JSONObject) jsonMediaGroup.get("yt$duration")).get("seconds")) * 1000;
-        this.name = (String) ((JSONObject) jsonMediaGroup.get("media$title")).get("$t");
+        JSONObject jsonRoot = readJsonFromUrl("https://www.googleapis.com/youtube/v3/videos?id=" + id + "&key=AIzaSyB3lNd8RpWEE77cvvWgqFC0MmKW5hOOeAE&part=snippet,contentDetails");
+        JSONArray jsonMediaGroup = (JSONArray) jsonRoot.get("items");
+        JSONObject items = (JSONObject) jsonMediaGroup.get(0);
+
+        PeriodFormatter formatter = ISOPeriodFormat.standard();
+        Period p = formatter.parsePeriod((String) ((JSONObject) items.get("contentDetails")).get("duration"));
+        Seconds s = p.toStandardSeconds();
+        
+        this.length = s.getSeconds()*1000;
+        this.name = (String) ((JSONObject) items.get("snippet")).get("title");
     }
 
     private static String readAll(Reader rd) throws IOException {
