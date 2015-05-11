@@ -333,8 +333,9 @@ public class Peer {
             this.sendMsg(msg.getipAddr(), 40, sethostmsg);
 
             //send cMap to list to msg.getipAddr()
-            this.SendPMap(msg.getipAddr());
             this.sendMsgToComunity(msg);
+            this.SendPMap(msg.getipAddr());
+            
 
             //When a new client joins the Comunity it neads to know where the stream is currently
             this.DeliverPlaylist(msg.getipAddr());
