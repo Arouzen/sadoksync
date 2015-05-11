@@ -664,6 +664,14 @@ public class Client extends javax.swing.JFrame {
         }
     }
 
+    public StreamThreadManager getStm(){
+        return stm;
+    }
+    
+    public EmbeddedMediaPlayer getMedaPlayer(){
+        return mediaPlayer;
+    }
+    
     public void playMedia(String url) {
         mediaReleased = true;
 
