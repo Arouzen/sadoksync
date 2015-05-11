@@ -47,9 +47,11 @@ public class StreamThread extends Thread {
                 @Override
                 public void finished(MediaPlayer serverMediaPlayer) {
                     dbs.println("Event: Finished");
+                    dbs.println("MEDIATYPE: " + media.getType());
+                    dbs.println("MEDIAPATH: " + media.getPath());
                     // ignore if mediatype is youtube, and its the first finish call,
                     // cause youtube will always call finish once (falsly) then play for real. kinda
-                    if (finishedOnce && media.getType().equals("youtube")) {
+                    if (finishedOnce || !media.getType().equals("youtube")) {
                         mediaEnded(serverMediaPlayer);
                     } else {
                         dbs.println("FIRST FINISH.");
