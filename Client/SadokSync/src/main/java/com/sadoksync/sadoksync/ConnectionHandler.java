@@ -122,9 +122,9 @@ public class ConnectionHandler extends Thread {
 
                     case "Set Host":
                         //Should be done regardles off UUID
-                        System.out.println("Setting comunity name");
+                        System.out.println("Setting comunity name: " + msg.getName());
                         pr.setComunityName(msg.getName());
-                        System.out.println("Setting host");
+                        System.out.println("Setting host: " + msg.getipAddr());
                         pr.setHost(msg.getipAddr(), msg.getUUID());
                         break;
                     case "Register Client":
