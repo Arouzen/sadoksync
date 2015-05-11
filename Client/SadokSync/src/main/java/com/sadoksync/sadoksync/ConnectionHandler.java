@@ -71,7 +71,14 @@ public class ConnectionHandler extends Thread {
                             }
                         }
 
+                        break;   
+                    case "Get number of Peers":
+                        Message retmsg = new Message();
+                        retmsg.setType("Comunity Size");
+                        retmsg.setText(Integer.toString(pr.com.getNrOfPeers()));
+                        pr.sendMsg(msg.getipAddr(), 3333, retmsg);
                         break;
+                        
                     case "Ping":
                         System.out.println("Recived Ping");
                         if (pr.com.getUUID().equals(msg.getUUID())) {

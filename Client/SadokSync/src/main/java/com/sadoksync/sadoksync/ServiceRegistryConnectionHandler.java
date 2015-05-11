@@ -56,18 +56,23 @@ class ServiceRegistryConnectionHandler extends Thread {
                         break;
                     case "deRegister":
                         //Get name should be a uuid
-                        cMap.remove(msg.getName());
+                        cMap.remove(msg.getUUID());
                         break;
+                    case "Comunity Size":
+                        //Get name should be a uuid
+                        cMap.get(msg.getUUID()).setSize(msg.getText());
+                        break;
+
                     case "Find All":
                         pr.getDebugSys().println("Find All");
                         //System.out.println("Find All");
                         /*
-                        msg = new Message();
-                        String cip = clientSocket.getInetAddress().toString();
-                        msg.setType("your ip");
-                        msg.setipAddr(cip);
-                        pr.sendMsg(cip, 40, msg);
-                        */
+                         msg = new Message();
+                         String cip = clientSocket.getInetAddress().toString();
+                         msg.setType("your ip");
+                         msg.setipAddr(cip);
+                         pr.sendMsg(cip, 40, msg);
+                         */
                         //Turn Map into List
                         List retList = new LinkedList();
                         Set s = cMap.keySet(); // Needn't be in synchronized block

@@ -23,6 +23,7 @@ public class ServiceRegistry extends Thread {
     Map<String, ComunityRegistration> cMap;
     ServerSocket serverSocket = null;
     Boolean listening;
+    ServiceRegistryUppdater sru;
 
     Peer pr;
 
@@ -43,6 +44,10 @@ public class ServiceRegistry extends Thread {
     public void run() {
         pr.getDebugSys().println("Starting Server Socket Thread");
         //System.out.println("Starting Server Socket Thread");
+        
+        sru = new ServiceRegistryUppdater(pr, this.cMap);
+        sru.start();
+        
         while (listening) {
             Socket clientSocket;
             try {

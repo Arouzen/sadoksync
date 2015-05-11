@@ -326,4 +326,8 @@ public class Comunity {
         this.uuid = uuid;
     }
 
+    int getNrOfPeers() {
+        return pMap.size();
+    }
+
 }

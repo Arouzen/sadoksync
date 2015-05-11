@@ -19,11 +19,13 @@ public class ComunityRegistration implements Serializable {
     String topic;
     String name;
     String uuid;
+    String size;
     public ComunityRegistration(String name, String ipAddr, String topic, String uuid){
         this.name = name;
         this.ipAddr = ipAddr;
         this.topic = topic;
         this.uuid = uuid;
+        
     }
 
     public String getHost() {
@@ -48,7 +50,12 @@ public class ComunityRegistration implements Serializable {
     public void setTopic(String topic){
         this.topic = topic;
     }
-    
+    public void setSize(String size){
+        this.size = size;
+    }
+    public String getSize(){
+        return size;
+    }
     //shoul not be posible to change.
     public String getUUID(){
         return uuid;
