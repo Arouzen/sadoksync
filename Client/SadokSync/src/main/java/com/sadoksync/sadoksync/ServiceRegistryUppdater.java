@@ -45,6 +45,7 @@ class ServiceRegistryUppdater extends Thread {
 
                 Message msg = new Message();
                 msg.setipAddr(pr.getMyIp());
+                msg.setUUID(opr.getUUID());
                 msg.setType("Get number of Peers");
                 this.sendMsg(opr.getHost(), 40, msg, key);
 
