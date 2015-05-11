@@ -287,6 +287,7 @@ public class Peer {
                 key = (String) i.next();
                 opr = (PeerReg) m.get(key);
                 if (!this.getMyIp().equals(opr.getAddr())) {
+                    System.out.println("sending stream to a guy");
                     this.sendMsg(opr.getAddr(), 40, msg);
                 }
             }

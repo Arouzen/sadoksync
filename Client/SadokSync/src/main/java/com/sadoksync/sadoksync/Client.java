@@ -186,16 +186,6 @@ public class Client extends javax.swing.JFrame {
         );
     }
 
-    public void persistClient(MediaPlayer mediaPlayer) {
-        System.out.println("Playing next video after 5sec...(client)");
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        playMedia(getRtspUrl());
-    }
-
     public void setHost(String ip) {
         this.server = ip;
     }
@@ -664,7 +654,7 @@ public class Client extends javax.swing.JFrame {
         }
     }
 
-    public void playMedia(String url) {
+    private void playMedia(String url) { // KÖR CONNECT TO RTSP!
         mediaReleased = true;
 
         mediaPlayer.release();
@@ -684,19 +674,15 @@ public class Client extends javax.swing.JFrame {
         if (mediaType.equals("visualize")) {
             // Check if visualizemode already set, else we need to set it to visualizemode
             // If not, its already in visualizemode and we can play media without any changes
-
-            System.out.println("1");
+            System.out.println("changing to visualize mode");
+            
             // To set it to visualize mode we need to:
             // Recreate the mediaPlayerFactory with visualizer options
             mediaPlayerFactory = new MediaPlayerFactory("--audio-visual=visual", "--effect-list=spectrum");
-            System.out.println("2");
             mediaPlayer = mediaPlayerFactory.newEmbeddedMediaPlayer(new Win32FullScreenStrategy(fullscreenplayer.frame));
-            System.out.println("3");
             //Set visualizer mediaplayer to surface
             videoSurface = mediaPlayerFactory.newVideoSurface(canvas);
-            System.out.println("4");
             mediaPlayer.setVideoSurface(videoSurface);
-            System.out.println("5");
             this.mediaPlayerInit(mediaPlayer);
 
             // Own visualizer stuff. dont remove pls
@@ -707,7 +693,7 @@ public class Client extends javax.swing.JFrame {
         } else {
             // Check if in visualizemode, if it is we need to recreate the mediaplayer
 
-            System.out.println("1");
+            System.out.println("changing to video mode");
             // Recreate the mediaplayerfactory without visualizer options
             //"--realrtsp-caching=1200", manual cache size. 
             mediaPlayerFactory = new MediaPlayerFactory();

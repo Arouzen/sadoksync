@@ -102,7 +102,7 @@ public class ConnectionHandler extends Thread {
                         break;
 
                     case "Set First Stream":
-                        System.out.println("Set Stream");
+                        System.out.println("Set First Stream");
 
                         //pr.com.setHost(msg.getipAddr());
                         pr.getClient().setHost(msg.getipAddr());
