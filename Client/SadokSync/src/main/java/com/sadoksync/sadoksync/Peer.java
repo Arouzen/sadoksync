@@ -222,8 +222,13 @@ public class Peer {
         try {
             myIP = this.getIp();
         } catch (Exception ex) {
-            myIP = JOptionPane.showInputDialog("Could not find your public IP. Please enter it (http://www.whatsmyip.org/)");
-        }
+            if (gui) {
+                myIP = JOptionPane.showInputDialog("Could not find your public IP. Please enter it (http://www.whatsmyip.org/)");
+    
+            }else{
+                System.out.println("Could not set ip");
+            }
+                }
         if (gui) {
             //this.setProp(new Properties(this));
             this.setLobby(new Lobby(this));
