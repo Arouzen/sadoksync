@@ -552,7 +552,7 @@ public class Peer {
                     //Check with other peers if the host is lost
                     ActionExitToLobby aetl = new ActionExitToLobby(this,cli.getStm(),cli.getMedaPlayer());
                     new Thread(aetl).start();
-                    JOptionPane.showMessageDialog(lb, "Could not find your public");
+                    JOptionPane.showMessageDialog(lb, "Lost connection to community host.");
                 }
             }
 
