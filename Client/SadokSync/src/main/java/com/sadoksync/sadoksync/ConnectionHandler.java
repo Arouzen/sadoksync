@@ -83,12 +83,14 @@ public class ConnectionHandler extends Thread {
                                 //Weak solution
                                 Message retmsg = new Message();
                                 retmsg.setType("Comunity is Dead");
+                                retmsg.setText(msg.getUUID());
                                 pr.sendMsg(msg.getipAddr(), 3333, retmsg);
                             }
                         } else {
                             //Weak solution
                             Message retmsg = new Message();
                             retmsg.setType("Comunity is Dead");
+                            retmsg.setText(msg.getUUID());
                             pr.sendMsg(msg.getipAddr(), 3333, retmsg);
                         }
 
