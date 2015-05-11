@@ -73,12 +73,19 @@ public class ConnectionHandler extends Thread {
 
                         break;
                     case "Get number of Peers":
-                        if (pr.com.getUUID().equals(msg.getUUID())) {
-                            Message retmsg = new Message();
-                            retmsg.setType("Comunity Size");
-                            retmsg.setText(Integer.toString(pr.com.getNrOfPeers()));
-                            pr.sendMsg(msg.getipAddr(), 3333, retmsg);
-                        }else{
+                        if (pr.com.getUUID() != null) {
+                            if (pr.com.getUUID().equals(msg.getUUID())) {
+                                Message retmsg = new Message();
+                                retmsg.setType("Comunity Size");
+                                retmsg.setText(Integer.toString(pr.com.getNrOfPeers()));
+                                pr.sendMsg(msg.getipAddr(), 3333, retmsg);
+                            } else {
+                                //Weak solution
+                                Message retmsg = new Message();
+                                retmsg.setType("Comunity is Dead");
+                                pr.sendMsg(msg.getipAddr(), 3333, retmsg);
+                            }
+                        } else {
                             //Weak solution
                             Message retmsg = new Message();
                             retmsg.setType("Comunity is Dead");
