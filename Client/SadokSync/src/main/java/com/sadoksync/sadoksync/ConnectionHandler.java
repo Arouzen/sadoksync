@@ -129,10 +129,11 @@ public class ConnectionHandler extends Thread {
                         break;
                     case "Register Client":
                         System.out.println("Register Client: " + msg.getName());
+                        System.out.println("MESSAGE UUID: " + msg.getUUID());
+                        System.out.println("COMMUNIRT UUID: " + pr.com.getUUID());
                         if (pr.com.getUUID().equals(msg.getUUID())) {
                             pr.PeerToJoin(msg);
                         }
-
                         break;
                     case "Join Comunity":
                         //Should be done regardles off UUID
