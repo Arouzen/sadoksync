@@ -551,6 +551,9 @@ public class Peer {
                     dbs.println("Peer.connectionEvent: else");
                     //System.out.println("Peer.connectionEvent: else");
                     //Check with other peers if the host is lost
+                    ActionExitToLobby aetl = new ActionExitToLobby(this,cli.getStm(),cli.getMedaPlayer());
+                    new Thread(aetl).start();
+                    JOptionPane.showMessageDialog(lb, "Lost connection to community host.");
                 }
             }
 
