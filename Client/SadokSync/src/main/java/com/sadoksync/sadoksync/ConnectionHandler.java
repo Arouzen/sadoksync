@@ -78,6 +78,11 @@ public class ConnectionHandler extends Thread {
                             retmsg.setType("Comunity Size");
                             retmsg.setText(Integer.toString(pr.com.getNrOfPeers()));
                             pr.sendMsg(msg.getipAddr(), 3333, retmsg);
+                        }else{
+                            //Weak solution
+                            Message retmsg = new Message();
+                            retmsg.setType("Comunity is Dead");
+                            pr.sendMsg(msg.getipAddr(), 3333, retmsg);
                         }
 
                         break;

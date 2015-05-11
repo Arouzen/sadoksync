@@ -58,6 +58,10 @@ class ServiceRegistryConnectionHandler extends Thread {
                         //Get name should be a uuid
                         cMap.remove(msg.getUUID());
                         break;
+                    case "Comunity is Dead":
+                        //Get name should be a uuid
+                        cMap.remove(msg.getUUID());
+                        break;
                     case "Comunity Size":
                         //Get name should be a uuid
                         cMap.get(msg.getUUID()).setSize(msg.getText());
