@@ -1,15 +1,15 @@
 package com.sadoksync.sadoksync;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.json.simple.parser.ParseException;
-import uk.co.caprica.vlcj.binding.internal.libvlc_media_t;
+import uk.co.caprica.vlcj.medialist.MediaList;
 import uk.co.caprica.vlcj.player.MediaPlayer;
 import uk.co.caprica.vlcj.player.MediaPlayerEventAdapter;
 import uk.co.caprica.vlcj.player.MediaPlayerFactory;
 import uk.co.caprica.vlcj.player.headless.HeadlessMediaPlayer;
+import uk.co.caprica.vlcj.player.list.MediaListPlayer;
 
 /**
  *
@@ -22,11 +22,14 @@ public class StreamThread extends Thread {
     HeadlessMediaPlayer serverMediaPlayer;
     MediaPlayerFactory serverMediaPlayerFactory;
     Client client;
+    MediaListPlayer mlp;
+    boolean finishedOnce;
 
     public StreamThread(PublicPlaylist playlist, Client client, DebugSys dbs) {
         this.playlist = playlist;
         this.client = client;
         this.dbs = dbs;
+        this.finishedOnce = false;
     }
 
     @Override
@@ -34,90 +37,77 @@ public class StreamThread extends Thread {
         try {
             dbs.println("[MediaServer.startStreamingServer] Starting thread");
             //System.out.println("[MediaServer.startStreamingServer] Starting thread");
-            Media media = playlist.getFirstInList();
+            final Media media = playlist.getFirstInList();
             //No ip address here, only an @. 
 
             serverMediaPlayerFactory = new MediaPlayerFactory();
             serverMediaPlayer = serverMediaPlayerFactory.newHeadlessMediaPlayer();
 
             serverMediaPlayer.addMediaPlayerEventListener(new MediaPlayerEventAdapter() {
-
                 @Override
                 public void finished(MediaPlayer serverMediaPlayer) {
                     dbs.println("Event: Finished");
-                    //System.out.println("Event: Finished");
-
-                    if (playlist.getFirstInList().type.equals("youtube")) {
-                        // This is key...
-                        // On receipt of a "finished" event, check if sub-items have been created...
-                        List<String> subItems = serverMediaPlayer.subItems();
-                        System.out.println("subItems=" + subItems);
-                        // If sub-items were created...
-                        if (subItems == null || subItems.isEmpty()) {
-                            System.out.println("utube done? maybe");
-                            mediaEnded(serverMediaPlayer);
-                        } else {
-                            System.out.println("EYO: " + subItems.get(0));
-                            streamMedia(serverMediaPlayer, subItems.get(0), null, "youtube", true);
-                        }
-                    } else {
-                        System.out.println("not utube");
+                    // ignore if mediatype is youtube, and its the first finish call,
+                    // cause youtube will always call finish once (falsly) then play for real. kinda
+                    if (finishedOnce && media.getType().equals("youtube")) {
                         mediaEnded(serverMediaPlayer);
+                    } else {
+                        dbs.println("FIRST FINISH.");
+                        finishedOnce = true;
                     }
-                }
-
-                @Override
-                public void error(MediaPlayer mediaPlayer) {
-                    // For some reason, even if things work, you get an error... you have to ignore
-                    // this error - but that of course makes handling real errors tricky
-                    dbs.println("Error!!! (ignore this, youtube stuff, this always happens for some reason)");
-                    //System.out.println("Error!!!");
                 }
 
                 @Override
                 public void stopped(MediaPlayer serverMediaPlayer) {
                     dbs.println("Event: Stopped");
-                    //System.out.println("Event: Stopped");
                     mediaEnded(serverMediaPlayer);
                 }
-
-                /*@Override
-                 public void mediaSubItemAdded(MediaPlayer serverMediaPlayer, libvlc_media_t subItem) {
-                 List<String> subItems = serverMediaPlayer.subItems();
-                 dbs.println("subItems=" + subItems);
-                 //System.out.println("subItems=" + subItems);
-                 // If sub-items were created...
-                 if (subItems != null && !subItems.isEmpty()) {
-                 // Pick the first sub-item, and play it...
-                 String subItemMrl = subItems.get(0);
-                 streamMedia(serverMediaPlayer, subItemMrl, null, "youtube");
-                 // What will happen next...
-                 //
-                 // 1. if the vlc lua script finds the streaming MRL via the normal i.e.
-                 //    "primary" method, then this subitem MRL will be the streaming MRL; or
-                 // 2. if the vlc lua script does not find the streaming MRL via the primary
-                 //    method, then the vlc lua script fallback method is tried to locate the
-                 //    streaming MRL and the next time a "finished" event is received there will
-                 //    be a new sub-item for the just played subitem, and that will be the
-                 //    streaming MRL
-                 }
-                 }*/
-                @Override
-                public void buffering(MediaPlayer mediaPlayer, float newCache) {
-                    //System.out.println("Buffering " + newCache);
-                }
             });
-            String p = media.getPath();
-            
-            boolean playVideo;
-            if (media.getType().equals("youtube")) {
-                playVideo = false;
-            } else {
-                playVideo = true;
-            }
-            
-            streamMedia(serverMediaPlayer, p, media, "", playVideo);
 
+            if (media.getType().equals("youtube")) {
+
+                mlp = serverMediaPlayerFactory.newMediaListPlayer();
+                mlp.setMediaPlayer(serverMediaPlayer);
+                MediaList mediaList = serverMediaPlayerFactory.newMediaList();
+
+                final String options = formatRtspStream("@", 1024, "demo");
+
+                mediaList.addMedia(media.getPath(),
+                        options,
+                        //":sout-keep",
+                        //":sout-avcodec-keyint=10",
+                        ":no-sout-rtp-sap",
+                        ":no-sout-standard-sap",
+                        ":sout-all",
+                        ":sout-keep"
+                );
+
+                mlp.setMediaList(mediaList);
+                mlp.play();
+
+                dbs.println("[Client.streamMedia YOUTUBE] Streaming '" + media.getPath() + "' to '" + options + "'");
+
+                //Let the stream startup
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+                client.setHost("localhost");
+                client.setPort("1024");
+                client.setRtspPath("demo");
+
+                client.setMediaType("youtube");
+
+                client.connectToRtsp();
+                client.pr.DeliverStreamToComunity(client.pr.getMyIp(), "demo", "youtube");
+                client.pr.DeliverPlaylistToComunity();
+
+            } else {
+
+                streamMedia(serverMediaPlayer, media.getPath(), media, "");
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -151,6 +141,9 @@ public class StreamThread extends Thread {
             serverMediaPlayerFactory.release();
             //System.out.println("StreamThread: kill: 5");
         }
+        if (mlp != null) {
+            mlp.release();
+        }
     }
 
     private static String formatRtspStream(String serverAddress, int serverPort, String id) {
@@ -165,7 +158,7 @@ public class StreamThread extends Thread {
         return sb.toString();
     }
 
-    public void streamMedia(MediaPlayer serverMediaPlayer, String mrl, Media media, String mediaType, boolean playVideo) {
+    public void streamMedia(MediaPlayer serverMediaPlayer, String mrl, Media media, String mediaType) {
         final String options = formatRtspStream("@", 1024, "demo");
         dbs.println("[Client.streamMedia] Streaming '" + mrl + "' to '" + options + "'");
         //System.out.println("[Client.streamMedia] Streaming '" + mrl + "' to '" + options + "'");
@@ -208,13 +201,11 @@ public class StreamThread extends Thread {
                 mediaType = media.getType();
             }
         }
-        
+
         System.out.println("TYPE: " + mediaType);
         client.setMediaType(mediaType);
-        if (playVideo) {
-            System.out.println("CONNECT TO RTSP");
-            client.connectToRtsp();
-        }
+
+        client.connectToRtsp();
         client.pr.DeliverStreamToComunity(client.pr.getMyIp(), "demo", mediaType);
         client.pr.DeliverPlaylistToComunity();
     }
