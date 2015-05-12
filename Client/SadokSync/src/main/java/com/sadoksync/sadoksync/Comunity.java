@@ -330,4 +330,8 @@ public class Comunity {
         return pMap.size();
     }
 
+    boolean NameExist(String name) {
+        return pMap.get(name) != null;
+    }
+
 }

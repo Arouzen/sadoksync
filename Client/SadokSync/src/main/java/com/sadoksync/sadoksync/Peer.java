@@ -226,7 +226,7 @@ public class Peer {
         } catch (Exception ex) {
             if (gui) {
                 myIP = JOptionPane.showInputDialog("Could not find your public IP. Please enter it (http://www.whatsmyip.org/)");
-            }else{
+            } else {
                 System.out.println("Could not set ip");
             }
         }
@@ -322,22 +322,32 @@ public class Peer {
     }
 
     void PeerToJoin(Message msg) {
-        com.addPeer(msg.getName(), msg.getipAddr());
-        msg.setType("Register Client");
-        if (this.isHost()) {
-            dbs.println("I am host and I am addinging: " + msg.getName() + " @" + msg.getipAddr());
-            //System.out.println("I am host and I am addinging: " + msg.getName() + " @" + msg.getipAddr());
+        if (com.NameExist(msg.getName())) {
+            //Send rejection message
+            Message rejectionmsg = new Message();
 
-            Message sethostmsg = new Message();
-            sethostmsg.setBoolean(msg.getBoolean());
-            sethostmsg.setipAddr(this.getMyIp());
-            sethostmsg.setName(this.com.getComunityName());
-            sethostmsg.setType("Set Host");
-            sethostmsg.setMessage(msg);
-            this.sendMsg(msg.getipAddr(), 40, sethostmsg);
+            rejectionmsg.setType("Rejection");
+
+            this.sendMsg(msg.getipAddr(), 40, rejectionmsg);
+
         } else {
+            com.addPeer(msg.getName(), msg.getipAddr());
+            msg.setType("Register Client");
+            if (this.isHost()) {
+                dbs.println("I am host and I am addinging: " + msg.getName() + " @" + msg.getipAddr());
+                //System.out.println("I am host and I am addinging: " + msg.getName() + " @" + msg.getipAddr());
 
-        }
+                Message sethostmsg = new Message();
+                sethostmsg.setBoolean(msg.getBoolean());
+                sethostmsg.setipAddr(this.getMyIp());
+                sethostmsg.setName(this.com.getComunityName());
+                sethostmsg.setType("Set Host");
+                sethostmsg.setMessage(msg);
+                this.sendMsg(msg.getipAddr(), 40, sethostmsg);
+            } else {
+
+            }
+        };
 
         //If comunity Host register the peer
         //If not comunity Host, send this to comunity Host

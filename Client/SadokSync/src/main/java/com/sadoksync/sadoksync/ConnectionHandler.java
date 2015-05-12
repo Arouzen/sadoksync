@@ -7,6 +7,7 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.DefaultListModel;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -168,6 +169,12 @@ public class ConnectionHandler extends Thread {
                         }
 
                         pr.openClient();
+                        break;
+                        
+                    case "Rejection":
+                        System.out.println("Name taken");
+                        
+                        JOptionPane.showMessageDialog(pr.getLobby(), "Name taken.");
                         break;
                     case "Register Client":
                         System.out.println("Register Client: " + msg.getName());
