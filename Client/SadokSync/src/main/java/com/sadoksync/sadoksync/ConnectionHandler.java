@@ -162,9 +162,9 @@ public class ConnectionHandler extends Thread {
                             askjoin.setType("Join");
                             askjoin.setipAddr(pr.myIP);
                             pr.sendMsg(msg.getipAddr(), 3333, askjoin);
-                        } else {
-                            pr.openClient();
                         }
+
+                        pr.openClient();
                         break;
                     case "Register Client":
                         System.out.println("Register Client: " + msg.getName());
