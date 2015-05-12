@@ -163,7 +163,7 @@ public class ConnectionHandler extends Thread {
                             askjoin.setMessage(msg.getMessage());
                             askjoin.setType("Join");
                             askjoin.setipAddr(pr.myIP);
-                            pr.sendMsg(msg.getipAddr(), 3333, askjoin);
+                            pr.sendMsg(msg.getipAddr(), 40, askjoin);
                             System.out.println("HI IM CLIENT AND I ASK THE HOST TO JOIN");
                         }
 
