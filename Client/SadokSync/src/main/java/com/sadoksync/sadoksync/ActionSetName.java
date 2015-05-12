@@ -30,7 +30,11 @@ public class ActionSetName implements Runnable {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 lb.jButton3.setEnabled(true);
-                lb.jButton4.setEnabled(false);
+                lb.jButton1.setEnabled(true);
+                lb.jButton5.setEnabled(true);
+                //lb.jButton4.setEnabled(false);
+                
+                        
             }
         });
 
