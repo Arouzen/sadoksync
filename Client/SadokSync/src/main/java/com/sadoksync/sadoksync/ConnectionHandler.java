@@ -140,6 +140,8 @@ public class ConnectionHandler extends Thread {
                     case "Join":
                         //send cMap to list to msg.getipAddr()
                         pr.sendMsgToComunity(msg.getMessage());
+                        
+                        System.out.println("HEEEEEEEEEEEEEEEEEEEEEEEEEEEJ");
                         pr.SendPMap(msg.getipAddr());
 
                         //When a new client joins the Comunity it neads to know where the stream is currently
