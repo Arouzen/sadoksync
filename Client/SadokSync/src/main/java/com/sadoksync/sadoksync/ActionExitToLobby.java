@@ -83,6 +83,8 @@ public class ActionExitToLobby implements Runnable {
         pr.com.clearOldCommunity();
         pr.getClient().clearPlaylist();
         pr.getLobby().clearList();
+        pr.getLobby().jButton1.setEnabled(true);
+        pr.getLobby().jTextField1.setText("");
         pr.openLobby();
         pr.setisConnected(false);
         
