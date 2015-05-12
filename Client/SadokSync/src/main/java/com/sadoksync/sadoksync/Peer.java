@@ -109,7 +109,7 @@ public class Peer {
         //msg.setText(cname);
 
         this.sendMsg(cr.getHost(), 40, msg);
-        this.openClient();
+        //this.openClient();
 
     }
 
@@ -327,23 +327,12 @@ public class Peer {
             dbs.println("I am host and I am addinging: " + msg.getName() + " @" + msg.getipAddr());
             //System.out.println("I am host and I am addinging: " + msg.getName() + " @" + msg.getipAddr());
 
-            if (!this.cli.isPlaylistEmpty()) {
-                this.DeliverFirstStream(msg.getipAddr(), "demo");
-            }
-
             Message sethostmsg = new Message();
             sethostmsg.setipAddr(this.getMyIp());
             sethostmsg.setName(this.com.getComunityName());
             sethostmsg.setType("Set Host");
+            sethostmsg.setMessage(msg);
             this.sendMsg(msg.getipAddr(), 40, sethostmsg);
-
-            //send cMap to list to msg.getipAddr()
-            this.sendMsgToComunity(msg);
-            this.SendPMap(msg.getipAddr());
-            
-
-            //When a new client joins the Comunity it neads to know where the stream is currently
-            this.DeliverPlaylist(msg.getipAddr());
         } else {
 
         }
@@ -386,7 +375,7 @@ public class Peer {
         this.sendMsg(ipAddr, 40, msgret);
     }
 
-    private void DeliverFirstStream(String ipAddr, String path) {
+    void DeliverFirstStream(String ipAddr, String path) {
         //Delives a message that set where the stream is currently.
         Message msgret = new Message();
         msgret.setipAddr(this.getMyIp());

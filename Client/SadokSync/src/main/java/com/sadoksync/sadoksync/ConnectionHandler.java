@@ -137,12 +137,30 @@ public class ConnectionHandler extends Thread {
 
                         break;
 
+                    case "Join":
+                        //send cMap to list to msg.getipAddr()
+                        pr.sendMsgToComunity(msg.getMessage());
+                        pr.SendPMap(msg.getMessage().getipAddr());
+
+                        //When a new client joins the Comunity it neads to know where the stream is currently
+                        pr.DeliverPlaylist(msg.getMessage().getipAddr());
+
+                        if (!pr.cli.isPlaylistEmpty()) {
+                            pr.DeliverFirstStream(msg.getMessage().getipAddr(), "demo");
+                        }
+                        break;
                     case "Set Host":
                         //Should be done regardles off UUID
                         System.out.println("Setting comunity name: " + msg.getName());
                         pr.setComunityName(msg.getName());
                         System.out.println("Setting host: " + msg.getipAddr());
                         pr.setHost(msg.getipAddr(), msg.getUUID());
+
+                        Message askjoin = new Message();
+                        askjoin.setMessage(msg.getMessage());
+                        askjoin.setType("Join");
+                        askjoin.setipAddr(pr.myIP);
+                        pr.sendMsg(msg.getipAddr(), 3333, askjoin);
                         break;
                     case "Register Client":
                         System.out.println("Register Client: " + msg.getName());

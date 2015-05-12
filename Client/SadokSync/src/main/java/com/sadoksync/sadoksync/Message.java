@@ -19,6 +19,7 @@ public class Message implements Serializable {
     String ipAddr;
     String text;
     String uuid;
+    Message msg;
     List li = null;
     PublicPlaylist.Pair pair;
     PublicPlaylist playlist;
@@ -96,6 +97,14 @@ public class Message implements Serializable {
 
     void setUUID(String uuid) {
         this.uuid = uuid;
+    }
+
+    void setMessage(Message msg) {
+        this.msg = msg;
+    }
+    
+    Message getMessage() {
+        return this.msg;
     }
     
 }
