@@ -708,7 +708,7 @@ public class Client extends javax.swing.JFrame {
             System.out.println("1");
             // To set it to visualize mode we need to:
             // Recreate the mediaPlayerFactory with visualizer options
-            mediaPlayerFactory = new MediaPlayerFactory("--audio-visual=visual", "--effect-list=goom");
+            mediaPlayerFactory = new MediaPlayerFactory("--audio-visual=visual", "--effect-list=spectrum");
             System.out.println("2");
             mediaPlayer = mediaPlayerFactory.newEmbeddedMediaPlayer(new Win32FullScreenStrategy(fullscreenplayer.frame));
             System.out.println("3");
