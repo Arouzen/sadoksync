@@ -287,7 +287,7 @@ public class Lobby extends javax.swing.JFrame {
         int firstSelIx = jList1.getSelectedIndex();
         //String sel = (String) jList1.getModel().getElementAt(firstSelIx);
         String uuid = (String) ali.get(firstSelIx);
-        ActionJoinComunitys afac = new ActionJoinComunitys(pr, jTextFieldRegistryAddr.getText(), uuid);
+        ActionJoinComunitys afac = new ActionJoinComunitys(pr, jTextFieldRegistryAddr.getText(), uuid, false);
         new Thread(afac).start();
     }//GEN-LAST:event_jButton2ActionPerformed
 

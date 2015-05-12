@@ -156,11 +156,15 @@ public class ConnectionHandler extends Thread {
                         System.out.println("Setting host: " + msg.getipAddr());
                         pr.setHost(msg.getipAddr(), msg.getUUID());
 
-                        Message askjoin = new Message();
-                        askjoin.setMessage(msg.getMessage());
-                        askjoin.setType("Join");
-                        askjoin.setipAddr(pr.myIP);
-                        pr.sendMsg(msg.getipAddr(), 3333, askjoin);
+                        if (!msg.getBoolean()) {
+                            Message askjoin = new Message();
+                            askjoin.setMessage(msg.getMessage());
+                            askjoin.setType("Join");
+                            askjoin.setipAddr(pr.myIP);
+                            pr.sendMsg(msg.getipAddr(), 3333, askjoin);
+                        } else {
+                            pr.openClient();
+                        }
                         break;
                     case "Register Client":
                         System.out.println("Register Client: " + msg.getName());

@@ -23,6 +23,7 @@ public class Message implements Serializable {
     List li = null;
     PublicPlaylist.Pair pair;
     PublicPlaylist playlist;
+    private boolean bool;
     
     public Message() {
 
@@ -105,6 +106,14 @@ public class Message implements Serializable {
     
     Message getMessage() {
         return this.msg;
+    }
+
+    void setBoolean(boolean bool) {
+        this.bool = bool;
+    }
+    
+    boolean getBoolean() {
+        return this.bool;
     }
     
 }

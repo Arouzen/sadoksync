@@ -71,7 +71,7 @@ public class Peer {
 
         cMap.put(uniqueID, new ComunityRegistration(cname, myIP, topic, uniqueID));
 
-        this.joinComunity(uniqueID);
+        this.joinComunity(uniqueID, true);
     }
 
     void registerComunity(String rhost, int port) {
@@ -99,13 +99,14 @@ public class Peer {
      }
      */
 
-    void joinComunity(String uuid) {
+    void joinComunity(String uuid, boolean host) {
         ComunityRegistration cr = cMap.get(uuid);
 
         Message msg = new Message();
         msg.setipAddr(this.getMyIp());
         msg.setType("Join Comunity");
         msg.setName(this.getNick());
+        msg.setBoolean(host);
         //msg.setText(cname);
 
         this.sendMsg(cr.getHost(), 40, msg);
@@ -328,6 +329,7 @@ public class Peer {
             //System.out.println("I am host and I am addinging: " + msg.getName() + " @" + msg.getipAddr());
 
             Message sethostmsg = new Message();
+            sethostmsg.setBoolean(msg.getBoolean());
             sethostmsg.setipAddr(this.getMyIp());
             sethostmsg.setName(this.com.getComunityName());
             sethostmsg.setType("Set Host");
