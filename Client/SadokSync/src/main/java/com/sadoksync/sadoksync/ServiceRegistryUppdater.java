@@ -33,6 +33,7 @@ class ServiceRegistryUppdater extends Thread {
     public void run() {
         while (true) {
             //loop throug cMap.
+            System.out.println("Pinnging Comunitys");
             String key;
             ComunityRegistration opr;
             Set s = cMap.keySet();

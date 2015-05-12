@@ -298,7 +298,7 @@ public class Lobby extends javax.swing.JFrame {
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         if (jTextFieldNick.getText().length() > 2 && jTextFieldNick.getText().length() < 15) {
             ActionSetName asn = new ActionSetName(pr, jTextFieldNick.getText(), this);
-            jTextFieldNick.setEnabled(false);
+            //jTextFieldNick.setEnabled(false);
             new Thread(asn).start();
             connectToDefaultSR();
         }
