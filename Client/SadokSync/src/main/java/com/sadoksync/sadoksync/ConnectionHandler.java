@@ -140,13 +140,13 @@ public class ConnectionHandler extends Thread {
                     case "Join":
                         //send cMap to list to msg.getipAddr()
                         pr.sendMsgToComunity(msg.getMessage());
-                        pr.SendPMap(msg.getMessage().getipAddr());
+                        pr.SendPMap(msg.getipAddr());
 
                         //When a new client joins the Comunity it neads to know where the stream is currently
-                        pr.DeliverPlaylist(msg.getMessage().getipAddr());
+                        pr.DeliverPlaylist(msg.getipAddr());
 
                         if (!pr.cli.isPlaylistEmpty()) {
-                            pr.DeliverFirstStream(msg.getMessage().getipAddr(), "demo");
+                            pr.DeliverFirstStream(msg.getipAddr(), "demo");
                         }
                         break;
                     case "Set Host":
