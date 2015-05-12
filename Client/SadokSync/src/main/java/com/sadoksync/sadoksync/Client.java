@@ -170,6 +170,9 @@ public class Client extends javax.swing.JFrame {
                     @Override
                     public void finished(MediaPlayer mediaPlayer
                     ) {
+                        if (fullscreenplayer.isActive()) {
+                            fullscreenplayer.stopFullscreen();
+                        }
                         if (playlist.isEmpty()) {
                             setLeftComponent(emptyCanvas);
                         }
@@ -178,6 +181,9 @@ public class Client extends javax.swing.JFrame {
                     @Override
                     public void stopped(MediaPlayer mediaPlayer
                     ) {
+                        if (fullscreenplayer.isActive()) {
+                            fullscreenplayer.stopFullscreen();
+                        }
                         if (playlist.isEmpty()) {
                             setLeftComponent(emptyCanvas);
                         }
@@ -677,6 +683,10 @@ public class Client extends javax.swing.JFrame {
     public void playMedia(String url) {
         mediaReleased = true;
 
+        if (fullscreenplayer.isActive()) {
+            fullscreenplayer.stopFullscreen();
+        }
+
         mediaPlayer.release();
 
         mediaPlayerFactory.release();
@@ -1058,6 +1068,7 @@ public class Client extends javax.swing.JFrame {
 
         private final KeyStroke escapeKeyStroke;
         private final Action escapeAction;
+        private boolean active;
 
         private FullScreenPlayer() {
             frame = new JFrame();
@@ -1078,6 +1089,11 @@ public class Client extends javax.swing.JFrame {
             };
             frame.getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(escapeKeyStroke, "ESCAPE");
             frame.getRootPane().getActionMap().put("ESCAPE", escapeAction);
+            active = false;
+        }
+
+        private boolean isActive() {
+            return active;
         }
 
         private void fullscreen(MediaPlayerFactory fullscreenMediaPlayerFactory, EmbeddedMediaPlayer mediaPlayer) {
@@ -1096,6 +1112,8 @@ public class Client extends javax.swing.JFrame {
             // Put videotrack back
             this.fullscreenMediaPlayer.setVideoTrack(vid);
 
+            active = true;
+
         }
 
         private void stopFullscreen() {
@@ -1111,6 +1129,7 @@ public class Client extends javax.swing.JFrame {
 
             frame.setVisible(false);
             canvas.setVisible(false);
+            active = false;
         }
     }
 
