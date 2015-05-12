@@ -610,17 +610,19 @@ public class Client extends javax.swing.JFrame {
     private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
         String url = JOptionPane.showInputDialog(this, "Enter a Youtube URL");
         //String url = "https://www.youtube.com/watch?v=wZZ7oFKsKzY";
-        if (!url.contains("v=")) //there's no video id
-        {
-            JOptionPane.showMessageDialog(this, "No Youtube-ID in URL");
-        } else {
-            String id = url.split("v=")[1]; // we want everything after 'v='
-            int end_of_id = id.indexOf("&"); // if there are other parameters in the url, get only the id's value
-            if (end_of_id != -1) {
-                id = url.substring(0, end_of_id);
-            }
-            if (!id.isEmpty()) {
-                playlist.addToPlaylist(pr.getNick(), id, "youtube");
+        if (url != null) {
+            if (!url.contains("v=")) //there's no video id
+            {
+                JOptionPane.showMessageDialog(this, "No Youtube-ID in URL");
+            } else {
+                String id = url.split("v=")[1]; // we want everything after 'v='
+                int end_of_id = id.indexOf("&"); // if there are other parameters in the url, get only the id's value
+                if (end_of_id != -1) {
+                    id = url.substring(0, end_of_id);
+                }
+                if (!id.isEmpty()) {
+                    playlist.addToPlaylist(pr.getNick(), id, "youtube");
+                }
             }
         }
     }//GEN-LAST:event_jMenuItem3ActionPerformed
@@ -664,14 +666,14 @@ public class Client extends javax.swing.JFrame {
         }
     }
 
-    public StreamThreadManager getStm(){
+    public StreamThreadManager getStm() {
         return stm;
     }
-    
-    public EmbeddedMediaPlayer getMedaPlayer(){
+
+    public EmbeddedMediaPlayer getMedaPlayer() {
         return mediaPlayer;
     }
-    
+
     public void playMedia(String url) {
         mediaReleased = true;
 
