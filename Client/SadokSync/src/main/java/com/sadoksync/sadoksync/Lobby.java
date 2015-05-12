@@ -5,6 +5,8 @@
  */
 package com.sadoksync.sadoksync;
 
+//import my.contacteditor.Client;
+
 import java.awt.event.KeyEvent;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -21,9 +23,9 @@ import javax.swing.DefaultListModel;
  * @author Arouz
  */
 public class Lobby extends javax.swing.JFrame {
-
+    int xMouse;
+    int yMouse;
     Peer pr;
-    //Client cli;
     ArrayList ali;
 
     /**
@@ -31,10 +33,9 @@ public class Lobby extends javax.swing.JFrame {
      */
     public Lobby(Peer pr) {
         this.pr = pr;
-        //this.cli = cli;
         this.ali = new ArrayList();
         initComponents();
-        labelMyIp.setText("My Public IP: " + pr.myIP);
+        labelMyIP.setText("My Public IP: " + pr.myIP);
     }
 
     /**
@@ -63,15 +64,28 @@ public class Lobby extends javax.swing.JFrame {
         jLabel5 = new javax.swing.JLabel();
         jTdc = new javax.swing.JTextField();
         jButton5 = new javax.swing.JButton();
-        labelMyIp = new javax.swing.JLabel();
+        Close = new javax.swing.JLabel();
+        minimised = new javax.swing.JLabel();
+        frameDrag = new javax.swing.JLabel();
         jSeparator2 = new javax.swing.JSeparator();
+        labelMyIP = new javax.swing.JLabel();
+        backGround = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setUndecorated(true);
+        setResizable(false);
+        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 0, 48)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setText("SADOKSYNC");
+        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/SADOK_LOGO_LOBBY.png"))); // NOI18N
+        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 25, 390, 60));
 
+        jList1.setBackground(new java.awt.Color(102, 102, 102));
+        jList1.setForeground(new java.awt.Color(255, 255, 255));
         jList1.setModel(new javax.swing.AbstractListModel() {
             String[] strings = {  };
             public int getSize() { return strings.length; }
@@ -79,21 +93,37 @@ public class Lobby extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(jList1);
 
-        jButton1.setText("START");
+        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 190, 385, 230));
+
+        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Untitled-1_button_start.png"))); // NOI18N
+        jButton1.setBorderPainted(false);
+        jButton1.setContentAreaFilled(false);
+        jButton1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jButton1.setMaximumSize(new java.awt.Dimension(85, 25));
+        jButton1.setMinimumSize(new java.awt.Dimension(85, 25));
+        jButton1.setPreferredSize(new java.awt.Dimension(85, 25));
+        jButton1.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/Untitled-1_button_start_pressed.png"))); // NOI18N
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
             }
         });
+        getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(311, 502, 89, -1));
 
-        jButton2.setText("JOIN");
+        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Untitled-2_join_1.1.png"))); // NOI18N
+        jButton2.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jButton2.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/Untitled-2_join.png"))); // NOI18N
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);
             }
         });
+        getContentPane().add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 426, 385, 58));
 
+        jTextFieldRegistryAddr.setBackground(new java.awt.Color(102, 102, 102));
+        jTextFieldRegistryAddr.setForeground(new java.awt.Color(255, 255, 255));
         jTextFieldRegistryAddr.setText("localhost");
+        jTextFieldRegistryAddr.setCaretColor(new java.awt.Color(255, 255, 255));
         jTextFieldRegistryAddr.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jTextFieldRegistryAddrActionPerformed(evt);
@@ -104,19 +134,35 @@ public class Lobby extends javax.swing.JFrame {
                 jTextFieldRegistryAddrKeyPressed(evt);
             }
         });
+        getContentPane().add(jTextFieldRegistryAddr, new org.netbeans.lib.awtextra.AbsoluteConstraints(61, 122, 243, -1));
 
+        jLabel2.setForeground(new java.awt.Color(255, 255, 255));
         jLabel2.setText("Registry: ");
+        getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 122, -1, -1));
 
-        jButton3.setText("Search");
+        jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Untitled-1_button_search.png"))); // NOI18N
+        jButton3.setBorderPainted(false);
+        jButton3.setContentAreaFilled(false);
+        jButton3.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jButton3.setEnabled(false);
+        jButton3.setMaximumSize(new java.awt.Dimension(85, 25));
+        jButton3.setMinimumSize(new java.awt.Dimension(85, 25));
+        jButton3.setPreferredSize(new java.awt.Dimension(85, 25));
+        jButton3.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/Untitled-1_button_search_pressed.png"))); // NOI18N
         jButton3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton3ActionPerformed(evt);
             }
         });
+        getContentPane().add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 120, 85, -1));
 
+        jLabel3.setForeground(new java.awt.Color(255, 255, 255));
         jLabel3.setText("Nick:");
+        getContentPane().add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 95, -1, -1));
 
+        jTextFieldNick.setBackground(new java.awt.Color(102, 102, 102));
+        jTextFieldNick.setForeground(new java.awt.Color(255, 255, 255));
+        jTextFieldNick.setCaretColor(new java.awt.Color(255, 255, 255));
         jTextFieldNick.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jTextFieldNickActionPerformed(evt);
@@ -127,14 +173,26 @@ public class Lobby extends javax.swing.JFrame {
                 jTextFieldNickKeyPressed(evt);
             }
         });
+        getContentPane().add(jTextFieldNick, new org.netbeans.lib.awtextra.AbsoluteConstraints(61, 92, 243, -1));
 
-        jButton4.setText("Set");
+        jButton4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Untitled-1_button_set.png"))); // NOI18N
+        jButton4.setBorderPainted(false);
+        jButton4.setContentAreaFilled(false);
+        jButton4.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jButton4.setMaximumSize(new java.awt.Dimension(85, 25));
+        jButton4.setMinimumSize(new java.awt.Dimension(85, 25));
+        jButton4.setPreferredSize(new java.awt.Dimension(85, 25));
+        jButton4.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/Untitled-1_button_set_pressed.png"))); // NOI18N
         jButton4.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton4ActionPerformed(evt);
             }
         });
+        getContentPane().add(jButton4, new org.netbeans.lib.awtextra.AbsoluteConstraints(310, 90, 85, -1));
 
+        jTextField1.setBackground(new java.awt.Color(102, 102, 102));
+        jTextField1.setForeground(new java.awt.Color(255, 255, 255));
+        jTextField1.setCaretColor(new java.awt.Color(255, 255, 255));
         jTextField1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jTextField1ActionPerformed(evt);
@@ -145,114 +203,79 @@ public class Lobby extends javax.swing.JFrame {
                 jTextField1KeyPressed(evt);
             }
         });
+        getContentPane().add(jTextField1, new org.netbeans.lib.awtextra.AbsoluteConstraints(105, 502, 200, -1));
 
+        jLabel4.setForeground(new java.awt.Color(255, 255, 255));
         jLabel4.setText("Comunity Name:");
+        getContentPane().add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 505, -1, -1));
+        getContentPane().add(jSeparator1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 531, 385, 10));
 
+        jLabel5.setForeground(new java.awt.Color(255, 255, 255));
         jLabel5.setText("Direct Connect:");
+        getContentPane().add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 540, -1, -1));
 
-        jButton5.setText("Connect");
+        jTdc.setBackground(new java.awt.Color(102, 102, 102));
+        jTdc.setForeground(new java.awt.Color(255, 255, 255));
+        jTdc.setCaretColor(new java.awt.Color(255, 255, 255));
+        getContentPane().add(jTdc, new org.netbeans.lib.awtextra.AbsoluteConstraints(105, 537, 200, -1));
+
+        jButton5.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Untitled-1_button_connect.png"))); // NOI18N
+        jButton5.setBorderPainted(false);
+        jButton5.setContentAreaFilled(false);
+        jButton5.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jButton5.setMaximumSize(new java.awt.Dimension(85, 25));
+        jButton5.setMinimumSize(new java.awt.Dimension(85, 25));
+        jButton5.setPreferredSize(new java.awt.Dimension(85, 25));
+        jButton5.setPressedIcon(new javax.swing.ImageIcon(getClass().getResource("/Untitled-1_button_connect_pressed.png"))); // NOI18N
         jButton5.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton5ActionPerformed(evt);
             }
         });
+        getContentPane().add(jButton5, new org.netbeans.lib.awtextra.AbsoluteConstraints(311, 536, 89, -1));
 
-        labelMyIp.setText("My Public IP:");
+        Close.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        Close.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                CloseMouseClicked(evt);
+            }
+        });
+        getContentPane().add(Close, new org.netbeans.lib.awtextra.AbsoluteConstraints(386, 3, 18, 18));
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel4)
-                            .addComponent(jLabel5))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jTextField1)
-                            .addComponent(jTdc))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jButton1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jButton5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addContainerGap())
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel3)
-                            .addComponent(jLabel2))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jTextFieldRegistryAddr)
-                            .addComponent(jTextFieldNick, javax.swing.GroupLayout.DEFAULT_SIZE, 212, Short.MAX_VALUE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, 85, Short.MAX_VALUE)
-                            .addComponent(jButton4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addGap(15, 15, 15))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jSeparator1)
-                        .addGap(15, 15, 15))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jButton2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 380, Short.MAX_VALUE))
-                        .addGap(15, 15, 15))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(labelMyIp)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jSeparator2)
-                        .addContainerGap())))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 74, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(jTextFieldNick, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton4))
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(5, 5, 5)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jTextFieldRegistryAddr, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel2)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton3)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(labelMyIp)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 186, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE, false)
-                        .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jTextField1))
-                    .addComponent(jButton1))
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(6, 6, 6)
-                        .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel5)
-                            .addComponent(jTdc, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jButton5))))
-                .addContainerGap())
-        );
+        minimised.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        minimised.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                minimisedMouseClicked(evt);
+            }
+        });
+        getContentPane().add(minimised, new org.netbeans.lib.awtextra.AbsoluteConstraints(362, 3, 18, 18));
+
+        frameDrag.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                frameDragMousePressed(evt);
+            }
+        });
+        frameDrag.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseDragged(java.awt.event.MouseEvent evt) {
+                frameDragMouseDragged(evt);
+            }
+        });
+        getContentPane().add(frameDrag, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 410, 90));
+        getContentPane().add(jSeparator2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 150, 390, 10));
+
+        labelMyIP.setForeground(new java.awt.Color(255, 255, 255));
+        labelMyIP.setText("My Public IP:");
+        getContentPane().add(labelMyIP, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 170, -1, -1));
+
+        backGround.setForeground(new java.awt.Color(255, 255, 255));
+        backGround.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Untitled-1-Recovered.1.png"))); // NOI18N
+        getContentPane().add(backGround, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
+
+        jLabel6.setText("jLabel6");
+        getContentPane().add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 170, -1, -1));
+
+        jLabel7.setText("jLabel7");
+        getContentPane().add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 170, -1, -1));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -286,8 +309,8 @@ public class Lobby extends javax.swing.JFrame {
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         int firstSelIx = jList1.getSelectedIndex();
         //String sel = (String) jList1.getModel().getElementAt(firstSelIx);
-        String uuid = (String) ali.get(firstSelIx);
-        ActionJoinComunitys afac = new ActionJoinComunitys(pr, jTextFieldRegistryAddr.getText(), uuid, false);
+       String uuid = (String) ali.get(firstSelIx);
+        ActionJoinComunitys afac = new ActionJoinComunitys(pr, jTextFieldRegistryAddr.getText(), uuid,false);
         new Thread(afac).start();
     }//GEN-LAST:event_jButton2ActionPerformed
 
@@ -348,8 +371,30 @@ public class Lobby extends javax.swing.JFrame {
         new Thread(adc).start();
     }//GEN-LAST:event_jButton5ActionPerformed
 
+    private void CloseMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_CloseMouseClicked
+       System.exit(0);
+    }//GEN-LAST:event_CloseMouseClicked
+
+    private void minimisedMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_minimisedMouseClicked
+        this.setState(Lobby.ICONIFIED);
+    }//GEN-LAST:event_minimisedMouseClicked
+
+    private void frameDragMouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_frameDragMouseDragged
+         int x = evt.getXOnScreen();
+        int y = evt.getYOnScreen();
+        this.setLocation(x - xMouse, y - yMouse);
+    }//GEN-LAST:event_frameDragMouseDragged
+
+    private void frameDragMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_frameDragMousePressed
+         xMouse = evt.getX();
+         yMouse = evt.getY();
+    }//GEN-LAST:event_frameDragMousePressed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel Close;
+    private javax.swing.JLabel backGround;
+    private javax.swing.JLabel frameDrag;
     public javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     public javax.swing.JButton jButton3;
@@ -360,6 +405,8 @@ public class Lobby extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
     public javax.swing.JList jList1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSeparator jSeparator1;
@@ -368,12 +415,13 @@ public class Lobby extends javax.swing.JFrame {
     public javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextFieldNick;
     private javax.swing.JTextField jTextFieldRegistryAddr;
-    private javax.swing.JLabel labelMyIp;
+    private javax.swing.JLabel labelMyIP;
+    private javax.swing.JLabel minimised;
     // End of variables declaration//GEN-END:variables
 
     void clearList() {
 
-        ali = new ArrayList();
+         ali = new ArrayList();
         final DefaultListModel flm = new DefaultListModel();
 
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -383,7 +431,6 @@ public class Lobby extends javax.swing.JFrame {
         });
 
     }
-
     private void connectToDefaultSR() {
         BufferedReader bufferedReader = null;
         try {
