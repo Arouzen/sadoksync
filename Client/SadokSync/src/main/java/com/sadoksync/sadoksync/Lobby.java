@@ -312,7 +312,7 @@ public class Lobby extends javax.swing.JFrame {
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             if (jTextFieldNick.getText().length() > 2 && jTextFieldNick.getText().length() < 15) {
                 ActionSetName asn = new ActionSetName(pr, jTextFieldNick.getText(), this);
-                jTextFieldNick.setEnabled(false);
+                //jTextFieldNick.setEnabled(false);
                 new Thread(asn).start();
                 connectToDefaultSR();
             }
