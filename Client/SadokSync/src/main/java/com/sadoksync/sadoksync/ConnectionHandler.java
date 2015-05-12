@@ -138,10 +138,9 @@ public class ConnectionHandler extends Thread {
                         break;
 
                     case "Join":
+                        System.out.println("HI IM HOST AND I APPROVE CLIENT TO JOIN");
                         //send cMap to list to msg.getipAddr()
                         pr.sendMsgToComunity(msg.getMessage());
-                        
-                        System.out.println("HEEEEEEEEEEEEEEEEEEEEEEEEEEEJ");
                         pr.SendPMap(msg.getipAddr());
 
                         //When a new client joins the Comunity it neads to know where the stream is currently
@@ -158,12 +157,14 @@ public class ConnectionHandler extends Thread {
                         System.out.println("Setting host: " + msg.getipAddr());
                         pr.setHost(msg.getipAddr(), msg.getUUID());
 
+                        
                         if (!msg.getBoolean()) {
                             Message askjoin = new Message();
                             askjoin.setMessage(msg.getMessage());
                             askjoin.setType("Join");
                             askjoin.setipAddr(pr.myIP);
                             pr.sendMsg(msg.getipAddr(), 3333, askjoin);
+                            System.out.println("HI IM CLIENT AND I ASK THE HOST TO JOIN");
                         }
 
                         pr.openClient();
